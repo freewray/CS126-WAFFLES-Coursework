@@ -1,24 +1,26 @@
 package uk.ac.warwick.cs126.util;
 
+import uk.ac.warwick.cs126.structures.HashMap;
+
 public class StringFormatter {
     private static final String[][] accentAndConvertedAccent = {
-        {"§", "SS"},
-        {"ª", "a"},
-        {"²", "2"},
-        {"³", "3"},
-        {"µ", "u"},
-        {"¶", "P"},
-        {"¹", "1"},
-        {"º", "o"},
-        {"À", "A"},
-        {"Á", "A"},
-        {"Â", "A"},
-        {"Ã", "A"},
-        {"Ä", "A"},
-        {"Å", "A"},
-        {"Æ", "AE"},
-        {"Ç", "C"},
-        {"È", "E"},
+            {"§", "SS"},
+            {"ª", "a"},
+            {"²", "2"},
+            {"³", "3"},
+            {"µ", "u"},
+            {"¶", "P"},
+            {"¹", "1"},
+            {"º", "o"},
+            {"À", "A"},
+            {"Á", "A"},
+            {"Â", "A"},
+            {"Ã", "A"},
+            {"Ä", "A"},
+            {"Å", "A"},
+            {"Æ", "AE"},
+            {"Ç", "C"},
+            {"È", "E"},
         {"É", "E"},
         {"Ê", "E"},
         {"Ë", "E"},
@@ -1466,34 +1468,39 @@ public class StringFormatter {
         {"Ⅺ", "XI"},
         {"Ⅻ", "XII"},
         {"Ⅼ", "L"},
-        {"Ⅽ", "C"},
-        {"Ⅾ", "D"},
-        {"Ⅿ", "M"},
-        {"ⅰ", "i"},
-        {"ⅱ", "ii"},
-        {"ⅲ", "iii"},
-        {"ⅳ", "iv"},
-        {"ⅴ", "v"},
-        {"ⅵ", "vi"},
-        {"ⅶ", "vii"},
-        {"ⅷ", "viii"},
-        {"ⅸ", "ix"},
-        {"ⅹ", "x"},
-        {"ⅺ", "xi"},
-        {"ⅻ", "xii"},
-        {"ⅼ", "l"},
-        {"ⅽ", "c"},
-        {"ⅾ", "d"},
-        {"ⅿ", "m"},
+            {"Ⅽ", "C"},
+            {"Ⅾ", "D"},
+            {"Ⅿ", "M"},
+            {"ⅰ", "i"},
+            {"ⅱ", "ii"},
+            {"ⅲ", "iii"},
+            {"ⅳ", "iv"},
+            {"ⅴ", "v"},
+            {"ⅵ", "vi"},
+            {"ⅶ", "vii"},
+            {"ⅷ", "viii"},
+            {"ⅸ", "ix"},
+            {"ⅹ", "x"},
+            {"ⅺ", "xi"},
+            {"ⅻ", "xii"},
+            {"ⅼ", "l"},
+            {"ⅽ", "c"},
+            {"ⅾ", "d"},
+            {"ⅿ", "m"},
     };
+    private static HashMap<String, String> accentAndConvertedAccentMap;
 
     static {
         // Initialise things here
+        accentAndConvertedAccentMap = new HashMap<>();
+        for (int i = 0; i < accentAndConvertedAccent.length; i++) {
+            accentAndConvertedAccentMap.add(accentAndConvertedAccent[i][0], accentAndConvertedAccent[i][1]);
+        }
     }
 
     public static String convertAccentsFaster(String str) {
         // TODO
-        return "";
+        return accentAndConvertedAccentMap.get(str);
     }
 
     public static String convertAccents(String str) {

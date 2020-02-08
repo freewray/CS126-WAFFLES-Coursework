@@ -22,12 +22,30 @@ public class DataChecker implements IDataChecker {
 
     public boolean isValid(Long inputID) {
         // TODO
-        return false;
+        String stringID = String.valueOf(inputID);
+        // 1. must be 16 digits
+        if(stringID.length() < 16)
+            return false;
+        // 2. must all be numbers
+        for (int i = 0; i < stringID.length(); i++) {
+            if (!Character.isDigit(stringID.charAt(i)))
+                return false;
+            int freq = 0;
+            for (int j = 0; j < stringID.length(); j++) {
+                if (stringID.charAt(j) == stringID.charAt(i))
+                    freq++;
+            }
+            // 3. no number appears more than 3 times
+            if (freq > 3)
+                return false;
+        }
+
+        return true;
     }
 
     public boolean isValid(Customer customer) {
         // TODO
-        return false;
+        return customer.getID() != null && isValid(customer.getID()) && customer.getFirstName() != null && customer.getLastName() != null && customer.getDateJoined() != null ;
     }
 
     public boolean isValid(Restaurant restaurant) {

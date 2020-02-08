@@ -81,27 +81,57 @@ public class CustomerStore implements ICustomerStore {
 
     public boolean addCustomer(Customer customer) {
         // TODO
+        if (dataChecker.isValid(customer) && this.getCustomer(customer.getID()) == null){
+            customerArray.add(customer);
+            return true;
+        }
         return false;
     }
 
     public boolean addCustomer(Customer[] customers) {
         // TODO
-        return false;
+        for (int i = 0; i < customers.length; i++) {
+            if(dataChecker.isValid(customers[i]))
+                customerArray.add(customers[i]);
+            else // if anyone of the cus in array is not valid
+                return false;
+        }
+        return true;
     }
 
     public Customer getCustomer(Long id) {
         // TODO
+        for (int i = 0; i < customerArray.size(); i++) {
+            if (customerArray.get(i).getID() == id)
+                return customerArray.get(i);
+        }
         return null;
     }
 
     public Customer[] getCustomers() {
         // TODO
-        return new Customer[0];
+        Customer[] res = new Customer[customerArray.size()];
+        for (int i = 0; i < res.length - 1; i++) {
+            if(res[i].getID() > res[i+1].getID()){
+                Customer tmp = res[i];
+                res[i] = res[i+1];
+                res[i+1] = tmp;
+            }
+        }
+        return res;
     }
 
     public Customer[] getCustomers(Customer[] customers) {
         // TODO
-        return new Customer[0];
+        Customer[] res = new Customer[customers.length];
+        for (int i = 0; i < res.length - 1; i++) {
+            if(res[i].getID() > res[i+1].getID()){
+                Customer tmp = res[i];
+                res[i] = res[i+1];
+                res[i+1] = tmp;
+            }
+        }
+        return res;
     }
 
     public Customer[] getCustomersByName() {

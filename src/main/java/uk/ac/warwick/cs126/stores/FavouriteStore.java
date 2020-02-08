@@ -254,7 +254,36 @@ public class FavouriteStore implements IFavouriteStore {
 
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         // TODO
-        return new Long[0];
+        if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
+            return new Long[0];
+        MyArrayList<Favourite> customer1Favs = new MyArrayList<>();
+        MyArrayList<Favourite> customer2Favs = new MyArrayList<>();
+        for (int i = 0; i < favouriteArray.size(); i++) {
+            if (favouriteArray.get(i).getCustomerID().equals(customer1ID))
+                customer1Favs.add(favouriteArray.get(i));
+            if (favouriteArray.get(i).getCustomerID().equals(customer2ID))
+                customer2Favs.add(favouriteArray.get(i));
+        }
+        if (customer1Favs.size() == 0)
+            return new Long[0];
+        else if (customer2Favs.size() == 0) {
+            Long[] res = new Long[customer1Favs.size()];
+            for (int i = 0; i < customer1Favs.size(); i++) {
+                res[i] = customer1Favs.get(i).getRestaurantID();
+            }
+            return res;
+        }
+        for (int i = 0; i < customer1Favs.size(); i++) {
+            for (int j = 0; j < customer2Favs.size(); j++) {
+                if (customer2Favs.get(j).getRestaurantID().equals(customer1Favs.get(i).getRestaurantID()))
+                    customer1Favs.remove(customer1Favs.get(i));
+            }
+        }
+        Long[] res = new Long[customer1Favs.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = customer1Favs.get(i).getRestaurantID();
+        }
+        return res;
     }
 
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {

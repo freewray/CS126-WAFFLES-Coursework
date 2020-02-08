@@ -1,13 +1,10 @@
 package uk.ac.warwick.cs126.util;
 
 import uk.ac.warwick.cs126.interfaces.IDataChecker;
-
 import uk.ac.warwick.cs126.models.Customer;
-import uk.ac.warwick.cs126.models.Restaurant;
 import uk.ac.warwick.cs126.models.Favourite;
+import uk.ac.warwick.cs126.models.Restaurant;
 import uk.ac.warwick.cs126.models.Review;
-
-import java.util.Date;
 
 public class DataChecker implements IDataChecker {
 
@@ -24,7 +21,7 @@ public class DataChecker implements IDataChecker {
         // TODO
         String stringID = String.valueOf(inputID);
         // 1. must be 16 digits
-        if(stringID.length() < 16)
+        if (stringID.length() < 16 || inputID == null)
             return false;
         // 2. must all be numbers
         for (int i = 0; i < stringID.length(); i++) {
@@ -55,7 +52,7 @@ public class DataChecker implements IDataChecker {
 
     public boolean isValid(Favourite favourite) {
         // TODO
-        return false;
+        return favourite != null && isValid(favourite.getID()) && isValid(favourite.getCustomerID()) && isValid(favourite.getRestaurantID()) && favourite.getDateFavourited() != null;
     }
 
     public boolean isValid(Review review) {

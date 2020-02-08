@@ -15,10 +15,10 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetFavouritesByCustomerID();
         testGetFavouritesByRestaurantID();
         testGetCommonFavouriteRestaurants();
-        testGetNotCommonFavouriteRestaurants();
-        testGetMissingFavouriteRestaurants();
-        testGetTopRestaurantsByFavouriteCount();
-        testGetTopCustomersByFavouriteCount();
+//        testGetNotCommonFavouriteRestaurants();
+//        testGetMissingFavouriteRestaurants();
+//        testGetTopRestaurantsByFavouriteCount();
+//        testGetTopCustomersByFavouriteCount();
     }
 
     private void testAddFavourite() {
@@ -125,36 +125,7 @@ public class TestTheFavouriteStore extends TestRunner {
                     loadData("/test-favourite/favourite-10-sorted-by-id.csv"));
 
             // Now we compare
-            boolean result = true;
-            if (gotFavourites.length == expectedfavourites.length) {
-                for (int i = 0; i < expectedfavourites.length; i++) {
-                    result = gotFavourites[i].getID().equals(expectedfavourites[i].getID());
-                    if(!result){
-                        break;
-                    }
-                }
-            } else {
-                result = false;
-            }
-
-            // Print if wrong
-            if(!result){
-                System.out.println("\n[Expected]");
-                for (Favourite f: expectedfavourites){
-                    System.out.println(f);
-                }
-
-                System.out.println("\n[Got]");
-                if (gotFavourites.length == 0) {
-                    System.out.println("You got nothing!");
-                }
-
-                for (Favourite f: gotFavourites){
-                    System.out.println(f);
-                }
-
-                System.out.println();
-            }
+            boolean result = compareTables(expectedfavourites, gotFavourites);
 
             if (result) {
                 System.out.println("[SUCCESS]    FavouriteStore: testGetFavourites()");
@@ -171,9 +142,24 @@ public class TestTheFavouriteStore extends TestRunner {
     private void testGetFavouritesByCustomerID() {
         try {
             //TODO
+            // Initialise new store
             FavouriteStore favouriteStore = new FavouriteStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
+
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
+
+            // Get favourites sorted by ID from store
+            Favourite[] gotFavourites = favouriteStore.getFavouritesByCustomerID(1797633434427591L);
+
+            // Load manually sorted data from /data folder to verify with
+            Favourite[] expectedfavourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10-sorted-by-customerid.csv"));
+
+            boolean result = compareTables(expectedfavourites, gotFavourites);
 
             if (result) {
                 System.out.println("[SUCCESS]    FavouriteStore: testGetFavouritesByCustomerID()");
@@ -191,8 +177,21 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
 
-            boolean result = false;
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
+
+            // Get favourites sorted by ID from store
+            Favourite[] gotFavourites = favouriteStore.getFavouritesByRestaurantID(9517651597424422L);
+
+            // Load manually sorted data from /data folder to verify with
+            Favourite[] expectedfavourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10-sorted-by-restaurant-id.csv"));
+
+            boolean result = compareTables(expectedfavourites, gotFavourites);
 
             if (result) {
                 System.out.println("[SUCCESS]    FavouriteStore: testGetFavouritesByRestaurantID()");
@@ -210,8 +209,49 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
+
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
+
+            // Get favourites sorted by ID from store
+            Long[] gotFavourites = favouriteStore.getCommonFavouriteRestaurants(1797633434427591L, 2649541714385159L);
+
+            // Load manually sorted data from /data folder to verify with
+            Long[] expectedfavourites = {9517651597424422L, 9986542917841834L};
 
             boolean result = false;
+            if (gotFavourites.length == expectedfavourites.length) {
+                for (int i = 0; i < expectedfavourites.length; i++) {
+                    result = gotFavourites[i].equals(expectedfavourites[i]);
+                    if (!result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            // Print if wrong
+            if (!result) {
+                System.out.println("\n[Expected]");
+                for (Long f : expectedfavourites) {
+                    System.out.println(f);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotFavourites.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Long f : gotFavourites) {
+                    System.out.println(f);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    FavouriteStore: testGetCommonFavouriteRestaurants()");
@@ -299,6 +339,41 @@ public class TestTheFavouriteStore extends TestRunner {
             e.printStackTrace();
             System.out.println();
         }
+    }
+
+    private boolean compareTables(Favourite[] expectedfavourites, Favourite[] gotFavourites) {
+        boolean result = false;
+        if (gotFavourites.length == expectedfavourites.length) {
+            for (int i = 0; i < expectedfavourites.length; i++) {
+                result = gotFavourites[i].getID().equals(expectedfavourites[i].getID());
+                if (!result) {
+                    break;
+                }
+            }
+        } else {
+            result = false;
+        }
+
+        // Print if wrong
+        if (!result) {
+            System.out.println("\n[Expected]");
+            for (Favourite f : expectedfavourites) {
+                System.out.println(f);
+            }
+
+            System.out.println("\n[Got]");
+            if (gotFavourites.length == 0) {
+                System.out.println("You got nothing!");
+            }
+
+            for (Favourite f : gotFavourites) {
+                System.out.println(f);
+            }
+
+            System.out.println();
+        }
+
+        return result;
     }
 
 }

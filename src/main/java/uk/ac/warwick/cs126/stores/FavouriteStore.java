@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IFavouriteStore;
 import uk.ac.warwick.cs126.models.Favourite;
 import uk.ac.warwick.cs126.structures.MyArrayList;
+import uk.ac.warwick.cs126.structures.MySet;
 import uk.ac.warwick.cs126.util.DataChecker;
 
 import java.io.*;
@@ -288,7 +289,41 @@ public class FavouriteStore implements IFavouriteStore {
 
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         // TODO
-        return new Long[0];
+        if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
+            return new Long[0];
+        MySet<Favourite> notCommon = new MySet<>();
+        // add all restaurants to the set
+        for (int i = 0; i < favouriteArray.size(); i++) {
+            if (favouriteArray.get(i).getCustomerID().equals(customer1ID))
+                notCommon.add(favouriteArray.get(i));
+            if (favouriteArray.get(i).getCustomerID().equals(customer2ID))
+                notCommon.add(favouriteArray.get(i));
+        }
+
+        // remove commons
+        Long[] common = this.getCommonFavouriteRestaurants(customer1ID, customer2ID);
+        for (int i = 0; i < notCommon.size(); i++) {
+            for (int j = 0; j < common.length; j++) {
+                if (notCommon.get(i).getRestaurantID().equals(common[j]))
+                    notCommon.remove(notCommon.get(i));
+            }
+        }
+
+        // sort
+        Favourite[] notCommonArr = new Favourite[notCommon.size()];
+        notCommonArr = notCommon.toArray(notCommonArr);
+        for (int i = 0; i < notCommon.size(); i++) {
+            notCommonArr[i] = notCommon.get(i);
+        }
+        idQuickSort(notCommonArr, 0, notCommonArr.length - 1);
+        dateQuickSort(notCommonArr, 0, notCommonArr.length - 1);
+
+        // add only ids to result
+        Long[] res = new Long[notCommonArr.length];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = notCommonArr[i].getRestaurantID();
+        }
+        return res;
     }
 
     public Long[] getTopCustomersByFavouriteCount() {

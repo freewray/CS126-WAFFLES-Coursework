@@ -15,8 +15,8 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetFavouritesByCustomerID();
         testGetFavouritesByRestaurantID();
         testGetCommonFavouriteRestaurants();
-//        testGetNotCommonFavouriteRestaurants();
-//        testGetMissingFavouriteRestaurants();
+        testGetNotCommonFavouriteRestaurants();
+        testGetMissingFavouriteRestaurants();
 //        testGetTopRestaurantsByFavouriteCount();
 //        testGetTopCustomersByFavouriteCount();
     }
@@ -269,14 +269,28 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
 
-            boolean result = false;
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
 
-            if (result) {
-                System.out.println("[SUCCESS]    FavouriteStore: testGetMissingFavouriteRestaurants()");
-            } else {
-                System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
+            // Get favourites sorted by ID from store
+            Long[] missing = favouriteStore.getMissingFavouriteRestaurants(1797633434427591L, 2649541714385159L);
+
+            System.out.println("FavouriteStore: testGetMissingFavouriteRestaurants()");
+            for (int i = 0; i < missing.length; i++) {
+                System.out.println(missing[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    FavouriteStore: testGetMissingFavouriteRestaurants()");
+//            } else {
+//                System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
             e.printStackTrace();
@@ -288,14 +302,28 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
 
-            boolean result = false;
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
 
-            if (result) {
-                System.out.println("[SUCCESS]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
-            } else {
-                System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
+            // Get favourites sorted by ID from store
+            Long[] unCommon = favouriteStore.getNotCommonFavouriteRestaurants(1797633434427591L, 2649541714385159L);
+
+            System.out.println("FavouriteStore: getNotCommonFavouriteRestaurants()");
+            for (int i = 0; i < unCommon.length; i++) {
+                System.out.println(unCommon[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
+//            } else {
+//                System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
             e.printStackTrace();

@@ -122,4 +122,12 @@ public class MyArrayList<E> {
         return ret.toString();
     }
 
+    public E[] toArray(E[] array){
+        for (int i = 0; i < size; i++) {
+            array[i] = get(i);
+        }
+
+        return array;
+    }
+
 }

@@ -17,8 +17,8 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetCommonFavouriteRestaurants();
         testGetNotCommonFavouriteRestaurants();
         testGetMissingFavouriteRestaurants();
-//        testGetTopRestaurantsByFavouriteCount();
-//        testGetTopCustomersByFavouriteCount();
+        testGetTopRestaurantsByFavouriteCount();
+        testGetTopCustomersByFavouriteCount();
     }
 
     private void testAddFavourite() {
@@ -335,14 +335,28 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
 
-            boolean result = false;
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
 
-            if (result) {
-                System.out.println("[SUCCESS]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
-            } else {
-                System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
+            // Get favourites sorted by ID from store
+            Long[] res = favouriteStore.getTopCustomersByFavouriteCount();
+
+            System.out.println("FavouriteStore: testGetTopCustomersByFavouriteCount()");
+            for (int i = 0; i < res.length; i++) {
+                System.out.println(res[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
+//            } else {
+//                System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
             e.printStackTrace();
@@ -354,14 +368,28 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
+            // Load test data from /data folder
+            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
+                    loadData("/test-favourite/favourite-10.csv"));
 
-            boolean result = false;
+            // Add to store to be processed
+            favouriteStore.addFavourite(favourites);
 
-            if (result) {
-                System.out.println("[SUCCESS]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
-            } else {
-                System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+            // Get favourites sorted by ID from store
+            Long[] res = favouriteStore.getTopRestaurantsByFavouriteCount();
+
+            System.out.println("FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+            for (int i = 0; i < res.length; i++) {
+                System.out.println(res[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+//            } else {
+//                System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
             e.printStackTrace();

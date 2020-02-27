@@ -26,7 +26,7 @@ public class TestTheReviewStore extends TestRunner {
         testGetTopRestaurantsByReviewCount();
         testGetTopRatedRestaurants();
         testGetTopKeywordsForRestaurant();
-//        testGetReviewsContaining();
+       testGetReviewsContaining();
     }
 
     private void testAddReview() {
@@ -701,13 +701,30 @@ public class TestTheReviewStore extends TestRunner {
         try {
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetReviewsContaining()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetReviewsContaining()");
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            Review[] res = reviewStore.getReviewsContaining("m");
+            // 1. Meh - 2
+            // 2. Lame - 1
+
+            System.out.println("[TEST]  ReviewStore: testGetReviewsContaining()");
+
+            for (int i = 0; i < res.length && res[i] != null; i++) {
+                System.out.println(res[i].getReview());
             }
+
+            // boolean result = false;
+
+            // if (result) {
+            //     System.out.println("[SUCCESS]    ReviewStore: testGetReviewsContaining()");
+            // } else {
+            //     System.out.println(" [FAILED]    ReviewStore: testGetReviewsContaining()");
+            // }
         } catch (Exception e) {
             System.out.println(" [FAILED]    ReviewStore: testGetReviewsContaining()");
             e.printStackTrace();

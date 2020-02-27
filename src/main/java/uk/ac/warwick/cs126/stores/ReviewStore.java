@@ -561,9 +561,24 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviewsContaining(String searchTerm) {
-        // TODO
         // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
-        String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm);
-        return new Review[0];
+        String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));
+        searchTermConvertedFaster = searchTermConvertedFaster.trim();
+        if (searchTermConvertedFaster.length() == 0){
+            return new Review[0];
+        }
+        MyArrayList<Review> resList = new MyArrayList<>();
+        for (int i = 0; i < reviewArray.size(); i++) {
+            if (reviewArray.get(i).getReview().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())){
+                resList.add(reviewArray.get(i));
+            }
+        }
+        Review[] res = new Review[resList.size()];
+        for (int i = 0; i < resList.size(); i++){
+            res[i] = resList.get(i);
+        }
+        // this.restaurantArrayQuickSortByName(res);
+        this.reviewArrayQuickSortByDateReviewed(res);
+        return res;
     }
 }

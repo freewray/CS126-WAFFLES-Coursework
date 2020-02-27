@@ -1,10 +1,16 @@
 package uk.ac.warwick.cs126.test;
 
-import uk.ac.warwick.cs126.models.*;
+import uk.ac.warwick.cs126.models.Cuisine;
+import uk.ac.warwick.cs126.models.EstablishmentType;
+import uk.ac.warwick.cs126.models.PriceRange;
+import uk.ac.warwick.cs126.models.Restaurant;
 import uk.ac.warwick.cs126.stores.RestaurantStore;
+import uk.ac.warwick.cs126.util.DataChecker;
 
 public class TestTheRestaurantStore extends TestRunner {
+    private DataChecker dataChecker;
     TestTheRestaurantStore() {
+        dataChecker = new DataChecker();
         System.out.println("\n[Testing RestaurantStore]");
 
         // Run tests, comment out if you want to omit a test, feel free to modify or add more.
@@ -14,12 +20,12 @@ public class TestTheRestaurantStore extends TestRunner {
         testGetRestaurants();
         testGetRestaurantsByName();
         testGetRestaurantsByDateEstablished();
-        testGetRestaurantsByDateEstablishedInputArray();
+//        testGetRestaurantsByDateEstablishedInputArray();
         testGetRestaurantsByWarwickStars();
         testGetRestaurantsByRating();
-        testGetRestaurantsByDistanceFrom();
-        testGetRestaurantsByDistanceFromInputArray();
-        testGetRestaurantsContaining();
+//        testGetRestaurantsByDistanceFrom();
+//        testGetRestaurantsByDistanceFromInputArray();
+       testGetRestaurantsContaining();
     }
 
     private void testAddRestaurant() {
@@ -222,7 +228,54 @@ public class TestTheRestaurantStore extends TestRunner {
             //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Get sorted data by ID from store
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByName();
+
+            // Load separate data that was manually sorted to verify with
+            Restaurant[] expectedRestaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10-sorted-by-name.csv"));
+
+            DataChecker dataChecker = new DataChecker();
+            for (Restaurant expectedRestaurant : expectedRestaurants)
+                expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (Restaurant r: expectedRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Restaurant r: gotRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByName()");
@@ -241,7 +294,53 @@ public class TestTheRestaurantStore extends TestRunner {
             //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Get sorted data by Date Established from store
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByDateEstablished();
+
+            // Load separate data that was manually sorted to verify with
+            Restaurant[] expectedRestaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10-sorted-by-date-established.csv"));
+
+            for (Restaurant expectedRestaurant : expectedRestaurants)
+                expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (Restaurant r: expectedRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Restaurant r: gotRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByDateEstablished()");
@@ -260,7 +359,53 @@ public class TestTheRestaurantStore extends TestRunner {
             //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Get sorted data by Date Established from store
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByWarwickStars();
+
+            // Load separate data that was manually sorted to verify with
+            Restaurant[] expectedRestaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10-sorted-by-warwick-star.csv"));
+
+            for (Restaurant expectedRestaurant : expectedRestaurants)
+                expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (Restaurant r: expectedRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Restaurant r: gotRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByDateEstablishedInputArray()");
@@ -279,7 +424,53 @@ public class TestTheRestaurantStore extends TestRunner {
             //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Get sorted data by Date Established from store
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByWarwickStars();
+
+            // Load separate data that was manually sorted to verify with
+            Restaurant[] expectedRestaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10-sorted-by-warwick-star.csv"));
+
+            for (Restaurant expectedRestaurant : expectedRestaurants)
+                expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (Restaurant r: expectedRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Restaurant r: gotRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByWarwickStars()");
@@ -302,7 +493,71 @@ public class TestTheRestaurantStore extends TestRunner {
             // Alternatively, you can create your own restaurant objects with the constructor
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Load separate data that was manually sorted to verify with
+            Restaurant[] expectedRestaurants = {
+                restaurants[9],
+                restaurants[0],
+                restaurants[8],
+                restaurants[7],
+                restaurants[6],
+                restaurants[5],
+                restaurants[4],
+                restaurants[3],
+                restaurants[2],
+                restaurants[1]
+            };
+
+            restaurants[9].setCustomerRating(5.0f);
+            restaurants[0].setCustomerRating(4.9f);
+            restaurants[8].setCustomerRating(4.9f);
+            restaurants[6].setCustomerRating(4.8f);
+            restaurants[7].setCustomerRating(4.8f);
+            restaurants[5].setCustomerRating(4.7f);
+            restaurants[4].setCustomerRating(4.6f);
+            restaurants[3].setCustomerRating(4.5f);
+            restaurants[1].setCustomerRating(4.4f);
+            restaurants[2].setCustomerRating(4.4f);
+
+            // Get sorted data by Date Established from store
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByRating(restaurants);
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (Restaurant r: expectedRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Restaurant r: gotRestaurants){
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByRating()");
@@ -359,7 +614,19 @@ public class TestTheRestaurantStore extends TestRunner {
             //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            Restaurant[] res = restaurantStore.getRestaurantsContaining("Ö ǩ diner");
+
             boolean result = false;
+            if (res.length == 1 && res[0].getName().equals("O K Diner")){
+                result = true;
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsContaining()");

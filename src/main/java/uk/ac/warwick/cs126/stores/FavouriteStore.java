@@ -12,18 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 public class FavouriteStore implements IFavouriteStore {
 
     private MyArrayList<Favourite> favouriteArray;
-    private MyArrayList<Long> blackListedFavouriteId;
+    private MyArrayList<Long> blackListedFavouriteID;
     private DataChecker dataChecker;
 
     public FavouriteStore() {
         // Initialise variables here
         favouriteArray = new MyArrayList<>();
-        blackListedFavouriteId = new MyArrayList<>();
+        blackListedFavouriteID = new MyArrayList<>();
         dataChecker = new DataChecker();
     }
 
@@ -78,12 +77,12 @@ public class FavouriteStore implements IFavouriteStore {
 
     public boolean addFavourite(Favourite favourite) {
         // TODO
-        if (!dataChecker.isValid(favourite) || blackListedFavouriteId.contains(favourite.getID()))
+        if (!dataChecker.isValid(favourite) || blackListedFavouriteID.contains(favourite.getID()))
             return false;
         else if (getFavourite(favourite.getID()) != null) {
             if (getFavourite(favourite.getID()) != null) {
                 favouriteArray.remove(getFavourite(favourite.getID()));
-                blackListedFavouriteId.add(favourite.getID());
+                blackListedFavouriteID.add(favourite.getID());
             }
             return false;
         } else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null) {
@@ -100,11 +99,12 @@ public class FavouriteStore implements IFavouriteStore {
 
     public boolean addFavourite(Favourite[] favourites) {
         // TODO
-        for (int i = 0; i < favourites.length; i++) {
-            if (!addFavourite(favourites[i]))
-                return false;
+        boolean res = true;
+        for (Favourite newFave : favourites) {
+            if (!this.addFavourite(newFave))
+                res = this.addFavourite(newFave);
         }
-        return true;
+        return res;
     }
 
     public Favourite getFavourite(Long id) {

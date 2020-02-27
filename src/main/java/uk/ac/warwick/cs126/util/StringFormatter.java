@@ -1,6 +1,9 @@
 package uk.ac.warwick.cs126.util;
 
+import java.lang.reflect.Array;
+
 import uk.ac.warwick.cs126.structures.HashMap;
+import uk.ac.warwick.cs126.structures.MyArrayList;
 
 public class StringFormatter {
     private static final String[][] accentAndConvertedAccent = {
@@ -1488,19 +1491,38 @@ public class StringFormatter {
             {"ⅾ", "d"},
             {"ⅿ", "m"},
     };
-    private static HashMap<String, String> accentAndConvertedAccentMap;
+    private static HashMap<Integer, String> accentAndConvertedAccentMap;
+    // private static MyArrayList<String> accented;
 
     static {
         // Initialise things here
         accentAndConvertedAccentMap = new HashMap<>();
         for (int i = 0; i < accentAndConvertedAccent.length; i++) {
-            accentAndConvertedAccentMap.add(accentAndConvertedAccent[i][0], accentAndConvertedAccent[i][1]);
+            char[] charArr = accentAndConvertedAccent[i][0].toCharArray();
+            int key = 0;
+            for (char ch : charArr) key += (int) ch;
+//            System.out.println("add: key = " + key + ", value = "+accentAndConvertedAccent[i][1]);
+            accentAndConvertedAccentMap.add(key, accentAndConvertedAccent[i][1]);
         }
     }
 
     public static String convertAccentsFaster(String str) {
         // TODO
-        return accentAndConvertedAccentMap.get(str);
+        String replacedString = str;
+         for (int i = 0; i < replacedString.length(); i++) {
+             char letter = replacedString.charAt(i);
+             int uni = (int) letter;
+             // if the character isn't alpha numerical
+             if (!((uni >= 65 && uni <= 90)
+                || (uni >= 97 && uni <= 122)
+                || (uni >= 48 && uni <= 57)
+                || uni == 32)
+             ) {
+//                 System.out.println((int) letter + " -> " + accentAndConvertedAccentMap.find((int) letter));
+                 replacedString = replacedString.replace(String.valueOf(replacedString.charAt(i)), accentAndConvertedAccentMap.find((int) letter));
+             }
+         }
+        return replacedString;
     }
 
     public static String convertAccents(String str) {
@@ -1513,7 +1535,6 @@ public class StringFormatter {
             replacedString = replacedString.replace(accentAndConvertedAccent[i][0],
                                                     accentAndConvertedAccent[i][1]);
         }
-
         return replacedString;
     }
 }

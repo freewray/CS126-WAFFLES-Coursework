@@ -5,6 +5,9 @@ import uk.ac.warwick.cs126.models.Customer;
 import uk.ac.warwick.cs126.models.Favourite;
 import uk.ac.warwick.cs126.models.Restaurant;
 import uk.ac.warwick.cs126.models.Review;
+import uk.ac.warwick.cs126.structures.MyArrayList;
+
+import java.lang.reflect.Field;
 
 public class DataChecker implements IDataChecker {
 
@@ -14,6 +17,15 @@ public class DataChecker implements IDataChecker {
 
     public Long extractTrueID(String[] repeatedID) {
         // TODO
+        MyArrayList<Long> ids = new MyArrayList<>();
+        for (String id : repeatedID){
+            Long longID = Long.parseLong(id);
+            if (ids.contains(longID))
+                return longID;
+            else
+                ids.add(longID);
+        }
+
         return null;
     }
 
@@ -47,7 +59,26 @@ public class DataChecker implements IDataChecker {
 
     public boolean isValid(Restaurant restaurant) {
         // TODO
-        return false;
+        if (restaurant.getRepeatedID() == null) return false;
+        if (restaurant.getID() == null || !isValid(restaurant.getID())) return false;
+        if (restaurant.getName() == null) return false;
+        if (restaurant.getOwnerFirstName() == null) return false;
+        if (restaurant.getOwnerLastName() == null) return false;
+        if (restaurant.getCuisine() == null) return false;
+        if (restaurant.getEstablishmentType() == null) return false;
+        if (restaurant.getPriceRange() == null) return false;
+        if (restaurant.getDateEstablished() == null) return false;
+        if (restaurant.getLastInspectedDate() == null) return false;
+        if (restaurant.getLastInspectedDate().compareTo(restaurant.getDateEstablished()) <= 0)
+            return false;
+        if (restaurant.getFoodInspectionRating() > 5 || restaurant.getFoodInspectionRating() < 0)
+            return false;
+        if (restaurant.getWarwickStars() > 3 || restaurant.getWarwickStars() < 0)
+            return false;
+        if (restaurant.getCustomerRating() > 5.0f || restaurant.getCustomerRating() < 0.0f)
+            return false;
+
+        return true;
     }
 
     public boolean isValid(Favourite favourite) {
@@ -57,6 +88,11 @@ public class DataChecker implements IDataChecker {
 
     public boolean isValid(Review review) {
         // TODO
-        return false;
+        if (!isValid(review.getID()) || !isValid(review.getCustomerID()) || !isValid(review.getRestaurantID()))
+            return false;
+        if (review.getReview() == null) return false;
+        if (review.getDateReviewed() == null) return false;
+
+        return true;
     }
 }

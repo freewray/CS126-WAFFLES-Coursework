@@ -1,21 +1,16 @@
 package uk.ac.warwick.cs126.structures;
 
 /**
- * A generic implementation of the IList iterface.
+ * A generic implementation of the IList interface.
  */
 public class MySet<E> {
 
     private MyArrayList<E> array = new MyArrayList<>();
 
-    // INCOMPLETE.
     public boolean add(E element) {
         // Adds element to the list when it does not already exist.
         // Returns true on success and false otherwise.
         for (int i = 0; i < array.size(); i++) {
-//            System.out.println(element);
-//            System.out.println(array.get(i));
-//            System.out.println(element.equals(array.get(i)));
-//            System.out.println();
             if (element.equals(array.get(i)))
                 return false;
         }
@@ -23,7 +18,6 @@ public class MySet<E> {
         return true;
     }
 
-    // INCOMPLETE.
     public String toString() {
         // Returns a string representation of this Set object.
         String temp = "(";

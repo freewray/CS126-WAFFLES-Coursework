@@ -3,6 +3,8 @@ package uk.ac.warwick.cs126.test;
 import uk.ac.warwick.cs126.models.Review;
 import uk.ac.warwick.cs126.stores.ReviewStore;
 
+import java.util.Arrays;
+
 public class TestTheReviewStore extends TestRunner {
     TestTheReviewStore() {
         System.out.println("\n[Testing ReviewStore]");
@@ -18,13 +20,13 @@ public class TestTheReviewStore extends TestRunner {
         testGetReviewsByCustomerID();
         testGetAverageCustomerReviewRating();
         testGetAverageRestaurantReviewRating();
-        testGetCustomerReviewHistogramCount();
-        testGetRestaurantReviewHistogramCount();
+//        testGetCustomerReviewHistogramCount();
+//        testGetRestaurantReviewHistogramCount();
         testGetTopCustomersByReviewCount();
         testGetTopRestaurantsByReviewCount();
-        testGetTopRatedRestaurants();
-        testGetTopKeywordsForRestaurant();
-        testGetReviewsContaining();
+//        testGetTopRatedRestaurants();
+//        testGetTopKeywordsForRestaurant();
+//        testGetReviewsContaining();
     }
 
     private void testAddReview() {
@@ -180,10 +182,54 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetReviewsByDate() {
         try {
-            //TODO
+            // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            Review[] gotReviews = reviewStore.getReviewsByDate();
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-sorted-by-date.tsv"));
+
+            // Now we compare
+            boolean result = true;
+            if (gotReviews.length == expectedReviews.length) {
+                for (int i = 0; i < expectedReviews.length; i++) {
+                    result = gotReviews[i].getID().equals(expectedReviews[i].getID());
+                    if (!result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            // Print if wrong
+            if (!result) {
+                System.out.println("\n[Expected]");
+                for (Review r : expectedReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotReviews.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Review r : gotReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    ReviewStore: testGetReviewsByDate()");
@@ -200,9 +246,54 @@ public class TestTheReviewStore extends TestRunner {
     private void testGetReviewsByRating() {
         try {
             //TODO
+            // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            Review[] gotReviews = reviewStore.getReviewsByRating();
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-sorted-by-rating.tsv"));
+
+            // Now we compare
+            boolean result = true;
+            if (gotReviews.length == expectedReviews.length) {
+                for (int i = 0; i < expectedReviews.length; i++) {
+                    result = gotReviews[i].getID().equals(expectedReviews[i].getID());
+                    if (!result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            // Print if wrong
+            if (!result) {
+                System.out.println("\n[Expected]");
+                for (Review r : expectedReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotReviews.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Review r : gotReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    ReviewStore: testGetReviewsByRating()");
@@ -216,31 +307,56 @@ public class TestTheReviewStore extends TestRunner {
         }
     }
 
-    private void testGetReviewsByRestaurantID() {
-        try {
-            //TODO
-            ReviewStore reviewStore = new ReviewStore();
-
-            boolean result = false;
-
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetReviewsByRestaurantID()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetReviewsByRestaurantID()");
-            }
-        } catch (Exception e) {
-            System.out.println(" [FAILED]    ReviewStore: testGetReviewsByRestaurantID()");
-            e.printStackTrace();
-            System.out.println();
-        }
-    }
-
     private void testGetReviewsByCustomerID() {
         try {
-            //TODO
+            // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            Review[] gotReviews = reviewStore.getReviewsByCustomerID(3293658679813597L);
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-get-by-customer-id.tsv"));
+
+            // Now we compare
+            boolean result = true;
+            if (gotReviews.length == expectedReviews.length) {
+                for (int i = 0; i < expectedReviews.length; i++) {
+                    result = gotReviews[i].getID().equals(expectedReviews[i].getID());
+                    if (!result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            // Print if wrong
+            if (!result) {
+                System.out.println("\n[Expected]");
+                for (Review r : expectedReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotReviews.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Review r : gotReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    ReviewStore: testGetReviewsByCustomerID()");
@@ -254,12 +370,104 @@ public class TestTheReviewStore extends TestRunner {
         }
     }
 
-    private void testGetAverageCustomerReviewRating() {
+    private void testGetReviewsByRestaurantID() {
         try {
-            //TODO
+            // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            Review[] gotReviews = reviewStore.getReviewsByRestaurantID(6121593872758742L);
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-get-by-restaurant-id.tsv"));
+
+            // Now we compare
+            boolean result = true;
+            if (gotReviews.length == expectedReviews.length) {
+                for (int i = 0; i < expectedReviews.length; i++) {
+                    result = gotReviews[i].getID().equals(expectedReviews[i].getID());
+                    if (!result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            // Print if wrong
+            if (!result) {
+                System.out.println("\n[Expected]");
+                for (Review r : expectedReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println("\n[Got]");
+                if (gotReviews.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (Review r : gotReviews) {
+                    System.out.println(r);
+                }
+
+                System.out.println();
+            }
+
+            if (result) {
+                System.out.println("[SUCCESS]    ReviewStore: testGetReviewsByRestaurantID()");
+            } else {
+                System.out.println(" [FAILED]    ReviewStore: testGetReviewsByRestaurantID()");
+            }
+        } catch (Exception e) {
+            System.out.println(" [FAILED]    ReviewStore: testGetReviewsByRestaurantID()");
+            e.printStackTrace();
+            System.out.println();
+        }
+    }
+
+    private void testGetAverageCustomerReviewRating() {
+        try {
+            // Initialise new store
+            ReviewStore reviewStore = new ReviewStore();
+
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            float avgRating = reviewStore.getAverageCustomerReviewRating(3293658679813597L);
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-get-by-customer-id.tsv"));
+
+            int[] ratings = new int[expectedReviews.length];
+            for (int i = 0; i < expectedReviews.length; i++) {
+                ratings[i] = expectedReviews[i].getRating();
+            }
+
+
             boolean result = false;
+            float avg = (float) Arrays.stream(ratings).average().getAsDouble();
+
+            if (avgRating == avg)
+                result = true;
+
+            if (!result) {
+                System.out.println("\t[Expected] " + avg);
+                System.out.println("\t[Got] " + avgRating);
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    ReviewStore: testGetAverageCustomerReviewRating()");
@@ -275,10 +483,38 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetAverageRestaurantReviewRating() {
         try {
-            //TODO
+            // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
+
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            // Get reviews sorted by ID from store
+            float avgRating = reviewStore.getAverageRestaurantReviewRating(6121593872758742L);
+
+            // Load manually sorted data from /data folder to verify with
+            Review[] expectedReviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10-get-by-restaurant-id.tsv"));
+
+            int[] ratings = new int[expectedReviews.length];
+            for (int i = 0; i < expectedReviews.length; i++) {
+                ratings[i] = expectedReviews[i].getRating();
+            }
+
             boolean result = false;
+            float avg = (float) Arrays.stream(ratings).average().getAsDouble();
+
+            if (avgRating == avg)
+                result = true;
+
+            if (!result) {
+                System.out.println("\t[Expected] " + avg);
+                System.out.println("\t[Got] " + avgRating);
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    ReviewStore: testGetAverageRestaurantReviewRating()");
@@ -332,16 +568,30 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetTopRestaurantsByReviewCount() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetTopRestaurantsByReviewCount()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetTopRestaurantsByReviewCount()");
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            Long[] res = reviewStore.getTopRestaurantsByReviewCount();
+
+            System.out.println("[TEST]  ReviewStore: testGetTopRestaurantsByReviewCount()");
+
+            for (int i = 0; i < res.length && res[i] != null; i++) {
+                System.out.println(res[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    ReviewStore: testGetTopRestaurantsByReviewCount()");
+//            } else {
+//                System.out.println(" [FAILED]    ReviewStore: testGetTopRestaurantsByReviewCount()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    ReviewStore: testGetTopRestaurantsByReviewCount()");
             e.printStackTrace();
@@ -351,16 +601,30 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetTopCustomersByReviewCount() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetTopCustomersByReviewCount()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetTopCustomersByReviewCount()");
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            Long[] res = reviewStore.getTopCustomersByReviewCount();
+
+            System.out.println("[TEST]  ReviewStore: testGetTopCustomersByReviewCount()");
+
+            for (int i = 0; i < res.length && res[i] != null; i++) {
+                System.out.println(res[i]);
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    ReviewStore: testGetTopCustomersByReviewCount()");
+//            } else {
+//                System.out.println(" [FAILED]    ReviewStore: testGetTopCustomersByReviewCount()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    ReviewStore: testGetTopCustomersByReviewCount()");
             e.printStackTrace();

@@ -15,10 +15,10 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetFavouritesByCustomerID();
         testGetFavouritesByRestaurantID();
         testGetCommonFavouriteRestaurants();
-        testGetNotCommonFavouriteRestaurants();
-        testGetMissingFavouriteRestaurants();
-        testGetTopRestaurantsByFavouriteCount();
-        testGetTopCustomersByFavouriteCount();
+        // testGetNotCommonFavouriteRestaurants();
+        // testGetMissingFavouriteRestaurants();
+        // testGetTopRestaurantsByFavouriteCount();
+        // testGetTopCustomersByFavouriteCount();
     }
 
     private void testAddFavourite() {

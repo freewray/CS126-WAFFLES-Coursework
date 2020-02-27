@@ -17,7 +17,6 @@ public class ConvertToPlace implements IConvertToPlace {
     }
 
     public Place convert(float latitude, float longitude) {
-        // TODO
         for (Place place : placesArray){
             if (place.getLatitude() == latitude && place.getLongitude() == longitude)
                 return place;

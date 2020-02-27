@@ -141,7 +141,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetFavouritesByCustomerID() {
         try {
-            //TODO
             // Initialise new store
             FavouriteStore favouriteStore = new FavouriteStore();
 
@@ -175,7 +174,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetFavouritesByRestaurantID() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
@@ -207,7 +205,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetCommonFavouriteRestaurants() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
@@ -267,7 +264,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetMissingFavouriteRestaurants() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
@@ -300,7 +296,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetNotCommonFavouriteRestaurants() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
@@ -333,7 +328,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetTopCustomersByFavouriteCount() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
@@ -366,7 +360,6 @@ public class TestTheFavouriteStore extends TestRunner {
 
     private void testGetTopRestaurantsByFavouriteCount() {
         try {
-            //TODO
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(

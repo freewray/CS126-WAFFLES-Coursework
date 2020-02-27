@@ -12,7 +12,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+// import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 
@@ -103,7 +103,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public boolean addRestaurant(Restaurant restaurant) {
-        // TODO
         Long id = dataChecker.extractTrueID(restaurant.getRepeatedID());
         if (id != null && !blackListedRestaurantID.contains(id)){
             for (int i = 0; i < restaurantArray.size(); i++) {
@@ -121,7 +120,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public boolean addRestaurant(Restaurant[] restaurants) {
-        // TODO
         boolean res = true;
         for (Restaurant newRestaurant : restaurants){
             if (!this.addRestaurant(newRestaurant)){
@@ -132,7 +130,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public Restaurant getRestaurant(Long id) {
-        // TODO
         for (int i = 0; i < restaurantArray.size(); i++) {
             if (restaurantArray.get(i).getID().equals(id))
                 return restaurantArray.get(i);
@@ -141,7 +138,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public Restaurant[] getRestaurants() {
-        // TODO
         Restaurant[] restaurants = new Restaurant[restaurantArray.size()];
         for (int i = 0; i < restaurantArray.size(); i++) {
             restaurants[i] = restaurantArray.get(i);
@@ -290,46 +286,39 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public Restaurant[] getRestaurants(Restaurant[] restaurants) {
-        // TODO
         this.restaurantArrayQuickSortByID(restaurants);
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByName() {
-        // TODO
         Restaurant[] restaurants = this.getRestaurants();
         this.restaurantArrayQuickSortByName(restaurants);
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByDateEstablished() {
-        // TODO
         Restaurant[] restaurants = this.getRestaurants();
         this.restaurantArrayQuickSortByDateEstablished(restaurants);
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByDateEstablished(Restaurant[] restaurants) {
-        // TODO
         this.restaurantArrayQuickSortByDateEstablished(restaurants);
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByWarwickStars() {
-        // TODO
         Restaurant[] restaurants = this.getRestaurants();
         this.restaurantArrayQuickSortByWarwickStars(restaurants);
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByRating(Restaurant[] restaurants) {
-        // TODO
         this.restaurantArrayQuickSortByCustomerRating(restaurants);
         return restaurants;
     }
 
     public RestaurantDistance[] getRestaurantsByDistanceFrom(float latitude, float longitude) {
-        // TODO
         RestaurantDistance[] restaurantDistances = new RestaurantDistance[restaurantArray.size()];
         for (int i = 0; i < restaurantArray.size(); i++) {
             float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude, restaurantArray.get(i).getLatitude(), restaurantArray.get(i).getLongitude());
@@ -340,7 +329,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public RestaurantDistance[] getRestaurantsByDistanceFrom(Restaurant[] restaurants, float latitude, float longitude) {
-        // TODO
         RestaurantDistance[] restaurantDistances = new RestaurantDistance[restaurants.length];
         for (int i = 0; i < restaurants.length; i++) {
             float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude, restaurants[i].getLatitude(), restaurants[i].getLongitude());
@@ -351,7 +339,6 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public Restaurant[] getRestaurantsContaining(String searchTerm) {
-        // TODO
         // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
         // String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm.trim().replaceAll("\\s+", " "));
         // 1. trim leading and tralling white spaces

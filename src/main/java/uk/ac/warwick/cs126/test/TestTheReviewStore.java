@@ -24,8 +24,8 @@ public class TestTheReviewStore extends TestRunner {
 //        testGetRestaurantReviewHistogramCount();
         testGetTopCustomersByReviewCount();
         testGetTopRestaurantsByReviewCount();
-//        testGetTopRatedRestaurants();
-//        testGetTopKeywordsForRestaurant();
+        testGetTopRatedRestaurants();
+        testGetTopKeywordsForRestaurant();
 //        testGetReviewsContaining();
     }
 
@@ -245,7 +245,6 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetReviewsByRating() {
         try {
-            //TODO
             // Initialise new store
             ReviewStore reviewStore = new ReviewStore();
 
@@ -530,7 +529,6 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetRestaurantReviewHistogramCount() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
             boolean result = false;
@@ -549,7 +547,6 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetCustomerReviewHistogramCount() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
             boolean result = false;
@@ -634,16 +631,30 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetTopRatedRestaurants() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetTopRatedRestaurants()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetTopRatedRestaurants()");
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            Long[] res = reviewStore.getTopRatedRestaurants();
+
+            System.out.println("[TEST]  ReviewStore: testGetTopRatedRestaurants()");
+
+            for (int i = 0; i < res.length && res[i] != null; i++) {
+                System.out.println(res[i]);
             }
+
+            // boolean result = false;
+
+            // if (result) {
+            //     System.out.println("[SUCCESS]    ReviewStore: testGetTopRatedRestaurants()");
+            // } else {
+            //     System.out.println(" [FAILED]    ReviewStore: testGetTopRatedRestaurants()");
+            // }
         } catch (Exception e) {
             System.out.println(" [FAILED]    ReviewStore: testGetTopRatedRestaurants()");
             e.printStackTrace();
@@ -653,16 +664,32 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetTopKeywordsForRestaurant() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Review[] reviews = reviewStore.loadReviewDataToArray(
+                    loadData("/test-review/review-10.tsv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    ReviewStore: testGetTopKeywordsForRestaurant()");
-            } else {
-                System.out.println(" [FAILED]    ReviewStore: testGetTopKeywordsForRestaurant()");
+            // Add to store to be processed
+            reviewStore.addReview(reviews);
+
+            String[] res = reviewStore.getTopKeywordsForRestaurant(2516282978916487L);
+            // 1. Meh - 2
+            // 2. Lame - 1
+
+            System.out.println("[TEST]  ReviewStore: testGetTopKeywordsForRestaurant()");
+
+            for (int i = 0; i < res.length && res[i] != null; i++) {
+                System.out.println(res[i]);
             }
+
+            // boolean result = false;
+
+            // if (result) {
+            //     System.out.println("[SUCCESS]    ReviewStore: testGetTopKeywordsForRestaurant()");
+            // } else {
+            //     System.out.println(" [FAILED]    ReviewStore: testGetTopKeywordsForRestaurant()");
+            // }
         } catch (Exception e) {
             System.out.println(" [FAILED]    ReviewStore: testGetTopKeywordsForRestaurant()");
             e.printStackTrace();
@@ -672,7 +699,6 @@ public class TestTheReviewStore extends TestRunner {
 
     private void testGetReviewsContaining() {
         try {
-            //TODO
             ReviewStore reviewStore = new ReviewStore();
 
             boolean result = false;

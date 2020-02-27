@@ -76,7 +76,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public boolean addFavourite(Favourite favourite) {
-        // TODO
         if (!dataChecker.isValid(favourite) || blackListedFavouriteID.contains(favourite.getID()))
             return false;
         else if (getFavourite(favourite.getID()) != null) {
@@ -98,7 +97,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public boolean addFavourite(Favourite[] favourites) {
-        // TODO
         boolean res = true;
         for (Favourite newFave : favourites) {
             if (!this.addFavourite(newFave))
@@ -108,7 +106,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Favourite getFavourite(Long id) {
-        // TODO
         for (int i = 0; i < favouriteArray.size(); i++) {
             if (favouriteArray.get(i).getID().equals(id))
                 return favouriteArray.get(i);
@@ -178,7 +175,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Favourite[] getFavourites() {
-        // TODO
         Favourite[] res = new Favourite[favouriteArray.size()];
         for (int i = 0; i < res.length; i++) {
             res[i] = favouriteArray.get(i);
@@ -188,7 +184,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Favourite[] getFavouritesByCustomerID(Long id) {
-        // TODO
         if (!dataChecker.isValid(id))
             return new Favourite[0];
         MyArrayList<Favourite> resList = new MyArrayList<>();
@@ -207,7 +202,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Favourite[] getFavouritesByRestaurantID(Long id) {
-        // TODO
         if (!dataChecker.isValid(id))
             return new Favourite[0];
         MyArrayList<Favourite> resList = new MyArrayList<>();
@@ -226,7 +220,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Long[] getCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
-        // TODO
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
         MyArrayList<Favourite> customer1Favs = new MyArrayList<>();
@@ -260,7 +253,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
-        // TODO
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
         MyArrayList<Favourite> customer1Favs = new MyArrayList<>();
@@ -294,7 +286,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
-        // TODO
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
         MySet<Favourite> notCommon = new MySet<>();
@@ -333,7 +324,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Long[] getTopCustomersByFavouriteCount() {
-        // TODO
         // arraylist of fav in rank sorted by their length
         Long[] topCustomer = new Long[20];
 
@@ -411,7 +401,6 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public Long[] getTopRestaurantsByFavouriteCount() {
-        // TODO
         Long[] topRestaurants = new Long[20];
 
         MyArrayList<FavouriteCnt> topRestaurantFavourites = new MyArrayList<>();

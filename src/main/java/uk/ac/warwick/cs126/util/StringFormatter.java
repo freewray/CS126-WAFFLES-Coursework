@@ -1,9 +1,5 @@
 package uk.ac.warwick.cs126.util;
-
-import java.lang.reflect.Array;
-
 import uk.ac.warwick.cs126.structures.HashMap;
-import uk.ac.warwick.cs126.structures.MyArrayList;
 
 public class StringFormatter {
     private static final String[][] accentAndConvertedAccent = {
@@ -1507,7 +1503,6 @@ public class StringFormatter {
     }
 
     public static String convertAccentsFaster(String str) {
-        // TODO
         String replacedString = str;
          for (int i = 0; i < replacedString.length(); i++) {
              char letter = replacedString.charAt(i);

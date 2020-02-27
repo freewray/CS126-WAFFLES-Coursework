@@ -7,8 +7,6 @@ import uk.ac.warwick.cs126.models.Restaurant;
 import uk.ac.warwick.cs126.models.Review;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 
-import java.lang.reflect.Field;
-
 public class DataChecker implements IDataChecker {
 
     public DataChecker() {
@@ -16,7 +14,6 @@ public class DataChecker implements IDataChecker {
     }
 
     public Long extractTrueID(String[] repeatedID) {
-        // TODO
         MyArrayList<Long> ids = new MyArrayList<>();
         for (String id : repeatedID){
             Long longID = Long.parseLong(id);
@@ -30,7 +27,6 @@ public class DataChecker implements IDataChecker {
     }
 
     public boolean isValid(Long inputID) {
-        // TODO
         String stringID = String.valueOf(inputID);
         // 1. must be 16 digits
         if (stringID.length() < 16 || inputID == null)
@@ -53,12 +49,10 @@ public class DataChecker implements IDataChecker {
     }
 
     public boolean isValid(Customer customer) {
-        // TODO
         return customer.getID() != null && isValid(customer.getID()) && customer.getFirstName() != null && customer.getLastName() != null && customer.getDateJoined() != null ;
     }
 
     public boolean isValid(Restaurant restaurant) {
-        // TODO
         if (restaurant.getRepeatedID() == null) return false;
         if (restaurant.getID() == null || !isValid(restaurant.getID())) return false;
         if (restaurant.getName() == null) return false;
@@ -82,12 +76,10 @@ public class DataChecker implements IDataChecker {
     }
 
     public boolean isValid(Favourite favourite) {
-        // TODO
         return favourite != null && isValid(favourite.getID()) && isValid(favourite.getCustomerID()) && isValid(favourite.getRestaurantID()) && favourite.getDateFavourited() != null;
     }
 
     public boolean isValid(Review review) {
-        // TODO
         if (!isValid(review.getID()) || !isValid(review.getCustomerID()) || !isValid(review.getRestaurantID()))
             return false;
         if (review.getReview() == null) return false;

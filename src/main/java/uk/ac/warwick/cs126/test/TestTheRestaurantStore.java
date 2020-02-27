@@ -225,7 +225,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByName() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             // Load test data from /data folder
@@ -291,7 +290,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByDateEstablished() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             // Load test data from /data folder
@@ -356,7 +354,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByDateEstablishedInputArray() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             // Load test data from /data folder
@@ -421,7 +418,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByWarwickStars() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             // Load test data from /data folder
@@ -486,7 +482,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByRating() {
         try {
-            //TODO
             // Note: The loader does not load restaurants with ratings, default is 0.0 for all
             // You have to set them yourselves after loading it, use:
             //     restaurants[0].setCustomerRating(4.9f);
@@ -573,7 +568,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByDistanceFrom() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             boolean result = false;
@@ -592,7 +586,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsByDistanceFromInputArray() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             boolean result = false;
@@ -611,7 +604,6 @@ public class TestTheRestaurantStore extends TestRunner {
 
     private void testGetRestaurantsContaining() {
         try {
-            //TODO
             RestaurantStore restaurantStore = new RestaurantStore();
 
             // Load test data from /data folder

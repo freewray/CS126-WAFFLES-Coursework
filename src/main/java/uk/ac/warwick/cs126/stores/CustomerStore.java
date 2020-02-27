@@ -77,7 +77,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public boolean addCustomer(Customer customer) {
-        // TODO
         if (dataChecker.isValid(customer) && this.getCustomer(customer.getID()) == null){
             customerArray.add(customer);
             return true;
@@ -86,7 +85,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public boolean addCustomer(Customer[] customers) {
-        // TODO
         for (int i = 0; i < customers.length; i++) {
             if (dataChecker.isValid(customers[i]))
                 customerArray.add(customers[i]);
@@ -97,7 +95,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer getCustomer(Long id) {
-        // TODO
         for (int i = 0; i < customerArray.size(); i++) {
             if (customerArray.get(i).getID().equals(id))
                 return customerArray.get(i);
@@ -106,7 +103,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer[] getCustomers() {
-        // TODO
         Customer[] res = new Customer[customerArray.size()];
         for (int i = 0; i < res.length; i++) {
             res[i] = customerArray.get(i);
@@ -188,14 +184,12 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer[] getCustomers(Customer[] customers) {
-        // TODO
         Customer[] res = customers.clone();
         quickSort(res, 0, res.length - 1, "id");
         return res;
     }
 
     public Customer[] getCustomersByName() {
-        // TODO
         Customer[] res = new Customer[customerArray.size()];
         for (int i = 0; i < res.length; i++) {
             res[i] = customerArray.get(i);
@@ -207,7 +201,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer[] getCustomersByName(Customer[] customers) {
-        // TODO
         Customer[] res = customers.clone();
         quickSort(res, 0, res.length - 1, "id");
         quickSort(res, 0, res.length - 1, "firstName");
@@ -216,7 +209,6 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer[] getCustomersContaining(String searchTerm) {
-        // TODO
         // ignore multiple spaces, only use the one space.
         if (searchTerm.length() == 0)
             return new Customer[0];

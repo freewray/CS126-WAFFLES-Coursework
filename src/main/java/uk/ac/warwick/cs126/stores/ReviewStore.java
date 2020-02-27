@@ -82,7 +82,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public boolean addReview(Review review) {
-        // TODO
         if (blackListedReviewID.contains(review.getID())){
             return false;
         }
@@ -107,7 +106,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public boolean addReview(Review[] reviews) {
-        // TODO
         boolean res = true;
         for (Review review : reviews){
             if (! this.addReview(review))
@@ -117,7 +115,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review getReview(Long id) {
-        // TODO
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getID().equals(id)){
                 return reviewArray.get(i);
@@ -127,7 +124,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviews() {
-        // TODO
         Review[] res = new Review[reviewArray.size()];
         for (int i = 0; i < reviewArray.size(); i++) {
             res[i] = reviewArray.get(i);
@@ -207,21 +203,18 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviewsByDate() {
-        // TODO
         Review[] res = this.getReviews();
         this.reviewArrayQuickSortByDateReviewed(res);
         return res;
     }
 
     public Review[] getReviewsByRating() {
-        // TODO
         Review[] res = this.getReviews();
         this.reviewArrayQuickSortByRating(res);
         return res;
     }
 
     public Review[] getReviewsByCustomerID(Long id) {
-        // TODO
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getCustomerID().equals(id)){
@@ -235,7 +228,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviewsByRestaurantID(Long id) {
-        // TODO
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getRestaurantID().equals(id)){
@@ -249,7 +241,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public float getAverageCustomerReviewRating(Long id) {
-        // TODO
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
@@ -265,7 +256,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public float getAverageRestaurantReviewRating(Long id) {
-        // TODO
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
@@ -281,7 +271,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public int[] getCustomerReviewHistogramCount(Long id) {
-        // TODO
         int[] res = new int[5];
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getCustomerID().equals(id)){
@@ -292,7 +281,6 @@ public class ReviewStore implements IReviewStore {
     }
 
     public int[] getRestaurantReviewHistogramCount(Long id) {
-        // TODO
         int[] res = new int[5];
         for (int i = 0; i < reviewArray.size(); i++ ) {
             if (reviewArray.get(i).getRestaurantID().equals(id)){
@@ -410,28 +398,172 @@ public class ReviewStore implements IReviewStore {
     private class Ratings{
         Long id;
         int cnt;
-        int sumRatings;
-        Date latestReviews;
+        int sumRating;
+        Date latestReviewDate;
 
-        public Ratings(Long id, Date latestReviews){
+        public Ratings(Long id, Date latestReviewDate, int rating){
+            this.id = id;
+            this.latestReviewDate = latestReviewDate;
+            this.sumRating = rating;
+            this.cnt = 1;
+        }
 
+        public float getAverageRating(){
+            return ((float)sumRating)/cnt;
+        }
+    }
+
+    public void ratingsQuicksort(MyArrayList<Ratings> array, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = 0;
+            Ratings pivot = array.get(end);
+
+            int i = (begin - 1);
+
+            for (int j = begin; j < end; j++) {
+
+                // 1. avg rating from highest to lowest
+                // 2. date of latest review - oldest to newest  
+                // 3. ascending order of their id
+                if (array.get(j).getAverageRating() > pivot.getAverageRating() 
+                || (array.get(j).getAverageRating() == pivot.getAverageRating() &&
+                    array.get(j).latestReviewDate.before(pivot.latestReviewDate))
+                || (array.get(j).getAverageRating() == pivot.getAverageRating() &&
+                    array.get(j).latestReviewDate.equals(pivot.latestReviewDate) &&
+                    array.get(j).id.compareTo(pivot.id) < 0)) {
+                    i++;
+
+                    Ratings tmp = array.get(i);
+                    array.set(i, array.get(j));
+                    array.set(j, tmp);
+                }
+            }
+
+            Ratings tmp = array.get(i + 1);
+            array.set(i + 1, array.get(end));
+            array.set(end, tmp);
+
+            partitionIndex = i + 1;
+
+            ratingsQuicksort(array, begin, partitionIndex - 1);
+            ratingsQuicksort(array, partitionIndex + 1, end);
         }
     }
 
     public Long[] getTopRatedRestaurants() {
-        // TODO
-        return new Long[20];
+        MyArrayList<Ratings> ratings = new MyArrayList<>();
+        Long[] res = new Long[20];
+        for (int i = 0, j = 0; i < reviewArray.size(); i++) {
+            for (j = 0; j < ratings.size(); j++) {
+                if (ratings.get(j).id.equals(reviewArray.get(i).getRestaurantID())){
+                    ratings.get(j).cnt++;
+                    ratings.get(j).sumRating += reviewArray.get(i).getRating();
+                    // System.out.println(ratings.get(j).id + " - " + ratings.get(j).getAverageRating());
+                    if (ratings.get(j).latestReviewDate.compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                        ratings.get(j).latestReviewDate = reviewArray.get(i).getDateReviewed();
+
+                    break;
+                }
+            }
+
+            if (j == ratings.size()){
+                Ratings rating = new Ratings(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating());
+                ratings.add(rating);
+            }
+        }
+        ratingsQuicksort(ratings, 0, ratings.size() - 1);
+        for (int i = 0; i < res.length && i < ratings.size(); i++) {
+            res[i] = ratings.get(i).id;
+        }
+        
+        return res;
     }
 
     public String[] getTopKeywordsForRestaurant(Long id) {
-        // TODO
-        return new String[5];
+        String[] res = new String[5];
+        Review[] restaurantReviews = this.getReviewsByRestaurantID(id);
+        String reviewString = "";
+        for(Review r : restaurantReviews){
+            if (r.getRestaurantID().equals(id))
+                reviewString += r.getReview();
+        }
+        String[] reviewWords = reviewString.split("\\W+");
+
+        MyArrayList<KeywordCnt> keywordList = new MyArrayList<>();
+        KeywordChecker keywordChecker = new KeywordChecker();
+        for(int j = 0, i = 0; j < reviewWords.length; j++){
+            if (keywordChecker.isAKeyword(reviewWords[j])) {
+                for (i = 0; i < keywordList.size(); i++) {
+                    System.out.println(keywordList.get(i).keyword + " - " + keywordList.get(i).frequency);
+                    if (keywordList.get(i).keyword.equalsIgnoreCase(reviewWords[j])){
+                        keywordList.get(i).frequency++;
+                        break;
+                    }
+                }
+                if (i == keywordList.size()){
+                    KeywordCnt w = new KeywordCnt(reviewWords[j]);
+                    keywordList.add(w);
+                }
+            }
+        }
+
+        quicksortKeywordCnt(keywordList, 0, keywordList.size() - 1);
+        for (int i = 0; i < res.length && i < keywordList.size(); i++) {
+            res[i] = keywordList.get(i).keyword;
+        }
+
+        return res;
+    }
+    
+    private class KeywordCnt {
+        String keyword;
+        int frequency;
+
+        public KeywordCnt(String keyword){
+            this.keyword = keyword;
+            this.frequency = 1;
+        }
+    }
+
+    // public void quicksortKeywordCnt()
+    public void quicksortKeywordCnt(MyArrayList<KeywordCnt> array, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = 0;
+            KeywordCnt pivot = array.get(end);
+
+            int i = (begin - 1);
+
+            for (int j = begin; j < end; j++) {
+
+                // 1. avg rating from highest to lowest
+                // 2. date of latest review - oldest to newest  
+                // 3. ascending order of their id
+                if (array.get(j).frequency > pivot.frequency 
+                || (array.get(j).frequency == pivot.frequency &&
+                    array.get(j).keyword.compareToIgnoreCase(pivot.keyword) < 0)) {
+                    i++;
+
+                    KeywordCnt tmp = array.get(i);
+                    array.set(i, array.get(j));
+                    array.set(j, tmp);
+                }
+            }
+
+            KeywordCnt tmp = array.get(i + 1);
+            array.set(i + 1, array.get(end));
+            array.set(end, tmp);
+
+            partitionIndex = i + 1;
+
+            quicksortKeywordCnt(array, begin, partitionIndex - 1);
+            quicksortKeywordCnt(array, partitionIndex + 1, end);
+        }
     }
 
     public Review[] getReviewsContaining(String searchTerm) {
         // TODO
         // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
-        // String searchTermConvertedFaster = stringFormatter.convertAccentsFaster(searchTerm);
+        String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm);
         return new Review[0];
     }
 }

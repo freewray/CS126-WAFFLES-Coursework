@@ -93,7 +93,10 @@ public class KeywordChecker implements IKeywordChecker {
     }
 
     public boolean isAKeyword(String word) {
-        // TODO
+        for (String keyword : keywords){
+            if (keyword.equalsIgnoreCase(word.trim()))
+                return true;
+        }
         return false;
     }
 }

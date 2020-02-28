@@ -11,6 +11,8 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 
+import uk.ac.warwick.cs126.stores.Ratings;
+
 import uk.ac.warwick.cs126.structures.MyArrayList;
 
 import uk.ac.warwick.cs126.util.DataChecker;
@@ -394,23 +396,6 @@ public class ReviewStore implements IReviewStore {
         }
 
         return topRestaurants;
-    }
-    private class Ratings{
-        Long id;
-        int cnt;
-        int sumRating;
-        Date latestReviewDate;
-
-        public Ratings(Long id, Date latestReviewDate, int rating){
-            this.id = id;
-            this.latestReviewDate = latestReviewDate;
-            this.sumRating = rating;
-            this.cnt = 1;
-        }
-
-        public float getAverageRating(){
-            return ((float)sumRating)/cnt;
-        }
     }
 
     public void ratingsQuicksort(MyArrayList<Ratings> array, int begin, int end) {

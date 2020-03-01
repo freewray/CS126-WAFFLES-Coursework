@@ -107,85 +107,63 @@ public class CustomerStore implements ICustomerStore {
         for (int i = 0; i < res.length; i++) {
             res[i] = customerArray.get(i);
         }
-        quickSort(res, 0, res.length - 1, "id");
+        customerQuickSort(res, "id", 0, res.length - 1);
         return res;
     }
 
-    public void quickSort(Customer array[], int begin, int end, String by) {
+
+    private int idCompare(Customer c1, Customer c2) {
+        return c1.getID().compareTo(c2.getID());
+    }
+
+    private int nameCompare(Customer c1, Customer c2){
+        int firstNameCompare = c1.getFirstName().compareToIgnoreCase(c2.getFirstName());
+        int lastNameCompare = c1.getLastName().compareToIgnoreCase((c2.getLastName()));
+        if (firstNameCompare == 0 && lastNameCompare == 0)
+            return idCompare(c1, c2);
+        else if (lastNameCompare == 0)
+            return firstNameCompare;
+        else
+            return lastNameCompare;
+    }
+
+    public void customerQuickSort(Customer[] array, String sortBy, int begin, int end) {
         if (begin < end) {
             int partitionIndex = 0;
-            if (by == "id")
-                partitionIndex = partition(array, begin, end);
-            else if (by == "firstName")
-                partitionIndex = partition(array, begin, end, 1);
-            else if (by == "lastName")
-                partitionIndex = partition(array, begin, end, 2);
-            else return;
+            Customer pivot = array[end];
+            int i = (begin - 1);
 
-            quickSort(array, begin, partitionIndex - 1, by);
-            quickSort(array, partitionIndex + 1, end, by);
-        }
-    }
+            for (int j = begin; j < end; j++) {
+                int c = 0;
 
-    private int partition(Customer array[], int begin, int end) {
-        long pivot = array[end].getID();
+                if (sortBy.equalsIgnoreCase("name"))
+                    c = nameCompare(array[j], pivot);
+                else if (sortBy.equalsIgnoreCase("id"))
+                    c = idCompare(array[j], pivot);
 
-        int i = (begin - 1);
+                if (c < 0) {
+                    i++;
 
-        for (int j = begin; j < end; j++) {
-            if (array[j].getID().compareTo(pivot) <= 0) {
-                i++;
-
-                Customer tmp = array[i];
-                array[i] = array[j];
-                array[j] = tmp;
+                    Customer tmp = array[i];
+                    array[i] = array[j];
+                    array[j] = tmp;
+                }
             }
+
+            Customer tmp = array[i + 1];
+            array[i + 1] = array[end];
+            array[end] = tmp;
+
+            partitionIndex = i + 1;
+
+            customerQuickSort(array, sortBy, begin, partitionIndex - 1);
+            customerQuickSort(array, sortBy, partitionIndex + 1, end);
         }
-
-        Customer tmp = array[i + 1];
-        array[i + 1] = array[end];
-        array[end] = tmp;
-
-        return i + 1;
-    }
-
-    private int partition(Customer array[], int begin, int end, int type) {
-        String pivot = "";
-        if (type == 1)
-            pivot = array[end].getFirstName();
-        else if (type == 2)
-            pivot = array[end].getLastName();
-        else
-            return -1;
-
-        int i = (begin - 1);
-
-        for (int j = begin; j < end; j++) {
-            String name = "";
-            if (type == 1)
-                name = array[j].getFirstName();
-            else if (type == 2)
-                name = array[j].getLastName();
-
-            if (name.compareTo(pivot) <= 0) {
-                i++;
-
-                Customer tmp = array[i];
-                array[i] = array[j];
-                array[j] = tmp;
-            }
-        }
-
-        Customer tmp = array[i + 1];
-        array[i + 1] = array[end];
-        array[end] = tmp;
-
-        return i + 1;
     }
 
     public Customer[] getCustomers(Customer[] customers) {
         Customer[] res = customers.clone();
-        quickSort(res, 0, res.length - 1, "id");
+        customerQuickSort(res, "id", 0, res.length - 1);
         return res;
     }
 
@@ -194,26 +172,20 @@ public class CustomerStore implements ICustomerStore {
         for (int i = 0; i < res.length; i++) {
             res[i] = customerArray.get(i);
         }
-        quickSort(res, 0, res.length - 1, "id");
-        quickSort(res, 0, res.length - 1, "firstName");
-        quickSort(res, 0, res.length - 1, "lastName");
+        customerQuickSort(res, "name", 0, res.length - 1);
         return res;
     }
 
     public Customer[] getCustomersByName(Customer[] customers) {
-        Customer[] res = customers.clone();
-        quickSort(res, 0, res.length - 1, "id");
-        quickSort(res, 0, res.length - 1, "firstName");
-        quickSort(res, 0, res.length - 1, "lastName");
-        return res;
+        customerQuickSort(customers, "name", 0, customers.length - 1);
+        return customers;
     }
 
     public Customer[] getCustomersContaining(String searchTerm) {
         // ignore multiple spaces, only use the one space.
         if (searchTerm.length() == 0)
             return new Customer[0];
-//        String searchTermConverted = StringFormatter.convertAccents(searchTerm.replaceAll("\\s+", ""));
-        String searchTermConverted = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", ""));
+        String searchTermConverted = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));
         MyArrayList<Customer> resList = new MyArrayList<>();
         if (searchTermConverted.contains("/s")) {
             String[] term = searchTermConverted.split("/s");
@@ -235,9 +207,7 @@ public class CustomerStore implements ICustomerStore {
         for (int i = 0; i < resList.size(); i++) {
             res[i] = resList.get(i);
         }
-        quickSort(res, 0, res.length - 1, "id");
-        quickSort(res, 0, res.length - 1, "firstName");
-        quickSort(res, 0, res.length - 1, "lastName");
+        customerQuickSort(res, "name", 0, res.length - 1);
         return res;
     }
 }

@@ -1,9 +1,6 @@
 package uk.ac.warwick.cs126.test;
 
-import uk.ac.warwick.cs126.models.Cuisine;
-import uk.ac.warwick.cs126.models.EstablishmentType;
-import uk.ac.warwick.cs126.models.PriceRange;
-import uk.ac.warwick.cs126.models.Restaurant;
+import uk.ac.warwick.cs126.models.*;
 import uk.ac.warwick.cs126.stores.RestaurantStore;
 import uk.ac.warwick.cs126.util.DataChecker;
 
@@ -20,11 +17,11 @@ public class TestTheRestaurantStore extends TestRunner {
         testGetRestaurants();
         testGetRestaurantsByName();
         testGetRestaurantsByDateEstablished();
-//        testGetRestaurantsByDateEstablishedInputArray();
+        testGetRestaurantsByDateEstablishedInputArray();
         testGetRestaurantsByWarwickStars();
         testGetRestaurantsByRating();
-//        testGetRestaurantsByDistanceFrom();
-//        testGetRestaurantsByDistanceFromInputArray();
+        testGetRestaurantsByDistanceFrom();
+        testGetRestaurantsByDistanceFromInputArray();
        testGetRestaurantsContaining();
     }
 
@@ -360,15 +357,12 @@ public class TestTheRestaurantStore extends TestRunner {
             Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
                     loadData("/test-restaurant/restaurant-10.csv"));
 
-            // Add to store to be processed
-            restaurantStore.addRestaurant(restaurants);
-
             // Get sorted data by Date Established from store
-            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByWarwickStars();
+            Restaurant[] gotRestaurants = restaurantStore.getRestaurantsByDateEstablished(restaurants);
 
             // Load separate data that was manually sorted to verify with
             Restaurant[] expectedRestaurants = restaurantStore.loadRestaurantDataToArray(
-                    loadData("/test-restaurant/restaurant-10-sorted-by-warwick-star.csv"));
+                    loadData("/test-restaurant/restaurant-10-sorted-by-date-established.csv"));
 
             for (Restaurant expectedRestaurant : expectedRestaurants)
                 expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
@@ -377,7 +371,7 @@ public class TestTheRestaurantStore extends TestRunner {
             boolean result = true;
             if (gotRestaurants.length == expectedRestaurants.length) {
                 for (int i = 0; i < expectedRestaurants.length; i++) {
-                    result = gotRestaurants[i].getID().equals(expectedRestaurants[i].getID());
+                    result = gotRestaurants[i].getName().equals(expectedRestaurants[i].getName());
                     if(!result){
                         break;
                     }
@@ -570,13 +564,30 @@ public class TestTheRestaurantStore extends TestRunner {
         try {
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
 
-            if (result) {
-                System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
-            } else {
-                System.out.println(" [FAILED]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            RestaurantDistance[] res = restaurantStore.getRestaurantsByDistanceFrom(51.507351f, -0.127758f);
+
+
+            System.out.println("   [TEST]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
+
+            for (RestaurantDistance r :
+                    res) {
+                System.out.println("[Distance = " + r.getDistance() + "km] Restaurant: " + r.getRestaurant().getName());
             }
+
+//            boolean result = false;
+//
+//            if (result) {
+//                System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
+//            } else {
+//                System.out.println(" [FAILED]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
+//            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    RestaurantStore: testGetRestaurantsByDistanceFrom()");
             e.printStackTrace();
@@ -588,7 +599,52 @@ public class TestTheRestaurantStore extends TestRunner {
         try {
             RestaurantStore restaurantStore = new RestaurantStore();
 
-            boolean result = false;
+            // Load test data from /data folder
+            Restaurant[] restaurants = restaurantStore.loadRestaurantDataToArray(
+                    loadData("/test-restaurant/restaurant-10.csv"));
+
+            // Add to store to be processed
+            restaurantStore.addRestaurant(restaurants);
+
+            // Get sorted data by Date Established from store
+            RestaurantDistance[] gotRestaurants = restaurantStore.getRestaurantsByDistanceFrom(restaurants, 51.507351f, -0.127758f);
+
+            // Load separate data that was manually sorted to verify with
+            RestaurantDistance[] expectedRestaurants = restaurantStore.getRestaurantsByDistanceFrom(51.507351f, -0.127758f);
+
+//            for (RestaurantDistance expectedRestaurant : expectedRestaurants)
+//                expectedRestaurant.setID(dataChecker.extractTrueID(expectedRestaurant.getRepeatedID()));
+
+            // Now to compare and verify
+            boolean result = true;
+            if (gotRestaurants.length == expectedRestaurants.length) {
+                for (int i = 0; i < expectedRestaurants.length; i++) {
+                    result = gotRestaurants[i].getRestaurant().equals(expectedRestaurants[i].getRestaurant());
+                    if(!result){
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+            }
+
+            if(!result){
+                System.out.println("\n[Expected]");
+                for (RestaurantDistance r: expectedRestaurants){
+                    System.out.println(r.getRestaurant());
+                }
+
+                System.out.println("\n[Got]");
+                if (gotRestaurants.length == 0) {
+                    System.out.println("You got nothing!");
+                }
+
+                for (RestaurantDistance r: gotRestaurants){
+                    System.out.println(r.getRestaurant());
+                }
+
+                System.out.println();
+            }
 
             if (result) {
                 System.out.println("[SUCCESS]    RestaurantStore: testGetRestaurantsByDistanceFromInputArray()");

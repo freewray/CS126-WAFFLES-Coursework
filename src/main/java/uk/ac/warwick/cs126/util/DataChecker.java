@@ -49,10 +49,16 @@ public class DataChecker implements IDataChecker {
     }
 
     public boolean isValid(Customer customer) {
-        return customer.getID() != null && isValid(customer.getID()) && customer.getFirstName() != null && customer.getLastName() != null && customer.getDateJoined() != null ;
+        if (customer == null) return false;
+        if (customer.getID() == null || !isValid(customer.getID())) return false;
+        if (customer.getFirstName() == null) return false;
+        if (customer.getLastName() == null) return false;
+        if (customer.getDateJoined() == null) return false;
+        return true;
     }
 
     public boolean isValid(Restaurant restaurant) {
+        if (restaurant == null) return false;
         if (restaurant.getRepeatedID() == null) return false;
         if (restaurant.getID() == null || !isValid(restaurant.getID())) return false;
         if (restaurant.getName() == null) return false;
@@ -76,10 +82,16 @@ public class DataChecker implements IDataChecker {
     }
 
     public boolean isValid(Favourite favourite) {
-        return favourite != null && isValid(favourite.getID()) && isValid(favourite.getCustomerID()) && isValid(favourite.getRestaurantID()) && favourite.getDateFavourited() != null;
+        if (favourite == null) return false;
+        if (favourite.getID() == null || !isValid(favourite.getID())) return false;
+        if (!isValid(favourite.getRestaurantID())) return false;
+        if (!isValid(favourite.getCustomerID())) return false;
+        if (favourite.getDateFavourited() == null) return false;
+        return true;
     }
 
     public boolean isValid(Review review) {
+        if (review == null) return false;
         if (!isValid(review.getID()) || !isValid(review.getCustomerID()) || !isValid(review.getRestaurantID()))
             return false;
         if (review.getReview() == null) return false;

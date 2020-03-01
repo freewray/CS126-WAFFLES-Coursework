@@ -215,7 +215,7 @@ public class TestTheUtils extends TestRunner {
             if (result) {
                 System.out.println("[SUCCESS]    HaversineDistanceCalculator: testHaversineDistanceCalculator()");
             } else {
-                System.out.println(" [FAILED]    HaversineDistanceCalculator: testHaversineDistanceCalculator()");
+                System.out.println(" [FAILED]    HaversineDistanceCalculator: testHaversineDistanceCalculator()" + distanceInMiles);
             }
         } catch (Exception e) {
             System.out.println(" [FAILED]    HaversineDistanceCalculator: testHaversineDistanceCalculator()");

@@ -146,27 +146,88 @@ public class RestaurantStore implements IRestaurantStore {
         return restaurants;
     }
 
-    public void restaurantArrayQuickSortByID(Restaurant[] restaurants){
+    private void restaurantArrayQuickSortByID(Restaurant[] restaurants){
         this.restaurantArrayQuickSort(restaurants, "id", 0, restaurants.length - 1);
     }
 
-    public void restaurantArrayQuickSortByName(Restaurant[] restaurants){
+    private void restaurantArrayQuickSortByName(Restaurant[] restaurants){
         this.restaurantArrayQuickSort(restaurants, "name", 0, restaurants.length - 1);
     }
 
-    public void restaurantArrayQuickSortByDateEstablished(Restaurant[] restaurants){
+    private void restaurantArrayQuickSortByDateEstablished(Restaurant[] restaurants){
         this.restaurantArrayQuickSort(restaurants, "dateEstablished", 0, restaurants.length - 1);
     }
 
-    public void restaurantArrayQuickSortByWarwickStars(Restaurant[] restaurants){
+    private void restaurantArrayQuickSortByWarwickStars(Restaurant[] restaurants){
         this.restaurantArrayQuickSort(restaurants, "warwickStar", 0, restaurants.length - 1);
     }
 
-    public void restaurantArrayQuickSortByCustomerRating(Restaurant[] restaurants){
+    private void restaurantArrayQuickSortByCustomerRating(Restaurant[] restaurants){
         this.restaurantArrayQuickSort(restaurants, "rating", 0, restaurants.length - 1);
     }
 
-    public void restaurantArrayQuickSort(Restaurant[] restaurants, String sortBy, int begin, int end){
+
+    private int idCompare(Restaurant r1, Restaurant r2) {
+        return r1.getID().compareTo(r2.getID());
+    }
+
+    private int nameCompare(Restaurant r1, Restaurant r2) {
+        int nameCompare = r1.getName().compareToIgnoreCase(r2.getName());
+        if (nameCompare == 0)
+            return idCompare(r1, r2);
+        else
+            return nameCompare;
+    }
+
+    /**
+     * sorted by Date Established, from oldest to most recent.
+     * If they have the same Date Established, then it is sorted alphabetically by the restaurant Name.
+     * If they have the same restaurant Name, then it is sorted in ascending order of their ID.
+     */
+    private int dateCompare(Restaurant r1, Restaurant r2) {
+        int dateCompare = r1.getDateEstablished().compareTo(r2.getDateEstablished());
+        if (dateCompare == 0)
+            return nameCompare(r1, r2);
+        else
+            return dateCompare;
+    }
+
+    /**
+     * sorted in descending order of Warwick Stars.
+     * If they have the same Warwick Stars, then it is sorted alphabetically by the restaurant Name.
+     * If they have the same restaurant Name, then it is sorted in ascending order of their ID.
+     */
+    private int warwickStarCompare(Restaurant r1, Restaurant r2) {
+        if (r1.getWarwickStars() == r2.getWarwickStars())
+            return nameCompare(r1, r2);
+        else
+            return r2.getWarwickStars() - r1.getWarwickStars();
+    }
+
+    /**
+     * sorted in descending order of Rating.
+     * If they have the same Rating, then it is sorted alphabetically by the restaurant Name.
+     * If they have the same restaurant Name, then it is sorted in ascending order of their ID.
+     */
+    private int ratingCompare(Restaurant r1, Restaurant r2) {
+        if (r1.getCustomerRating() == r2.getCustomerRating())
+            return nameCompare(r1, r2);
+        else
+            return r2.getCustomerRating() < r1.getCustomerRating() ? -1 : 1;
+    }
+
+    /**
+     * sorted in ascending order of distance
+     * If they have the same Distance, then it is sorted in ascending order of their ID.
+     */
+    private int distanceCompare(RestaurantDistance r1, RestaurantDistance r2) {
+        if (r1.getDistance() == r2.getDistance())
+            return r1.getRestaurant().getID().compareTo(r2.getRestaurant().getID());
+        else
+            return  r1.getDistance() <  r2.getDistance() ? -1 : 1;
+    }
+
+    private void restaurantArrayQuickSort(Restaurant[] restaurants, String sortBy, int begin, int end){
         if (begin < end) {
             int partitionIndex = 0;
             Restaurant pivot = restaurants[end];
@@ -174,72 +235,23 @@ public class RestaurantStore implements IRestaurantStore {
             int i = (begin - 1);
 
             for (int j = begin; j < end; j++) {
-                if (sortBy == "id"){
-                    if (restaurants[j].getID().compareTo(pivot.getID()) < 0) {
+                int c = 0;
+                if (sortBy == "id")
+                    c = idCompare(restaurants[j], pivot);
+                else if (sortBy == "name")
+                    c = nameCompare(restaurants[j], pivot);
+                else if (sortBy == "dateEstablished")
+                    c = dateCompare(restaurants[j], pivot);
+                else if (sortBy == "warwickStar")
+                    c = warwickStarCompare(restaurants[j], pivot);
+                else if (sortBy == "rating")
+                    c = ratingCompare(restaurants[j], pivot);
 
-                        i++;
-
-                        Restaurant tmp = restaurants[i];
-                        restaurants[i] = restaurants[j];
-                        restaurants[j] = tmp;
-                    }
-                }
-                else if (sortBy == "name"){
-                    if (restaurants[j].getName().compareTo(pivot.getName()) < 0
-                    || (restaurants[j].getName().compareTo(pivot.getName()) == 0
-                        && restaurants[j].getID().compareTo(pivot.getID()) < 0)) {
-
-                        i++;
-
-                        Restaurant tmp = restaurants[i];
-                        restaurants[i] = restaurants[j];
-                        restaurants[j] = tmp;
-                    }
-                }
-                else if (sortBy == "dateEstablished"){
-                    if (restaurants[j].getDateEstablished().compareTo(pivot.getDateEstablished()) < 0
-                    || (restaurants[j].getDateEstablished().compareTo(pivot.getDateEstablished()) == 0
-                        && restaurants[j].getName().compareTo(pivot.getName()) < 0)
-                    || (restaurants[j].getDateEstablished().compareTo(pivot.getDateEstablished()) == 0)
-                        && restaurants[j].getName().compareTo(pivot.getName()) == 0
-                        && restaurants[j].getID().compareTo(pivot.getID()) < 0) {
-
-                        i++;
-
-                        Restaurant tmp = restaurants[i];
-                        restaurants[i] = restaurants[j];
-                        restaurants[j] = tmp;
-                    }
-                }
-                else if (sortBy == "warwickStar"){
-                    if (restaurants[j].getWarwickStars() > pivot.getWarwickStars()
-                            || (restaurants[j].getWarwickStars() == pivot.getWarwickStars()
-                                && restaurants[j].getName().compareTo(pivot.getName()) < 0)
-                            || (restaurants[j].getWarwickStars() == pivot.getWarwickStars()
-                                && restaurants[j].getName().compareTo(pivot.getName()) == 0
-                                && restaurants[j].getID().compareTo(pivot.getID()) < 0)) {
-
-                        i++;
-
-                        Restaurant tmp = restaurants[i];
-                        restaurants[i] = restaurants[j];
-                        restaurants[j] = tmp;
-                    }
-                }
-                else if (sortBy == "rating"){
-                    if (restaurants[j].getCustomerRating() > pivot.getCustomerRating()
-                            || (restaurants[j].getCustomerRating() == pivot.getCustomerRating()
-                                && restaurants[j].getName().compareTo(pivot.getName()) < 0)
-                            || (restaurants[j].getCustomerRating() == pivot.getCustomerRating()
-                                && restaurants[j].getName().compareTo(pivot.getName()) == 0
-                                && restaurants[j].getID().compareTo(pivot.getID()) < 0)) {
-
-                        i++;
-
-                        Restaurant tmp = restaurants[i];
-                        restaurants[i] = restaurants[j];
-                        restaurants[j] = tmp;
-                    }
+                if (c < 0) {
+                    i++;
+                    Restaurant tmp = restaurants[i];
+                    restaurants[i] = restaurants[j];
+                    restaurants[j] = tmp;
                 }
             }
 
@@ -254,7 +266,7 @@ public class RestaurantStore implements IRestaurantStore {
         }
     }
 
-    public void restaurantSortByDistance(RestaurantDistance[] restaurantsDistance, int begin, int end){
+    private void restaurantSortByDistance(RestaurantDistance[] restaurantsDistance, int begin, int end){
         if (begin < end) {
             int partitionIndex = 0;
             RestaurantDistance pivot = restaurantsDistance[end];
@@ -262,10 +274,7 @@ public class RestaurantStore implements IRestaurantStore {
             int i = (begin - 1);
 
             for (int j = begin; j < end; j++) {
-                if (restaurantsDistance[j].getDistance() < pivot.getDistance()
-                    || (restaurantsDistance[j].getDistance() == pivot.getDistance()
-                        && restaurantsDistance[j].getRestaurant().getID().compareTo(pivot.getRestaurant().getID()) < 0)
-                    ) {
+                if (distanceCompare(restaurantsDistance[j], pivot) < 0) {
 
                     i++;
 

@@ -26,7 +26,7 @@ public class TestTheReviewStore extends TestRunner {
         testGetTopRestaurantsByReviewCount();
         testGetTopRatedRestaurants();
         testGetTopKeywordsForRestaurant();
-       testGetReviewsContaining();
+        testGetReviewsContaining();
     }
 
     private void testAddReview() {
@@ -566,21 +566,16 @@ public class TestTheReviewStore extends TestRunner {
     private void testGetTopRestaurantsByReviewCount() {
         try {
             ReviewStore reviewStore = new ReviewStore();
-
-            // Load test data from /data folder
             Review[] reviews = reviewStore.loadReviewDataToArray(
                     loadData("/test-review/review-10.tsv"));
-
-            // Add to store to be processed
             reviewStore.addReview(reviews);
-
+            System.out.println("   [TEST]  ReviewStore: testGetTopRestaurantsByReviewCount()");
             Long[] res = reviewStore.getTopRestaurantsByReviewCount();
 
-            System.out.println("[TEST]  ReviewStore: testGetTopRestaurantsByReviewCount()");
 
-            for (int i = 0; i < res.length && res[i] != null; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length && res[i] != null; i++) {
+//                System.out.println(res[i]);
+//            }
 
 //            boolean result = false;
 //
@@ -599,21 +594,16 @@ public class TestTheReviewStore extends TestRunner {
     private void testGetTopCustomersByReviewCount() {
         try {
             ReviewStore reviewStore = new ReviewStore();
-
-            // Load test data from /data folder
             Review[] reviews = reviewStore.loadReviewDataToArray(
                     loadData("/test-review/review-10.tsv"));
-
-            // Add to store to be processed
             reviewStore.addReview(reviews);
-
+            System.out.println("   [TEST]  ReviewStore: testGetTopCustomersByReviewCount()");
             Long[] res = reviewStore.getTopCustomersByReviewCount();
 
-            System.out.println("[TEST]  ReviewStore: testGetTopCustomersByReviewCount()");
 
-            for (int i = 0; i < res.length && res[i] != null; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length && res[i] != null; i++) {
+//                System.out.println(res[i]);
+//            }
 
 //            boolean result = false;
 //
@@ -639,14 +629,12 @@ public class TestTheReviewStore extends TestRunner {
 
             // Add to store to be processed
             reviewStore.addReview(reviews);
-
+            System.out.println("   [TEST]  ReviewStore: testGetTopRatedRestaurants()");
             Long[] res = reviewStore.getTopRatedRestaurants();
 
-            System.out.println("[TEST]  ReviewStore: testGetTopRatedRestaurants()");
-
-            for (int i = 0; i < res.length && res[i] != null; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length && res[i] != null; i++) {
+//                System.out.println(res[i]);
+//            }
 
             // boolean result = false;
 
@@ -665,23 +653,17 @@ public class TestTheReviewStore extends TestRunner {
     private void testGetTopKeywordsForRestaurant() {
         try {
             ReviewStore reviewStore = new ReviewStore();
-
-            // Load test data from /data folder
             Review[] reviews = reviewStore.loadReviewDataToArray(
                     loadData("/test-review/review-10.tsv"));
-
-            // Add to store to be processed
             reviewStore.addReview(reviews);
-
+            System.out.println("   [TEST]  ReviewStore: testGetTopKeywordsForRestaurant()");
             String[] res = reviewStore.getTopKeywordsForRestaurant(2516282978916487L);
             // 1. Meh - 2
             // 2. Lame - 1
 
-            System.out.println("[TEST]  ReviewStore: testGetTopKeywordsForRestaurant()");
-
-            for (int i = 0; i < res.length && res[i] != null; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length && res[i] != null; i++) {
+////                System.out.println(res[i]);
+////            }
 
             // boolean result = false;
 
@@ -704,19 +686,15 @@ public class TestTheReviewStore extends TestRunner {
             // Load test data from /data folder
             Review[] reviews = reviewStore.loadReviewDataToArray(
                     loadData("/test-review/review-10.tsv"));
-
-            // Add to store to be processed
             reviewStore.addReview(reviews);
-
+            System.out.println("   [TEST]  ReviewStore: testGetReviewsContaining()");
             Review[] res = reviewStore.getReviewsContaining("m");
             // 1. Meh - 2
             // 2. Lame - 1
 
-            System.out.println("[TEST]  ReviewStore: testGetReviewsContaining()");
-
-            for (int i = 0; i < res.length && res[i] != null; i++) {
-                System.out.println(res[i].getReview());
-            }
+//            for (int i = 0; i < res.length && res[i] != null; i++) {
+//                System.out.println(res[i].getReview());
+//            }
 
             // boolean result = false;
 

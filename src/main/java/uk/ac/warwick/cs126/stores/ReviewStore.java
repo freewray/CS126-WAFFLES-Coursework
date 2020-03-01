@@ -7,13 +7,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 
-import uk.ac.warwick.cs126.stores.Ratings;
-
-import uk.ac.warwick.cs126.structures.MyArrayList;
+import uk.ac.warwick.cs126.structures.*;
 
 import uk.ac.warwick.cs126.util.DataChecker;
 import uk.ac.warwick.cs126.util.KeywordChecker;
@@ -84,18 +81,17 @@ public class ReviewStore implements IReviewStore {
     }
 
     public boolean addReview(Review review) {
-        if (blackListedReviewID.contains(review.getID())){
+        if (blackListedReviewID.contains(review.getID()) || !dataChecker.isValid(review)) {
             return false;
         }
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getID().equals(review.getID())){
+            if (reviewArray.get(i).getID().equals(review.getID())) {
                 blackListedReviewID.add(review.getID());
                 reviewArray.remove(reviewArray.get(i));
                 return false;
-            }
-            else if (reviewArray.get(i).getCustomerID().equals(review.getCustomerID())
+            } else if (reviewArray.get(i).getCustomerID().equals(review.getCustomerID())
                     && reviewArray.get(i).getRestaurantID().equals(review.getRestaurantID())
-                    && reviewArray.get(i).getDateReviewed().compareTo(review.getDateReviewed()) < 0){
+                    && reviewArray.get(i).getDateReviewed().compareTo(review.getDateReviewed()) < 0) {
 
                 blackListedReviewID.add(reviewArray.get(i).getID());
                 reviewArray.remove(reviewArray.get(i));
@@ -109,8 +105,8 @@ public class ReviewStore implements IReviewStore {
 
     public boolean addReview(Review[] reviews) {
         boolean res = true;
-        for (Review review : reviews){
-            if (! this.addReview(review))
+        for (Review review : reviews) {
+            if (!this.addReview(review))
                 res = false;
         }
         return res;
@@ -118,7 +114,7 @@ public class ReviewStore implements IReviewStore {
 
     public Review getReview(Long id) {
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getID().equals(id)){
+            if (reviewArray.get(i).getID().equals(id)) {
                 return reviewArray.get(i);
             }
         }
@@ -134,7 +130,7 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
-    public void reviewArrayQuickSortByID(Review[] reviews){
+    public void reviewArrayQuickSortByID(Review[] reviews) {
         reviewArrayQuickSort(reviews, "id", 0, reviews.length - 1);
     }
 
@@ -146,50 +142,51 @@ public class ReviewStore implements IReviewStore {
         reviewArrayQuickSort(reviews, "rating", 0, reviews.length - 1);
     }
 
-    public void reviewArrayQuickSort(Review[] reviews, String sortBy, int begin, int end){
+    public int idCompare(Review r1, Review r2) {
+        return r1.getID().compareTo(r2.getID());
+    }
+
+    public int ratingCompare(Review r1, Review r2) {
+        int ratingCompare = r2.getRating() - r1.getRating();
+        if (ratingCompare == 0)
+            return dateCompare(r1, r2);
+        else
+            return ratingCompare;
+    }
+
+    public int dateCompare(Review r1, Review r2) {
+        int dateCompare = r2.getDateReviewed().compareTo(r1.getDateReviewed());
+        if (dateCompare == 0)
+            return idCompare(r1, r2);
+        else
+            return dateCompare;
+    }
+
+    public void reviewArrayQuickSort(Review[] reviews, String sortBy, int begin, int end) {
         if (begin < end) {
-            int partitionIndex = 0;
+            int partitionIndex;
             Review pivot = reviews[end];
 
             int i = (begin - 1);
 
             for (int j = begin; j < end; j++) {
-                if (sortBy == "id"){
-                    if (reviews[j].getID().compareTo(pivot.getID()) < 0) {
 
-                        i++;
+                int c = 0;
 
-                        Review tmp = reviews[i];
-                        reviews[i] = reviews[j];
-                        reviews[j] = tmp;
-                    }
-                }
-                else if (sortBy == "dateReviewed"){
-                    if (reviews[j].getDateReviewed().after(pivot.getDateReviewed())
-                    || (reviews[j].getDateReviewed().equals(pivot.getDateReviewed())
-                        && reviews[j].getID().compareTo(pivot.getID()) < 0)) {
+                if (sortBy.equalsIgnoreCase("id"))
+                    c = idCompare(reviews[j], pivot);
+                else if (sortBy.equalsIgnoreCase("dateReviewed"))
+                    c = dateCompare(reviews[j], pivot);
+                else if (sortBy.equalsIgnoreCase("rating"))
+                    c = ratingCompare(reviews[j], pivot);
 
-                        i++;
+                if (c < 0) {
 
-                        Review tmp = reviews[i];
-                        reviews[i] = reviews[j];
-                        reviews[j] = tmp;
-                    }
-                }
-                else if (sortBy == "rating"){
-                    if (reviews[j].getRating() > pivot.getRating()
-                            || (reviews[j].getRating() == pivot.getRating()
-                                && reviews[j].getDateReviewed().after(pivot.getDateReviewed()))
-                            || (reviews[j].getRating() == pivot.getRating()
-                                && reviews[j].getDateReviewed().equals(pivot.getDateReviewed())
-                                && reviews[j].getID().compareTo(pivot.getID()) < 0)) {
+                    i++;
 
-                        i++;
-
-                        Review tmp = reviews[i];
-                        reviews[i] = reviews[j];
-                        reviews[j] = tmp;
-                    }
+                    Review tmp = reviews[i];
+                    reviews[i] = reviews[j];
+                    reviews[j] = tmp;
                 }
             }
 
@@ -219,7 +216,7 @@ public class ReviewStore implements IReviewStore {
     public Review[] getReviewsByCustomerID(Long id) {
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getCustomerID().equals(id)){
+            if (reviewArray.get(i).getCustomerID().equals(id)) {
                 resList.add(reviewArray.get(i));
             }
         }
@@ -232,7 +229,7 @@ public class ReviewStore implements IReviewStore {
     public Review[] getReviewsByRestaurantID(Long id) {
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getRestaurantID().equals(id)){
+            if (reviewArray.get(i).getRestaurantID().equals(id)) {
                 resList.add(reviewArray.get(i));
             }
         }
@@ -246,36 +243,34 @@ public class ReviewStore implements IReviewStore {
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getCustomerID().equals(id)){
+            if (reviewArray.get(i).getCustomerID().equals(id)) {
                 sum += reviewArray.get(i).getRating();
                 cnt++;
             }
         }
         if (cnt == 0)
             return 0.0f;
-        float avg = ((float) sum)/cnt;
-        return avg;
+        return ((float) sum) / cnt;
     }
 
     public float getAverageRestaurantReviewRating(Long id) {
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getRestaurantID().equals(id)){
+            if (reviewArray.get(i).getRestaurantID().equals(id)) {
                 sum += reviewArray.get(i).getRating();
                 cnt++;
             }
         }
         if (cnt == 0)
             return 0.0f;
-        float avg = ((float) sum)/cnt;
-        return avg;
+        return ((float) sum) / cnt;
     }
 
     public int[] getCustomerReviewHistogramCount(Long id) {
         int[] res = new int[5];
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getCustomerID().equals(id)){
+            if (reviewArray.get(i).getCustomerID().equals(id)) {
                 res[reviewArray.get(i).getRating() - 1]++;
             }
         }
@@ -284,85 +279,38 @@ public class ReviewStore implements IReviewStore {
 
     public int[] getRestaurantReviewHistogramCount(Long id) {
         int[] res = new int[5];
-        for (int i = 0; i < reviewArray.size(); i++ ) {
-            if (reviewArray.get(i).getRestaurantID().equals(id)){
+        for (int i = 0; i < reviewArray.size(); i++) {
+            if (reviewArray.get(i).getRestaurantID().equals(id)) {
                 res[reviewArray.get(i).getRating() - 1]++;
             }
         }
         return res;
     }
 
-    private class ReviewCnt {
-
-        Long id;
-        Date latestReviewDate;
-        int times;
-
-        public ReviewCnt(Long id, Date latestReviewDate) {
-            this.id = id;
-            this.latestReviewDate = latestReviewDate;
-            this.times = 1;
-        }
-    }
-
-    public void reviewCntQuicksort(MyArrayList<ReviewCnt> array, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            int pivotTimes = array.get(end).times;
-            Date pivotDate = array.get(end).latestReviewDate;
-
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-
-                // sort times from highest to lowest
-                // or if both has same times then
-                // only exchange value when latest fav is older
-                if (array.get(j).times > pivotTimes || (array.get(j).latestReviewDate.before(pivotDate) && array.get(j).times == pivotTimes)) {
-                    i++;
-
-                    ReviewCnt tmp = array.get(i);
-                    array.set(i, array.get(j));
-                    array.set(j, tmp);
-                }
-            }
-
-            ReviewCnt tmp = array.get(i + 1);
-            array.set(i + 1, array.get(end));
-            array.set(end, tmp);
-
-            partitionIndex = i + 1;
-
-            reviewCntQuicksort(array, begin, partitionIndex - 1);
-            reviewCntQuicksort(array, partitionIndex + 1, end);
-        }
-    }
-
     public Long[] getTopCustomersByReviewCount() {
         Long[] topCustomers = new Long[20];
 
-        MyArrayList<ReviewCnt> topCustomerReviewCnt = new MyArrayList<>();
-        for (int i = 0, j = 0; i < reviewArray.size(); i++) {
+        MyComparableArrayList<IDCounter> topCustomerReviewCnt = new MyComparableArrayList<>();
+        for (int i = 0, j; i < reviewArray.size(); i++) {
             for (j = 0; j < topCustomerReviewCnt.size(); j++) {
-                if (topCustomerReviewCnt.get(j).id.compareTo(reviewArray.get(i).getCustomerID()) == 0){
-                    topCustomerReviewCnt.get(j).times++;
-                    if (topCustomerReviewCnt.get(j).latestReviewDate.compareTo(reviewArray.get(i).getDateReviewed()) < 0)
-                        topCustomerReviewCnt.get(j).latestReviewDate = reviewArray.get(i).getDateReviewed();
+                if (topCustomerReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getCustomerID())) {
+                    topCustomerReviewCnt.get(j).addCount();
+                    if (topCustomerReviewCnt.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                        topCustomerReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
                     break;
                 }
             }
 
-            if (j == topCustomerReviewCnt.size()){
-                ReviewCnt customerFavourite = new ReviewCnt(reviewArray.get(i).getCustomerID(), reviewArray.get(i).getDateReviewed());
+            if (j == topCustomerReviewCnt.size()) {
+                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getCustomerID(), reviewArray.get(i).getDateReviewed());
                 topCustomerReviewCnt.add(customerFavourite);
             }
         }
-        // sort by favourite times
-        reviewCntQuicksort(topCustomerReviewCnt, 0, topCustomerReviewCnt.size()-1);
-        // sort by latest date (oldest to newest)
+        topCustomerReviewCnt.quicksort(0, topCustomerReviewCnt.size() - 1);
         for (int i = 0; i < topCustomers.length && i < topCustomerReviewCnt.size(); i++) {
-            topCustomers[i] = topCustomerReviewCnt.get(i).id;
+            topCustomers[i] = topCustomerReviewCnt.get(i).getIdentifier();
+            System.out.println(topCustomerReviewCnt.get(i).getIdentifier() + " - " + topCustomerReviewCnt.get(i).getCount());
         }
 
         return topCustomers;
@@ -371,199 +319,116 @@ public class ReviewStore implements IReviewStore {
     public Long[] getTopRestaurantsByReviewCount() {
         Long[] topRestaurants = new Long[20];
 
-        MyArrayList<ReviewCnt> topRestaurantReviewCnt = new MyArrayList<>();
-        for (int i = 0, j = 0; i < reviewArray.size(); i++) {
+        MyComparableArrayList<IDCounter> topRestaurantReviewCnt = new MyComparableArrayList<>();
+        for (int i = 0, j; i < reviewArray.size(); i++) {
             for (j = 0; j < topRestaurantReviewCnt.size(); j++) {
-                if (topRestaurantReviewCnt.get(j).id.compareTo(reviewArray.get(i).getRestaurantID()) == 0){
-                    topRestaurantReviewCnt.get(j).times++;
-                    if (topRestaurantReviewCnt.get(j).latestReviewDate.compareTo(reviewArray.get(i).getDateReviewed()) < 0)
-                        topRestaurantReviewCnt.get(j).latestReviewDate = reviewArray.get(i).getDateReviewed();
+                if (topRestaurantReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getRestaurantID())) {
+                    topRestaurantReviewCnt.get(j).addCount();
+                    if (topRestaurantReviewCnt.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                        topRestaurantReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
                     break;
                 }
             }
 
-            if (j == topRestaurantReviewCnt.size()){
-                ReviewCnt customerFavourite = new ReviewCnt(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed());
+            if (j == topRestaurantReviewCnt.size()) {
+                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed());
                 topRestaurantReviewCnt.add(customerFavourite);
             }
         }
-        // sort by favourite times
-        reviewCntQuicksort(topRestaurantReviewCnt, 0, topRestaurantReviewCnt.size()-1);
-        // sort by latest date (oldest to newest)
+        topRestaurantReviewCnt.quicksort(0, topRestaurantReviewCnt.size() - 1);
         for (int i = 0; i < topRestaurants.length && i < topRestaurantReviewCnt.size(); i++) {
-            topRestaurants[i] = topRestaurantReviewCnt.get(i).id;
+            topRestaurants[i] = topRestaurantReviewCnt.get(i).getIdentifier();
+            System.out.println(topRestaurantReviewCnt.get(i).getIdentifier() + " - " + topRestaurantReviewCnt.get(i).getCount());
         }
 
         return topRestaurants;
     }
 
-    public void ratingsQuicksort(MyArrayList<Ratings> array, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            Ratings pivot = array.get(end);
-
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-
-                // 1. avg rating from highest to lowest
-                // 2. date of latest review - oldest to newest  
-                // 3. ascending order of their id
-                if (array.get(j).getAverageRating() > pivot.getAverageRating() 
-                || (array.get(j).getAverageRating() == pivot.getAverageRating() &&
-                    array.get(j).latestReviewDate.before(pivot.latestReviewDate))
-                || (array.get(j).getAverageRating() == pivot.getAverageRating() &&
-                    array.get(j).latestReviewDate.equals(pivot.latestReviewDate) &&
-                    array.get(j).id.compareTo(pivot.id) < 0)) {
-                    i++;
-
-                    Ratings tmp = array.get(i);
-                    array.set(i, array.get(j));
-                    array.set(j, tmp);
-                }
-            }
-
-            Ratings tmp = array.get(i + 1);
-            array.set(i + 1, array.get(end));
-            array.set(end, tmp);
-
-            partitionIndex = i + 1;
-
-            ratingsQuicksort(array, begin, partitionIndex - 1);
-            ratingsQuicksort(array, partitionIndex + 1, end);
-        }
-    }
-
     public Long[] getTopRatedRestaurants() {
-        MyArrayList<Ratings> ratings = new MyArrayList<>();
+        MyComparableArrayList<Rating> ratings = new MyComparableArrayList<>();
         Long[] res = new Long[20];
-        for (int i = 0, j = 0; i < reviewArray.size(); i++) {
+        for (int i = 0, j; i < reviewArray.size(); i++) {
             for (j = 0; j < ratings.size(); j++) {
-                if (ratings.get(j).id.equals(reviewArray.get(i).getRestaurantID())){
-                    ratings.get(j).cnt++;
-                    ratings.get(j).sumRating += reviewArray.get(i).getRating();
-                    // System.out.println(ratings.get(j).id + " - " + ratings.get(j).getAverageRating());
-                    if (ratings.get(j).latestReviewDate.compareTo(reviewArray.get(i).getDateReviewed()) < 0)
-                        ratings.get(j).latestReviewDate = reviewArray.get(i).getDateReviewed();
+                if (ratings.get(j).getId().equals(reviewArray.get(i).getRestaurantID())) {
+                    ratings.get(j).addCnt();
+                    ratings.get(j).addSumRating(reviewArray.get(i).getRating());
+//                     System.out.println(ratings.get(j).getId() + " - " + ratings.get(j).getAverageRating());
+                    if (ratings.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                        ratings.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
                     break;
                 }
             }
 
-            if (j == ratings.size()){
-                Ratings rating = new Ratings(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating());
+            if (j == ratings.size()) {
+                Rating rating = new Rating(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating());
                 ratings.add(rating);
             }
         }
-        ratingsQuicksort(ratings, 0, ratings.size() - 1);
+        ratings.quicksort(0, ratings.size() - 1);
         for (int i = 0; i < res.length && i < ratings.size(); i++) {
-            res[i] = ratings.get(i).id;
+            res[i] = ratings.get(i).getId();
         }
-        
+
         return res;
     }
 
     public String[] getTopKeywordsForRestaurant(Long id) {
         String[] res = new String[5];
         Review[] restaurantReviews = this.getReviewsByRestaurantID(id);
-        String reviewString = "";
-        for(Review r : restaurantReviews){
+        StringBuilder reviewString = new StringBuilder();
+        for (Review r : restaurantReviews) {
             if (r.getRestaurantID().equals(id))
-                reviewString += r.getReview();
+                reviewString.append(r.getReview());
         }
-        String[] reviewWords = reviewString.split("\\W+");
-
-        MyArrayList<KeywordCnt> keywordList = new MyArrayList<>();
+        String[] reviewWords = reviewString.toString().split("\\W+");
+        MyComparableArrayList<Counter<String>> keywordList = new MyComparableArrayList<>();
         KeywordChecker keywordChecker = new KeywordChecker();
-        for(int j = 0, i = 0; j < reviewWords.length; j++){
+        for (int j = 0, i; j < reviewWords.length; j++) {
             if (keywordChecker.isAKeyword(reviewWords[j])) {
                 for (i = 0; i < keywordList.size(); i++) {
-                    System.out.println(keywordList.get(i).keyword + " - " + keywordList.get(i).frequency);
-                    if (keywordList.get(i).keyword.equalsIgnoreCase(reviewWords[j])){
-                        keywordList.get(i).frequency++;
+                    if (keywordList.get(i).getIdentifier().equalsIgnoreCase(reviewWords[j])) {
+                        keywordList.get(i).addCount();
                         break;
                     }
                 }
-                if (i == keywordList.size()){
-                    KeywordCnt w = new KeywordCnt(reviewWords[j]);
+                if (i == keywordList.size()) {
+                    Counter<String> w = new Counter(reviewWords[j]);
                     keywordList.add(w);
                 }
             }
         }
-
-        quicksortKeywordCnt(keywordList, 0, keywordList.size() - 1);
+        keywordList.quicksort(0, keywordList.size() - 1);
         for (int i = 0; i < res.length && i < keywordList.size(); i++) {
-            res[i] = keywordList.get(i).keyword;
+            res[i] = keywordList.get(i).getIdentifier();
+            System.out.println("[cnt = " + keywordList.get(i).getCount() + "] Word: " + keywordList.get(i).getIdentifier());
         }
-
         return res;
-    }
-    
-    private class KeywordCnt {
-        String keyword;
-        int frequency;
-
-        public KeywordCnt(String keyword){
-            this.keyword = keyword;
-            this.frequency = 1;
-        }
-    }
-
-    // public void quicksortKeywordCnt()
-    public void quicksortKeywordCnt(MyArrayList<KeywordCnt> array, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            KeywordCnt pivot = array.get(end);
-
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-
-                // 1. avg rating from highest to lowest
-                // 2. date of latest review - oldest to newest  
-                // 3. ascending order of their id
-                if (array.get(j).frequency > pivot.frequency 
-                || (array.get(j).frequency == pivot.frequency &&
-                    array.get(j).keyword.compareToIgnoreCase(pivot.keyword) < 0)) {
-                    i++;
-
-                    KeywordCnt tmp = array.get(i);
-                    array.set(i, array.get(j));
-                    array.set(j, tmp);
-                }
-            }
-
-            KeywordCnt tmp = array.get(i + 1);
-            array.set(i + 1, array.get(end));
-            array.set(end, tmp);
-
-            partitionIndex = i + 1;
-
-            quicksortKeywordCnt(array, begin, partitionIndex - 1);
-            quicksortKeywordCnt(array, partitionIndex + 1, end);
-        }
     }
 
     public Review[] getReviewsContaining(String searchTerm) {
         // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
         String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));
         searchTermConvertedFaster = searchTermConvertedFaster.trim();
-        if (searchTermConvertedFaster.length() == 0){
+        if (searchTermConvertedFaster.length() == 0) {
             return new Review[0];
         }
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getReview().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())){
+            if (reviewArray.get(i).getReview().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())) {
                 resList.add(reviewArray.get(i));
             }
         }
         Review[] res = new Review[resList.size()];
-        for (int i = 0; i < resList.size(); i++){
+        for (int i = 0; i < resList.size(); i++) {
             res[i] = resList.get(i);
         }
-        // this.restaurantArrayQuickSortByName(res);
         this.reviewArrayQuickSortByDateReviewed(res);
+        for (Review r : res){
+            System.out.println(String.format("Date: %19s",
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed())) + ", review: " + r.getReview());
+        }
         return res;
     }
 }

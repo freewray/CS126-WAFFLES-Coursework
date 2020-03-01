@@ -17,8 +17,8 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetCommonFavouriteRestaurants();
         // testGetNotCommonFavouriteRestaurants();
         // testGetMissingFavouriteRestaurants();
-        // testGetTopRestaurantsByFavouriteCount();
-        // testGetTopCustomersByFavouriteCount();
+         testGetTopRestaurantsByFavouriteCount();
+         testGetTopCustomersByFavouriteCount();
     }
 
     private void testAddFavourite() {
@@ -336,13 +336,12 @@ public class TestTheFavouriteStore extends TestRunner {
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
 
+            System.out.println("   [TEST]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
             // Get favourites sorted by ID from store
             Long[] res = favouriteStore.getTopCustomersByFavouriteCount();
-
-            System.out.println("FavouriteStore: testGetTopCustomersByFavouriteCount()");
-            for (int i = 0; i < res.length; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length; i++) {
+//                System.out.println(res[i]);
+//            }
 
 //            boolean result = false;
 //
@@ -364,17 +363,15 @@ public class TestTheFavouriteStore extends TestRunner {
             // Load test data from /data folder
             Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
                     loadData("/test-favourite/favourite-10.csv"));
-
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
-
+            System.out.println("   [TEST]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
             // Get favourites sorted by ID from store
             Long[] res = favouriteStore.getTopRestaurantsByFavouriteCount();
 
-            System.out.println("FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
-            for (int i = 0; i < res.length; i++) {
-                System.out.println(res[i]);
-            }
+//            for (int i = 0; i < res.length; i++) {
+//                System.out.println(res[i]);
+//            }
 
 //            boolean result = false;
 //

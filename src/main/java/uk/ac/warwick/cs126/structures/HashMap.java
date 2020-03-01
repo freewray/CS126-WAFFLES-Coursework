@@ -28,7 +28,7 @@ public class HashMap<K extends Comparable<K>, V> {
         while (ptr != null) {
             cnt++;
             if (key.equals(ptr.getValue().getKey())) {
-                System.out.println("found: [" + ptr.getValue().getKey() + "," + ptr.getValue().getValue() + "] tried: " + cnt + " times");
+//                System.out.println("found: [" + ptr.getValue().getKey() + "," + ptr.getValue().getValue() + "] tried: " + cnt + " times");
                 return ptr.getValue().getValue();
             }
             ptr = ptr.getNext();

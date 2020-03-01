@@ -1,7 +1,5 @@
 package uk.ac.warwick.cs126.structures;
 
-import java.util.Comparator;
-
 public class Counter<E extends Comparable<? super E>> implements Comparable<Counter<E>>{
     private E identifier;
     private int count;

@@ -113,9 +113,11 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review getReview(Long id) {
-        for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getID().equals(id)) {
-                return reviewArray.get(i);
+        if (dataChecker.isValid(id)){
+            for (int i = 0; i < reviewArray.size(); i++) {
+                if (reviewArray.get(i).getID().equals(id)) {
+                    return reviewArray.get(i);
+                }
             }
         }
         return null;
@@ -214,6 +216,8 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviewsByCustomerID(Long id) {
+        if (!dataChecker.isValid(id))
+            return new Review[0];
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getCustomerID().equals(id)) {
@@ -227,6 +231,8 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review[] getReviewsByRestaurantID(Long id) {
+        if (!dataChecker.isValid(id))
+            return new Review[0];
         MyArrayList<Review> resList = new MyArrayList<>();
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getRestaurantID().equals(id)) {
@@ -240,6 +246,8 @@ public class ReviewStore implements IReviewStore {
     }
 
     public float getAverageCustomerReviewRating(Long id) {
+        if (!dataChecker.isValid(id))
+            return -1;
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
@@ -254,6 +262,8 @@ public class ReviewStore implements IReviewStore {
     }
 
     public float getAverageRestaurantReviewRating(Long id) {
+        if (!dataChecker.isValid(id))
+            return -1;
         int sum = 0;
         int cnt = 0;
         for (int i = 0; i < reviewArray.size(); i++) {
@@ -268,6 +278,8 @@ public class ReviewStore implements IReviewStore {
     }
 
     public int[] getCustomerReviewHistogramCount(Long id) {
+        if (!dataChecker.isValid(id))
+            return new int[0];
         int[] res = new int[5];
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getCustomerID().equals(id)) {
@@ -279,6 +291,8 @@ public class ReviewStore implements IReviewStore {
 
     public int[] getRestaurantReviewHistogramCount(Long id) {
         int[] res = new int[5];
+        if (!dataChecker.isValid(id))
+            return res;
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getRestaurantID().equals(id)) {
                 res[reviewArray.get(i).getRating() - 1]++;
@@ -394,7 +408,7 @@ public class ReviewStore implements IReviewStore {
                     }
                 }
                 if (i == keywordList.size()) {
-                    Counter<String> w = new Counter(reviewWords[j]);
+                    Counter<String> w = new Counter<String>(reviewWords[j]);
                     keywordList.add(w);
                 }
             }

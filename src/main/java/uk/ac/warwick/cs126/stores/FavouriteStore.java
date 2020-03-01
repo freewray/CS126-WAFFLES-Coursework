@@ -313,9 +313,9 @@ public class FavouriteStore implements IFavouriteStore {
         MyComparableArrayList<IDCounter> customerFavourites = new MyComparableArrayList<>();
         for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
             for (j = 0; j < customerFavourites.size(); j++) {
-                if (customerFavourites.get(j).getIdentifier().compareTo(favouriteArray.get(i).getCustomerID()) == 0){
+                if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())){
                     customerFavourites.get(j).addCount();
-                    if (customerFavourites.get(j).getLatestReviewDate().compareTo(favouriteArray.get(i).getDateFavourited()) < 0)
+                    if (customerFavourites.get(j).getLatestReviewDate().before(favouriteArray.get(i).getDateFavourited()))
                         customerFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
 
                     break;

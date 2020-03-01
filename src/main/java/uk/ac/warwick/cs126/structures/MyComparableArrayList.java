@@ -1,6 +1,6 @@
 package uk.ac.warwick.cs126.structures;
 
-public class MyComparableArrayList<E extends Comparable<E>> extends MyArrayList {
+public class MyComparableArrayList<E extends Comparable<E>> extends MyArrayList<E> {
     public MyComparableArrayList(){
         super();
     }

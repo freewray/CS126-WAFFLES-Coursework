@@ -16,11 +16,13 @@ public class CustomerStore implements ICustomerStore {
 
     private MyArrayList<Customer> customerArray;
     private DataChecker dataChecker;
+    private MyArrayList<Long> blackListedCustomerID;
 
     public CustomerStore() {
         // Initialise variables here
         customerArray = new MyArrayList<>();
         dataChecker = new DataChecker();
+        blackListedCustomerID = new MyArrayList<>();
     }
 
     public Customer[] loadCustomerDataToArray(InputStream resource) {
@@ -77,21 +79,25 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public boolean addCustomer(Customer customer) {
-        if (dataChecker.isValid(customer) && this.getCustomer(customer.getID()) == null){
-            customerArray.add(customer);
-            return true;
+        if (!dataChecker.isValid(customer) || blackListedCustomerID.contains(customer.getID())){
+            return false;
         }
-        return false;
+        if (this.getCustomer(customer.getID()) != null){
+            blackListedCustomerID.add(customer.getID());
+            customerArray.remove(this.getCustomer(customer.getID()));
+            return false;
+        }
+        customerArray.add(customer);
+        return true;
     }
 
     public boolean addCustomer(Customer[] customers) {
-        for (int i = 0; i < customers.length; i++) {
-            if (dataChecker.isValid(customers[i]))
-                customerArray.add(customers[i]);
-            else // if anyone of the cus in arrayay is not valid
-                return false;
+        boolean res = true;
+        for (Customer customer : customers) {
+            if (this.addCustomer(customer) == false)
+                res = false;
         }
-        return true;
+        return res;
     }
 
     public Customer getCustomer(Long id) {

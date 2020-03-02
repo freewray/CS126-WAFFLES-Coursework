@@ -84,14 +84,16 @@ public class ReviewStore implements IReviewStore {
         if (blackListedReviewID.contains(review.getID()) || !dataChecker.isValid(review)) {
             return false;
         }
+
+        if (this.getReview(review.getID()) != null){
+            blackListedReviewID.add(review.getID());
+            reviewArray.remove(this.getReview(review.getID()));
+            return false;
+        }
         for (int i = 0; i < reviewArray.size(); i++) {
-            if (reviewArray.get(i).getID().equals(review.getID())) {
-                blackListedReviewID.add(review.getID());
-                reviewArray.remove(reviewArray.get(i));
-                return false;
-            } else if (reviewArray.get(i).getCustomerID().equals(review.getCustomerID())
-                    && reviewArray.get(i).getRestaurantID().equals(review.getRestaurantID())
-                    && reviewArray.get(i).getDateReviewed().compareTo(review.getDateReviewed()) < 0) {
+            if (reviewArray.get(i).getCustomerID().equals(review.getCustomerID())
+                && reviewArray.get(i).getRestaurantID().equals(review.getRestaurantID())
+                && reviewArray.get(i).getDateReviewed().before(review.getDateReviewed())) {
 
                 blackListedReviewID.add(reviewArray.get(i).getID());
                 reviewArray.remove(reviewArray.get(i));

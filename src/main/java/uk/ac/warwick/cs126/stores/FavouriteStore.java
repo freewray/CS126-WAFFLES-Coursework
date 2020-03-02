@@ -79,22 +79,27 @@ public class FavouriteStore implements IFavouriteStore {
     public boolean addFavourite(Favourite favourite) {
         if (!dataChecker.isValid(favourite) || blackListedFavouriteID.contains(favourite.getID()))
             return false;
-        else if (getFavourite(favourite.getID()) != null) {
-            if (getFavourite(favourite.getID()) != null) {
-                favouriteArray.remove(getFavourite(favourite.getID()));
-                blackListedFavouriteID.add(favourite.getID());
-            }
+        if (getFavourite(favourite.getID()) != null) {
+            favouriteArray.remove(getFavourite(favourite.getID()));
+            blackListedFavouriteID.add(favourite.getID());
             return false;
-        } else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null) {
-            Favourite[] tmp = getFavouritesByCustomerID(favourite.getCustomerID());
-            for (int i = 0; i < tmp.length; i++) {
-                if (tmp[i].getRestaurantID() == favourite.getRestaurantID())
-                    favouriteArray.remove(tmp[i]);
+        } 
+        else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
+            || getFavouritesByRestaurantID(favourite.getRestaurantID()) != null) {
+            // replace only if everythings valid but the stored one is newer
+            for (int i = 0; i < favouriteArray.size(); i++) {
+                if (favouriteArray.get(i).getRestaurantID().equals(favourite.getRestaurantID())
+                    && favouriteArray.get(i).getCustomerID().equals(favourite.getCustomerID())
+                    && favouriteArray.get(i).getDateFavourited().after(favourite.getDateFavourited())){
+                    blackListedFavouriteID.add(favouriteArray.get(i).getID());
+                    favouriteArray.remove(favouriteArray.get(i));
+                    favouriteArray.add(favourite);
+                    return true;
+                }
             }
-            favouriteArray.add(favourite);
-            return true;
         }
-        return false;
+        favouriteArray.add(favourite);
+        return true;
     }
 
     public boolean addFavourite(Favourite[] favourites) {

@@ -32,8 +32,8 @@ public class FavouriteStore implements IFavouriteStore {
 
         try {
             byte[] inputStreamBytes = IOUtils.toByteArray(resource);
-            BufferedReader lineReader = new BufferedReader(new InputStreamReader(
-                    new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
+            BufferedReader lineReader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
 
             int lineCount = 0;
             String line;
@@ -46,8 +46,8 @@ public class FavouriteStore implements IFavouriteStore {
 
             Favourite[] loadedFavourites = new Favourite[lineCount - 1];
 
-            BufferedReader csvReader = new BufferedReader(new InputStreamReader(
-                    new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
+            BufferedReader csvReader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
 
             int favouriteCount = 0;
             String row;
@@ -57,11 +57,8 @@ public class FavouriteStore implements IFavouriteStore {
             while ((row = csvReader.readLine()) != null) {
                 if (!("".equals(row))) {
                     String[] data = row.split(",");
-                    Favourite favourite = new Favourite(
-                            Long.parseLong(data[0]),
-                            Long.parseLong(data[1]),
-                            Long.parseLong(data[2]),
-                            formatter.parse(data[3]));
+                    Favourite favourite = new Favourite(Long.parseLong(data[0]), Long.parseLong(data[1]),
+                            Long.parseLong(data[2]), formatter.parse(data[3]));
                     loadedFavourites[favouriteCount++] = favourite;
                 }
             }
@@ -83,14 +80,13 @@ public class FavouriteStore implements IFavouriteStore {
             favouriteArray.remove(getFavourite(favourite.getID()));
             blackListedFavouriteID.add(favourite.getID());
             return false;
-        } 
-        else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
-            || getFavouritesByRestaurantID(favourite.getRestaurantID()) != null) {
+        } else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
+                || getFavouritesByRestaurantID(favourite.getRestaurantID()) != null) {
             // replace only if everythings valid but the stored one is newer
             for (int i = 0; i < favouriteArray.size(); i++) {
                 if (favouriteArray.get(i).getRestaurantID().equals(favourite.getRestaurantID())
-                    && favouriteArray.get(i).getCustomerID().equals(favourite.getCustomerID())
-                    && favouriteArray.get(i).getDateFavourited().after(favourite.getDateFavourited())){
+                        && favouriteArray.get(i).getCustomerID().equals(favourite.getCustomerID())
+                        && favouriteArray.get(i).getDateFavourited().after(favourite.getDateFavourited())) {
                     blackListedFavouriteID.add(favouriteArray.get(i).getID());
                     favouriteArray.remove(favouriteArray.get(i));
                     favouriteArray.add(favourite);
@@ -170,7 +166,7 @@ public class FavouriteStore implements IFavouriteStore {
         for (int i = 0; i < res.length; i++) {
             res[i] = favouriteArray.get(i);
         }
-        favouriteQuickSort(res,"id", 0, res.length - 1);
+        favouriteQuickSort(res, "id", 0, res.length - 1);
         return res;
     }
 
@@ -226,7 +222,9 @@ public class FavouriteStore implements IFavouriteStore {
         for (int i = 0; i < customer1Favs.size(); i++) {
             for (int j = 0; j < customer2Favs.size(); j++) {
                 if (customer2Favs.get(j).getRestaurantID().equals(customer1Favs.get(i).getRestaurantID()))
-                    resList.add(customer1Favs.get(i).getDateFavourited().compareTo(customer2Favs.get(j).getDateFavourited()) >= 0 ? customer1Favs.get(i) : customer2Favs.get(i));
+                    resList.add(customer1Favs.get(i).getDateFavourited().after(customer2Favs.get(j).getDateFavourited())
+                            ? customer1Favs.get(i)
+                            : customer2Favs.get(j));
             }
         }
         Favourite[] favRes = new Favourite[resList.size()];
@@ -235,7 +233,7 @@ public class FavouriteStore implements IFavouriteStore {
         }
         favouriteQuickSort(favRes, "date", 0, favRes.length - 1);
         Long[] res = new Long[favRes.length];
-        for (int i = 0; i < favRes.length; i++) {
+        for (int i = 0; i < favRes.length && i < res.length; i++) {
             res[i] = favRes[i].getRestaurantID();
         }
         return res;
@@ -244,32 +242,21 @@ public class FavouriteStore implements IFavouriteStore {
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
-        MyArrayList<Favourite> customer1Favs = new MyArrayList<>();
-        MyArrayList<Favourite> customer2Favs = new MyArrayList<>();
-        for (int i = 0; i < favouriteArray.size(); i++) {
-            if (favouriteArray.get(i).getCustomerID().equals(customer1ID))
-                customer1Favs.add(favouriteArray.get(i));
-            if (favouriteArray.get(i).getCustomerID().equals(customer2ID))
-                customer2Favs.add(favouriteArray.get(i));
+        Favourite[] customer1Favs = this.getFavouritesByCustomerID(customer1ID);
+        Long[] commons = this.getCommonFavouriteRestaurants(customer1ID, customer2ID);
+        MyArrayList<Favourite> missing = new MyArrayList<>();
+        for (int i = 0; i < customer1Favs.length; i++) {
+            missing.add(customer1Favs[i]);
         }
-        if (customer1Favs.size() == 0)
-            return new Long[0];
-        else if (customer2Favs.size() == 0) {
-            Long[] res = new Long[customer1Favs.size()];
-            for (int i = 0; i < customer1Favs.size(); i++) {
-                res[i] = customer1Favs.get(i).getRestaurantID();
-            }
-            return res;
+        for (int i = 0; i < commons.length; i++) {
+            missing.remove(this.getFavourite(commons[i]));
         }
-        for (int i = 0; i < customer1Favs.size(); i++) {
-            for (int j = 0; j < customer2Favs.size(); j++) {
-                if (customer2Favs.get(j).getRestaurantID().equals(customer1Favs.get(i).getRestaurantID()))
-                    customer1Favs.remove(customer1Favs.get(i));
-            }
-        }
-        Long[] res = new Long[customer1Favs.size()];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = customer1Favs.get(i).getRestaurantID();
+        Favourite[] resArr = new Favourite[missing.size()];
+        resArr = missing.toArray(resArr);
+        favouriteQuickSort(resArr, "date", 0, resArr.length - 1);
+        Long[] res = new Long[resArr.length];
+        for (int i = 0; i < resArr.length && i < res.length; i++) {
+            res[i] = resArr[i].getRestaurantID();
         }
         return res;
     }
@@ -318,17 +305,19 @@ public class FavouriteStore implements IFavouriteStore {
         MyComparableArrayList<IDCounter> customerFavourites = new MyComparableArrayList<>();
         for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
             for (j = 0; j < customerFavourites.size(); j++) {
-                if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())){
+                if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())) {
                     customerFavourites.get(j).addCount();
-                    if (customerFavourites.get(j).getLatestReviewDate().before(favouriteArray.get(i).getDateFavourited()))
+                    if (customerFavourites.get(j).getLatestReviewDate()
+                            .before(favouriteArray.get(i).getDateFavourited()))
                         customerFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
 
                     break;
                 }
             }
 
-            if (j == customerFavourites.size()){
-                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getCustomerID(), favouriteArray.get(i).getDateFavourited());
+            if (j == customerFavourites.size()) {
+                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getCustomerID(),
+                        favouriteArray.get(i).getDateFavourited());
                 customerFavourites.add(customerFavourite);
             }
         }
@@ -337,7 +326,8 @@ public class FavouriteStore implements IFavouriteStore {
         // sort by latest date (oldest to newest)
         for (int i = 0; i < topCustomer.length && i < customerFavourites.size(); i++) {
             topCustomer[i] = customerFavourites.get(i).getIdentifier();
-            System.out.println("[cnt = " + customerFavourites.get(i).getCount() + "] fave: " + customerFavourites.get(i).getIdentifier());
+            System.out.println("[cnt = " + customerFavourites.get(i).getCount() + "] fave: "
+                    + customerFavourites.get(i).getIdentifier());
         }
 
         return topCustomer;
@@ -349,17 +339,20 @@ public class FavouriteStore implements IFavouriteStore {
         MyComparableArrayList<IDCounter> topRestaurantFavourites = new MyComparableArrayList<>();
         for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
             for (j = 0; j < topRestaurantFavourites.size(); j++) {
-                if (topRestaurantFavourites.get(j).getIdentifier().compareTo(favouriteArray.get(i).getRestaurantID()) == 0){
+                if (topRestaurantFavourites.get(j).getIdentifier()
+                        .compareTo(favouriteArray.get(i).getRestaurantID()) == 0) {
                     topRestaurantFavourites.get(j).addCount();
-                    if (topRestaurantFavourites.get(j).getLatestReviewDate().compareTo(favouriteArray.get(i).getDateFavourited()) < 0)
+                    if (topRestaurantFavourites.get(j).getLatestReviewDate()
+                            .compareTo(favouriteArray.get(i).getDateFavourited()) < 0)
                         topRestaurantFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
 
                     break;
                 }
             }
 
-            if (j == topRestaurantFavourites.size()){
-                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getRestaurantID(), favouriteArray.get(i).getDateFavourited());
+            if (j == topRestaurantFavourites.size()) {
+                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getRestaurantID(),
+                        favouriteArray.get(i).getDateFavourited());
                 topRestaurantFavourites.add(customerFavourite);
             }
         }
@@ -368,7 +361,8 @@ public class FavouriteStore implements IFavouriteStore {
         // sort by latest date (oldest to newest)
         for (int i = 0; i < topRestaurants.length && i < topRestaurantFavourites.size(); i++) {
             topRestaurants[i] = topRestaurantFavourites.get(i).getIdentifier();
-            System.out.println("[cnt = " + topRestaurantFavourites.get(i).getCount() + "] fave: " + topRestaurantFavourites.get(i).getIdentifier());
+            System.out.println("[cnt = " + topRestaurantFavourites.get(i).getCount() + "] fave: "
+                    + topRestaurantFavourites.get(i).getIdentifier());
         }
 
         return topRestaurants;

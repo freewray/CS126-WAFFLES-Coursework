@@ -1,27 +1,20 @@
 package uk.ac.warwick.cs126.stores;
 
+import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IRestaurantStore;
-import uk.ac.warwick.cs126.models.Cuisine;
-import uk.ac.warwick.cs126.models.EstablishmentType;
-import uk.ac.warwick.cs126.models.Place;
-import uk.ac.warwick.cs126.models.PriceRange;
-import uk.ac.warwick.cs126.models.Restaurant;
-import uk.ac.warwick.cs126.models.RestaurantDistance;
+import uk.ac.warwick.cs126.models.*;
+import uk.ac.warwick.cs126.structures.MyArrayList;
+import uk.ac.warwick.cs126.util.ConvertToPlace;
+import uk.ac.warwick.cs126.util.DataChecker;
+import uk.ac.warwick.cs126.util.HaversineDistanceCalculator;
+import uk.ac.warwick.cs126.util.StringFormatter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 // import java.util.Date;
-
-import org.apache.commons.io.IOUtils;
-
-import uk.ac.warwick.cs126.structures.MyArrayList;
-
-import uk.ac.warwick.cs126.util.ConvertToPlace;
-import uk.ac.warwick.cs126.util.HaversineDistanceCalculator;
-import uk.ac.warwick.cs126.util.DataChecker;
-import uk.ac.warwick.cs126.util.StringFormatter;
 
 public class RestaurantStore implements IRestaurantStore {
 
@@ -359,7 +352,7 @@ public class RestaurantStore implements IRestaurantStore {
             Place place = convertToPlace.convert(restaurantArray.get(i).getLatitude(),
                     restaurantArray.get(i).getLongitude());
             if (restaurantArray.get(i).getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())
-                    || restaurantArray.get(i).getCuisine().name().toLowerCase()
+                    || restaurantArray.get(i).getCuisine().toString()
                             .contains(searchTermConvertedFaster.toLowerCase())
                     || place.getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())) {
 

@@ -243,16 +243,26 @@ public class FavouriteStore implements IFavouriteStore {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
         Favourite[] customer1Favs = this.getFavouritesByCustomerID(customer1ID);
-        Long[] commons = this.getCommonFavouriteRestaurants(customer1ID, customer2ID);
+        Favourite[] customer2Favs = this.getFavouritesByCustomerID(customer2ID);
         MyArrayList<Favourite> missing = new MyArrayList<>();
+
+        // remove commons from all
+        for (int i = 0; i < customer2Favs.length; i++) {
+            for (int j = 0; j < missing.size(); j++) {
+                if (missing.get(j).getRestaurantID().equals(customer2Favs[i].getRestaurantID())) {
+                    missing.remove(missing.get(j));
+                }
+            }
+        }
+
+        // transfer cus1 favs into an arraylist
         for (int i = 0; i < customer1Favs.length; i++) {
             missing.add(customer1Favs[i]);
         }
-        for (int i = 0; i < commons.length; i++) {
-            missing.remove(this.getFavourite(commons[i]));
-        }
+
+        // transfer the missings back to array and then sort by date
         Favourite[] resArr = new Favourite[missing.size()];
-        resArr = missing.toArray(resArr);
+        missing.toArray(resArr);
         favouriteQuickSort(resArr, "date", 0, resArr.length - 1);
         Long[] res = new Long[resArr.length];
         for (int i = 0; i < resArr.length && i < res.length; i++) {
@@ -264,13 +274,23 @@ public class FavouriteStore implements IFavouriteStore {
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
-        MySet<Favourite> notCommon = new MySet<>();
-        // add all restaurants to the set
-        for (int i = 0; i < favouriteArray.size(); i++) {
-            if (favouriteArray.get(i).getCustomerID().equals(customer1ID))
-                notCommon.add(favouriteArray.get(i));
-            if (favouriteArray.get(i).getCustomerID().equals(customer2ID))
-                notCommon.add(favouriteArray.get(i));
+        MyArrayList<Favourite> notCommon = new MyArrayList<>();
+        Favourite[] cus1 = this.getFavouritesByCustomerID(customer1ID);
+        Favourite[] cus2 = this.getFavouritesByCustomerID(customer2ID);
+
+        for (Favourite favourite : cus1) {
+            notCommon.add(favourite);
+        }
+
+        // add distinct cus2 fav into array (create union)
+        for (Favourite favourite : cus2) {
+            int i;
+            for (i = 0; i < notCommon.size(); i++) {
+                if (notCommon.get(i).getRestaurantID().equals(favourite.getRestaurantID()))
+                    break;
+            }
+            if (i == notCommon.size())
+                notCommon.add(favourite);
         }
 
         // remove commons

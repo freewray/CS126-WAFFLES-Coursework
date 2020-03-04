@@ -3,10 +3,10 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IFavouriteStore;
 import uk.ac.warwick.cs126.models.Favourite;
-import uk.ac.warwick.cs126.structures.AVLTreeCom;
 import uk.ac.warwick.cs126.structures.IDCounter;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.structures.MyComparableArrayList;
+import uk.ac.warwick.cs126.structures.MySet;
 import uk.ac.warwick.cs126.util.DataChecker;
 
 import java.io.*;
@@ -17,13 +17,13 @@ import java.text.SimpleDateFormat;
 public class FavouriteStore implements IFavouriteStore {
 
     private MyArrayList<Favourite> favouriteArray;
-    private AVLTreeCom<Long> blackListedFavouriteID;
+    private MyArrayList<Long> blackListedFavouriteID;
     private DataChecker dataChecker;
 
     public FavouriteStore() {
         // Initialise variables here
         favouriteArray = new MyArrayList<>();
-        blackListedFavouriteID = new AVLTreeCom<>();
+        blackListedFavouriteID = new MyArrayList<>();
         dataChecker = new DataChecker();
     }
 
@@ -74,21 +74,20 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public boolean addFavourite(Favourite favourite) {
-        if (!dataChecker.isValid(favourite) || blackListedFavouriteID.search(favourite.getID()) != null)
+        if (!dataChecker.isValid(favourite) || blackListedFavouriteID.contains(favourite.getID()))
             return false;
         if (getFavourite(favourite.getID()) != null) {
             favouriteArray.remove(getFavourite(favourite.getID()));
-            blackListedFavouriteID.insert(favourite.getID());
+            blackListedFavouriteID.add(favourite.getID());
             return false;
-        }
-        else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
+        } else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
                 || getFavouritesByRestaurantID(favourite.getRestaurantID()) != null) {
             // replace only if everythings valid but the stored one is newer
             for (int i = 0; i < favouriteArray.size(); i++) {
                 if (favouriteArray.get(i).getRestaurantID().equals(favourite.getRestaurantID())
                         && favouriteArray.get(i).getCustomerID().equals(favourite.getCustomerID())
                         && favouriteArray.get(i).getDateFavourited().after(favourite.getDateFavourited())) {
-                    blackListedFavouriteID.insert(favouriteArray.get(i).getID());
+                    blackListedFavouriteID.add(favouriteArray.get(i).getID());
                     favouriteArray.remove(favouriteArray.get(i));
                     favouriteArray.add(favourite);
                     return true;
@@ -128,7 +127,7 @@ public class FavouriteStore implements IFavouriteStore {
             return dateCompare;
     }
 
-    public void favouriteQuickSort(Favourite[] array, String sortBy, int begin, int end) {
+    public void favouriteQuickSort(Favourite array[], String sortBy, int begin, int end) {
         if (begin < end) {
             int partitionIndex = 0;
             Favourite pivot = array[end];
@@ -322,45 +321,33 @@ public class FavouriteStore implements IFavouriteStore {
     public Long[] getTopCustomersByFavouriteCount() {
         // arraylist of fav in rank sorted by their length
         Long[] topCustomer = new Long[20];
-        MyArrayList<IDCounter> resList = new MyArrayList<>();
 
-        AVLTreeCom<IDCounter> customerFavourites = new AVLTreeCom<>();
+        MyComparableArrayList<IDCounter> customerFavourites = new MyComparableArrayList<>();
         for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
+            for (j = 0; j < customerFavourites.size(); j++) {
+                if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())) {
+                    customerFavourites.get(j).addCount();
+                    if (customerFavourites.get(j).getLatestReviewDate()
+                            .before(favouriteArray.get(i).getDateFavourited()))
+                        customerFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
 
-            IDCounter tmp = new IDCounter(favouriteArray.get(i).getCustomerID(), favouriteArray.get(i).getDateFavourited());
-            if (customerFavourites.search(tmp) != null){
-                customerFavourites.search(tmp).getKey().addCount();
-//                if (customerFavourites.search(tmp).getKey().getLatestReviewDate().before(tmp.getLatestReviewDate()))
-//                    customerFavourites.search(tmp).getKey().setLatestReviewDate(tmp.getLatestReviewDate());
+                    break;
+                }
             }
-            else {
-                customerFavourites.insert(tmp);
+
+            if (j == customerFavourites.size()) {
+                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getCustomerID(),
+                        favouriteArray.get(i).getDateFavourited());
+                customerFavourites.add(customerFavourite);
             }
-//            for (j = 0; j < customerFavourites.size(); j++) {
-//                if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())) {
-//                    customerFavourites.get(j).addCount();
-//                    if (customerFavourites.get(j).getLatestReviewDate()
-//                            .before(favouriteArray.get(i).getDateFavourited()))
-//                        customerFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
-//
-//                    break;
-//                }
-//            }
-//
-//            if (j == customerFavourites.size()) {
-//                IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getCustomerID(),
-//                        favouriteArray.get(i).getDateFavourited());
-//                customerFavourites.add(customerFavourite);
-//            }
         }
         // sort by favourite times
-//        customerFavourites.quicksort(0, customerFavourites.size() - 1);
+        customerFavourites.quicksort(0, customerFavourites.size() - 1);
         // sort by latest date (oldest to newest)
-        customerFavourites.inOrder(resList);
-        for (int i = 0; i < topCustomer.length && i < resList.size(); i++) {
-            topCustomer[i] = resList.get(i).getIdentifier();
-            System.out.println("[cnt = " + resList.get(i).getCount() + "] fave: "
-                    + resList.get(i).getIdentifier());
+        for (int i = 0; i < topCustomer.length && i < customerFavourites.size(); i++) {
+            topCustomer[i] = customerFavourites.get(i).getIdentifier();
+            System.out.println("[cnt = " + customerFavourites.get(i).getCount() + "] fave: "
+                    + customerFavourites.get(i).getIdentifier());
         }
 
         return topCustomer;

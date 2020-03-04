@@ -1,7 +1,6 @@
 package uk.ac.warwick.cs126.structures;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class IDCounter implements Comparable<IDCounter>{
 
@@ -47,18 +46,5 @@ public class IDCounter implements Comparable<IDCounter>{
         } else {
             return countCompare;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IDCounter idCounter = (IDCounter) o;
-        return identifier.equals(idCounter.identifier);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(identifier);
     }
 }

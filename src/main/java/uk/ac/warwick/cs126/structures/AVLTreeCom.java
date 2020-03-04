@@ -137,34 +137,4 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
     public AVLTreeNode<E> search(E key) {
         return search(root, key);
     }
-
-    private void print(AVLTreeNode<E> tree, E key, int direction) {
-        if(tree != null) {
-            if(direction==0)    // tree是根节点
-                System.out.println(tree.getKey());
-            else                // tree是分支节点
-                System.out.println(tree.getKey() + (direction==1?"right" : "left"));
-
-            print(tree.getLeft(), tree.getKey(), -1);
-            print(tree.getRight(),tree.getKey(),  1);
-        }
-    }
-
-    public void print() {
-        if (root != null)
-            print(root, root.getKey(), 0);
-    }
-
-    public void inOrder(AVLTreeNode<E> tree, MyArrayList<E> arr) {
-        if(tree != null)
-        {
-            inOrder(tree.getLeft(), arr);
-            arr.add(tree.getKey());
-            inOrder(tree.getRight(), arr);
-        }
-    }
-
-    public void inOrder(MyArrayList<E> arr) {
-        inOrder(root, arr);
-    }
 }

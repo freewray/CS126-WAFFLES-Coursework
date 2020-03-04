@@ -226,8 +226,8 @@ public class StringFormatter {
             char[] charArr = accentAndConvertedAccent[i][0].toCharArray();
             int key = 0;
             for (char ch : charArr)
-                key += (int) ch;
-            System.out.println("add: key = " + key + ", value = " + accentAndConvertedAccent[i][1]);
+                key += ch;
+//            System.out.println("add: key = " + key + ", value = " + accentAndConvertedAccent[i][1]);
             accentAndConvertedAccentMap.add(key, accentAndConvertedAccent[i][1]);
         }
     }
@@ -236,7 +236,7 @@ public class StringFormatter {
         String replacedString = str;
         for (int i = 0; i < replacedString.length(); i++) {
             char letter = replacedString.charAt(i);
-            int uni = (int) letter;
+            int uni = letter;
             // if the character isn't alpha numerical
             if (!((uni >= 65 && uni <= 90) || (uni >= 97 && uni <= 122) || (uni >= 48 && uni <= 57) || uni == 32)) {
                 // System.out.println((int) letter + " -> " +

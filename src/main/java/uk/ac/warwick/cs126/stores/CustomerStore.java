@@ -3,6 +3,8 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.ICustomerStore;
 import uk.ac.warwick.cs126.models.Customer;
+import uk.ac.warwick.cs126.structures.AVLTreeCom;
+import uk.ac.warwick.cs126.structures.CustomerAVLTree;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.util.DataChecker;
 import uk.ac.warwick.cs126.util.StringFormatter;
@@ -14,15 +16,14 @@ import java.text.SimpleDateFormat;
 
 public class CustomerStore implements ICustomerStore {
 
-    private MyArrayList<Customer> customerArray;
+    private CustomerAVLTree customerTree;
     private DataChecker dataChecker;
-    private MyArrayList<Long> blackListedCustomerID;
+    private AVLTreeCom<Long> blackListedCustomerID;
 
     public CustomerStore() {
-        // Initialise variables here
-        customerArray = new MyArrayList<>();
         dataChecker = new DataChecker();
-        blackListedCustomerID = new MyArrayList<>();
+        blackListedCustomerID = new AVLTreeCom<>();
+        customerTree = new CustomerAVLTree();
     }
 
     public Customer[] loadCustomerDataToArray(InputStream resource) {
@@ -79,15 +80,15 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public boolean addCustomer(Customer customer) {
-        if (!dataChecker.isValid(customer) || blackListedCustomerID.contains(customer.getID())){
+        if (!dataChecker.isValid(customer) || blackListedCustomerID.search(customer.getID()) != null){
             return false;
         }
         if (this.getCustomer(customer.getID()) != null){
-            blackListedCustomerID.add(customer.getID());
-            customerArray.remove(this.getCustomer(customer.getID()));
+            blackListedCustomerID.insert(customer.getID());
+            customerTree.remove(this.getCustomer(customer.getID()));
             return false;
         }
-        customerArray.add(customer);
+        customerTree.insert(customer, "id");
         return true;
     }
 
@@ -101,90 +102,53 @@ public class CustomerStore implements ICustomerStore {
     }
 
     public Customer getCustomer(Long id) {
-        for (int i = 0; i < customerArray.size(); i++) {
-            if (customerArray.get(i).getID().equals(id))
-                return customerArray.get(i);
-        }
-        return null;
+        return customerTree.searchByID(id);
     }
 
     public Customer[] getCustomers() {
-        Customer[] res = new Customer[customerArray.size()];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = customerArray.get(i);
-        }
-        customerQuickSort(res, "id", 0, res.length - 1);
-        return res;
-    }
-
-
-    private int idCompare(Customer c1, Customer c2) {
-        return c1.getID().compareTo(c2.getID());
-    }
-
-    private int nameCompare(Customer c1, Customer c2){
-        int firstNameCompare = c1.getFirstName().compareToIgnoreCase(c2.getFirstName());
-        int lastNameCompare = c1.getLastName().compareToIgnoreCase((c2.getLastName()));
-        if (firstNameCompare == 0 && lastNameCompare == 0)
-            return idCompare(c1, c2);
-        else if (lastNameCompare == 0)
-            return firstNameCompare;
-        else
-            return lastNameCompare;
-    }
-
-    public void customerQuickSort(Customer[] array, String sortBy, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            Customer pivot = array[end];
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-                int c = 0;
-
-                if (sortBy.equalsIgnoreCase("name"))
-                    c = nameCompare(array[j], pivot);
-                else if (sortBy.equalsIgnoreCase("id"))
-                    c = idCompare(array[j], pivot);
-
-                if (c < 0) {
-                    i++;
-
-                    Customer tmp = array[i];
-                    array[i] = array[j];
-                    array[j] = tmp;
-                }
-            }
-
-            Customer tmp = array[i + 1];
-            array[i + 1] = array[end];
-            array[end] = tmp;
-
-            partitionIndex = i + 1;
-
-            customerQuickSort(array, sortBy, begin, partitionIndex - 1);
-            customerQuickSort(array, sortBy, partitionIndex + 1, end);
-        }
+        MyArrayList<Customer> resList = new MyArrayList<>();
+        customerTree.inOrder(resList);
+        Customer[] result = new Customer[resList.size()];
+        result = resList.toArray(result);
+        return result;
     }
 
     public Customer[] getCustomers(Customer[] customers) {
-        Customer[] res = customers.clone();
-        customerQuickSort(res, "id", 0, res.length - 1);
-        return res;
+        CustomerAVLTree tree = new CustomerAVLTree();
+
+        for (Customer c : customers)
+            tree.insert(c, "id");
+
+        MyArrayList<Customer> resList = new MyArrayList<>();
+        tree.inOrder(resList);
+        Customer[] result = new Customer[resList.size()];
+        result = resList.toArray(result);
+        return result;
     }
 
     public Customer[] getCustomersByName() {
-        Customer[] res = new Customer[customerArray.size()];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = customerArray.get(i);
+        Customer[] tmp = this.getCustomers();
+        MyArrayList<Customer> resList = new MyArrayList<>();
+        CustomerAVLTree tree = new CustomerAVLTree();
+        for (Customer c : tmp) {
+            tree.insert(c, "name");
         }
-        customerQuickSort(res, "name", 0, res.length - 1);
-        return res;
+        tree.inOrder(resList);
+        Customer[] result = new Customer[resList.size()];
+        result = resList.toArray(result);
+        return result;
     }
 
     public Customer[] getCustomersByName(Customer[] customers) {
-        customerQuickSort(customers, "name", 0, customers.length - 1);
-        return customers;
+        MyArrayList<Customer> resList = new MyArrayList<>();
+        CustomerAVLTree tree = new CustomerAVLTree();
+        for (Customer c : customers) {
+            tree.insert(c, "name");
+        }
+        tree.inOrder(resList);
+        Customer[] result = new Customer[resList.size()];
+        result = resList.toArray(result);
+        return result;
     }
 
     public Customer[] getCustomersContaining(String searchTerm) {
@@ -193,27 +157,33 @@ public class CustomerStore implements ICustomerStore {
             return new Customer[0];
         String searchTermConverted = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));
         MyArrayList<Customer> resList = new MyArrayList<>();
+        MyArrayList<Customer> customerList = new MyArrayList<>();
+        customerTree.inOrder(customerList);
         if (searchTermConverted.contains("/s")) {
             String[] term = searchTermConverted.split("/s");
             String firstName = term[0];
             String lastName = term[1];
 
-            for (int i = 0; i < customerArray.size(); i++) {
-                if (customerArray.get(i).getFirstName().toLowerCase().contains(firstName.toLowerCase()) && customerArray.get(i).getLastName().toLowerCase().contains(lastName.toLowerCase()))
-                    resList.add(customerArray.get(i));
+            for (int i = 0; i < customerList.size(); i++) {
+                if (customerList.get(i).getFirstName().toLowerCase().contains(firstName.toLowerCase()) && customerList.get(i).getLastName().toLowerCase().contains(lastName.toLowerCase()))
+                    resList.add(customerList.get(i));
             }
         } else {
-            for (int i = 0; i < customerArray.size(); i++) {
-                if (customerArray.get(i).getFirstName().toLowerCase().contains(searchTermConverted.trim().toLowerCase()) || customerArray.get(i).getLastName().toLowerCase().contains(searchTermConverted.trim().toLowerCase()))
-                    resList.add(customerArray.get(i));
+            for (int i = 0; i < customerList.size(); i++) {
+                if (customerList.get(i).getFirstName().toLowerCase().contains(searchTermConverted.trim().toLowerCase()) || customerList.get(i).getLastName().toLowerCase().contains(searchTermConverted.trim().toLowerCase()))
+                    resList.add(customerList.get(i));
             }
         }
-
+        CustomerAVLTree tree = new CustomerAVLTree();
+        for (int i = 0; i < resList.size(); i++) {
+            tree.insert(resList.get(i), "name");
+        }
+        resList.clear();
+        tree.inOrder(resList);
         Customer[] res = new Customer[resList.size()];
         for (int i = 0; i < resList.size(); i++) {
             res[i] = resList.get(i);
         }
-        customerQuickSort(res, "name", 0, res.length - 1);
         return res;
     }
 }

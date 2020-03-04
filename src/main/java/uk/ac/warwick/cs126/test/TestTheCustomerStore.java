@@ -101,6 +101,7 @@ public class TestTheCustomerStore extends TestRunner {
             } else {
                 System.out.println(" [FAILED]    CustomerStore: testGetCustomer()");
             }
+//            System.out.println(customerStore.getCustomer(3367675867544843L));
         } catch (Exception e) {
             System.out.println(" [FAILED]    CustomerStore: testGetCustomer()");
             e.printStackTrace();

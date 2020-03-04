@@ -3,7 +3,10 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IRestaurantStore;
 import uk.ac.warwick.cs126.models.*;
+import uk.ac.warwick.cs126.structures.AVLTreeCom;
 import uk.ac.warwick.cs126.structures.MyArrayList;
+import uk.ac.warwick.cs126.structures.RestaurantAVLTree;
+import uk.ac.warwick.cs126.structures.RestaurantDistanceAVLTree;
 import uk.ac.warwick.cs126.util.ConvertToPlace;
 import uk.ac.warwick.cs126.util.DataChecker;
 import uk.ac.warwick.cs126.util.HaversineDistanceCalculator;
@@ -18,15 +21,15 @@ import java.text.SimpleDateFormat;
 
 public class RestaurantStore implements IRestaurantStore {
 
-    private MyArrayList<Restaurant> restaurantArray;
     private DataChecker dataChecker;
-    private MyArrayList<Long> blackListedRestaurantID;
+    private AVLTreeCom<Long> blackListedRestaurantID;
+    private RestaurantAVLTree restaurantTree;
 
     public RestaurantStore() {
         // Initialise variables here
-        restaurantArray = new MyArrayList<>();
         dataChecker = new DataChecker();
-        blackListedRestaurantID = new MyArrayList<>();
+        blackListedRestaurantID = new AVLTreeCom<>();
+        restaurantTree = new RestaurantAVLTree();
     }
 
     public Restaurant[] loadRestaurantDataToArray(InputStream resource) {
@@ -85,20 +88,15 @@ public class RestaurantStore implements IRestaurantStore {
     public boolean addRestaurant(Restaurant restaurant) {
         Long id = dataChecker.extractTrueID(restaurant.getRepeatedID());
         restaurant.setID(id);
-        // blackListedRestaurantID.contains(restaurant.getID()) ||
-        for (int i = 0; i < blackListedRestaurantID.size(); i++) {
-            if (blackListedRestaurantID.get(i).equals(restaurant.getID()))
-                return false;
-        }
-        if (!dataChecker.isValid(restaurant)) {
+        if (!dataChecker.isValid(restaurant) || blackListedRestaurantID.search(restaurant.getID()) != null){
             return false;
         }
         if (this.getRestaurant(restaurant.getID()) != null) {
-            blackListedRestaurantID.add(restaurant.getID());
-            restaurantArray.remove(this.getRestaurant(restaurant.getID()));
+            blackListedRestaurantID.insert(restaurant.getID());
+            restaurantTree.remove(this.getRestaurant(restaurant.getID()));
             return false;
         }
-        restaurantArray.add(restaurant);
+        restaurantTree.insert(restaurant);
         return true;
     }
 
@@ -113,224 +111,119 @@ public class RestaurantStore implements IRestaurantStore {
     }
 
     public Restaurant getRestaurant(Long id) {
-        for (int i = 0; i < restaurantArray.size(); i++) {
-            if (restaurantArray.get(i).getID().equals(id))
-                return restaurantArray.get(i);
-        }
-        return null;
+        return restaurantTree.searchByID(id);
     }
 
     public Restaurant[] getRestaurants() {
-        Restaurant[] restaurants = new Restaurant[restaurantArray.size()];
-        for (int i = 0; i < restaurantArray.size(); i++) {
-            restaurants[i] = restaurantArray.get(i);
+        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        Restaurant[] restaurants = new Restaurant[tmp.size()];
+        for (int i = 0; i < tmp.size(); i++) {
+            restaurants[i] = tmp.get(i);
         }
-        this.restaurantArrayQuickSortByID(restaurants);
         return restaurants;
     }
 
-    private void restaurantArrayQuickSortByID(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSort(restaurants, "id", 0, restaurants.length - 1);
-    }
-
-    private void restaurantArrayQuickSortByName(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSort(restaurants, "name", 0, restaurants.length - 1);
-    }
-
-    private void restaurantArrayQuickSortByDateEstablished(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSort(restaurants, "dateEstablished", 0, restaurants.length - 1);
-    }
-
-    private void restaurantArrayQuickSortByWarwickStars(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSort(restaurants, "warwickStar", 0, restaurants.length - 1);
-    }
-
-    private void restaurantArrayQuickSortByCustomerRating(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSort(restaurants, "rating", 0, restaurants.length - 1);
-    }
-
-    private int idCompare(Restaurant r1, Restaurant r2) {
-        return r1.getID().compareTo(r2.getID());
-    }
-
-    private int nameCompare(Restaurant r1, Restaurant r2) {
-        int nameCompare = r1.getName().compareToIgnoreCase(r2.getName());
-        if (nameCompare == 0)
-            return idCompare(r1, r2);
-        else
-            return nameCompare;
-    }
-
-    /**
-     * sorted by Date Established, from oldest to most recent. If they have the same
-     * Date Established, then it is sorted alphabetically by the restaurant Name. If
-     * they have the same restaurant Name, then it is sorted in ascending order of
-     * their ID.
-     */
-    private int dateCompare(Restaurant r1, Restaurant r2) {
-        int dateCompare = r1.getDateEstablished().compareTo(r2.getDateEstablished());
-        if (dateCompare == 0)
-            return nameCompare(r1, r2);
-        else
-            return dateCompare;
-    }
-
-    /**
-     * sorted in descending order of Warwick Stars. If they have the same Warwick
-     * Stars, then it is sorted alphabetically by the restaurant Name. If they have
-     * the same restaurant Name, then it is sorted in ascending order of their ID.
-     */
-    private int warwickStarCompare(Restaurant r1, Restaurant r2) {
-        if (r1.getWarwickStars() == r2.getWarwickStars())
-            return nameCompare(r1, r2);
-        else
-            return r2.getWarwickStars() - r1.getWarwickStars();
-    }
-
-    /**
-     * sorted in descending order of Rating. If they have the same Rating, then it
-     * is sorted alphabetically by the restaurant Name. If they have the same
-     * restaurant Name, then it is sorted in ascending order of their ID.
-     */
-    private int ratingCompare(Restaurant r1, Restaurant r2) {
-        if (r1.getCustomerRating() == r2.getCustomerRating())
-            return nameCompare(r1, r2);
-        else
-            return r2.getCustomerRating() < r1.getCustomerRating() ? -1 : 1;
-    }
-
-    /**
-     * sorted in ascending order of distance If they have the same Distance, then it
-     * is sorted in ascending order of their ID.
-     */
-    private int distanceCompare(RestaurantDistance r1, RestaurantDistance r2) {
-        if (r1.getDistance() == r2.getDistance())
-            return r1.getRestaurant().getID().compareTo(r2.getRestaurant().getID());
-        else
-            return r1.getDistance() < r2.getDistance() ? -1 : 1;
-    }
-
-    private void restaurantArrayQuickSort(Restaurant[] restaurants, String sortBy, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            Restaurant pivot = restaurants[end];
-
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-                int c = 0;
-                if (sortBy == "id")
-                    c = idCompare(restaurants[j], pivot);
-                else if (sortBy == "name")
-                    c = nameCompare(restaurants[j], pivot);
-                else if (sortBy == "dateEstablished")
-                    c = dateCompare(restaurants[j], pivot);
-                else if (sortBy == "warwickStar")
-                    c = warwickStarCompare(restaurants[j], pivot);
-                else if (sortBy == "rating")
-                    c = ratingCompare(restaurants[j], pivot);
-
-                if (c < 0) {
-                    i++;
-                    Restaurant tmp = restaurants[i];
-                    restaurants[i] = restaurants[j];
-                    restaurants[j] = tmp;
-                }
-            }
-
-            Restaurant tmp = restaurants[i + 1];
-            restaurants[i + 1] = restaurants[end];
-            restaurants[end] = tmp;
-
-            partitionIndex = i + 1;
-
-            restaurantArrayQuickSort(restaurants, sortBy, begin, partitionIndex - 1);
-            restaurantArrayQuickSort(restaurants, sortBy, partitionIndex + 1, end);
-        }
-    }
-
-    private void restaurantSortByDistance(RestaurantDistance[] restaurantsDistance, int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = 0;
-            RestaurantDistance pivot = restaurantsDistance[end];
-
-            int i = (begin - 1);
-
-            for (int j = begin; j < end; j++) {
-                if (distanceCompare(restaurantsDistance[j], pivot) < 0) {
-
-                    i++;
-
-                    RestaurantDistance tmp = restaurantsDistance[i];
-                    restaurantsDistance[i] = restaurantsDistance[j];
-                    restaurantsDistance[j] = tmp;
-                }
-            }
-            RestaurantDistance tmp = restaurantsDistance[i + 1];
-            restaurantsDistance[i + 1] = restaurantsDistance[end];
-            restaurantsDistance[end] = tmp;
-
-            partitionIndex = i + 1;
-
-            restaurantSortByDistance(restaurantsDistance, begin, partitionIndex - 1);
-            restaurantSortByDistance(restaurantsDistance, partitionIndex + 1, end);
-        }
-    }
-
     public Restaurant[] getRestaurants(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSortByID(restaurants);
+        RestaurantAVLTree tree = new RestaurantAVLTree();
+        for (Restaurant r : restaurants) {
+            tree.insert(r);
+        }
+        MyArrayList<Restaurant> tmp = tree.allNodes();
+        for (int i = 0; i < restaurants.length; i++) {
+            restaurants[i] = tmp.get(i);
+        }
+        return restaurants;
+    }
+
+    public Restaurant[] getSortedRestaurant(String sortBy){
+        // create new tree with the sorting method
+        RestaurantAVLTree tree = new RestaurantAVLTree(sortBy);
+        // get all nodes from previous tree
+        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        // insert nodes into new tree
+        for (int i = 0; i < tmp.size(); i++) {
+            tree.insert(tmp.get(i));
+        }
+
+        // get sorted data from tree
+        tmp.clear();
+        tmp = tree.allNodes();
+        // copy data in array list onto an array
+        Restaurant[] restaurants = new Restaurant[tmp.size()];
+        for (int i = 0; i < restaurants.length; i++) {
+            restaurants[i] = tmp.get(i);
+        }
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByName() {
-        Restaurant[] restaurants = this.getRestaurants();
-        this.restaurantArrayQuickSortByName(restaurants);
-        return restaurants;
+        return this.getSortedRestaurant("name");
     }
 
     public Restaurant[] getRestaurantsByDateEstablished() {
-        Restaurant[] restaurants = this.getRestaurants();
-        this.restaurantArrayQuickSortByDateEstablished(restaurants);
-        return restaurants;
+        return this.getSortedRestaurant("date");
     }
 
     public Restaurant[] getRestaurantsByDateEstablished(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSortByDateEstablished(restaurants);
+        // create new tree with the sorting method
+        RestaurantAVLTree tree = new RestaurantAVLTree("date");
+        // get all nodes from array
+        for (Restaurant r : restaurants) {
+            tree.insert(r);
+        }
+        MyArrayList<Restaurant> tmp = tree.allNodes();
+        for (int i = 0; i < restaurants.length; i++) {
+            restaurants[i] = tmp.get(i);
+        }
         return restaurants;
     }
 
     public Restaurant[] getRestaurantsByWarwickStars() {
-        Restaurant[] restaurants = this.getRestaurants();
-        this.restaurantArrayQuickSortByWarwickStars(restaurants);
-        return restaurants;
+        return this.getSortedRestaurant("warwickStar");
     }
 
     public Restaurant[] getRestaurantsByRating(Restaurant[] restaurants) {
-        this.restaurantArrayQuickSortByCustomerRating(restaurants);
-        return restaurants;
+        return this.getSortedRestaurant("rating");
     }
 
     public RestaurantDistance[] getRestaurantsByDistanceFrom(float latitude, float longitude) {
-        RestaurantDistance[] restaurantDistances = new RestaurantDistance[restaurantArray.size()];
-        for (int i = 0; i < restaurantArray.size(); i++) {
+        // create a new tree that can sort Restaurant Distance
+        RestaurantDistanceAVLTree tree = new RestaurantDistanceAVLTree();
+        // copy nodes from previous stored tree
+        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        // create an array to hold sorted RestaurantDistances
+        RestaurantDistance[] res = new RestaurantDistance[tmp.size()];
+        // insert each node into the new avl tree
+        for (int i = 0; i < tmp.size(); i++) {
             float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude,
-                    restaurantArray.get(i).getLatitude(), restaurantArray.get(i).getLongitude());
-            restaurantDistances[i] = new RestaurantDistance(restaurantArray.get(i), distance);
+                    tmp.get(i).getLatitude(), tmp.get(i).getLongitude());
+            tree.insert(new RestaurantDistance(tmp.get(i), distance));
         }
-        restaurantSortByDistance(restaurantDistances, 0, restaurantDistances.length - 1);
-        return restaurantDistances;
+        MyArrayList<RestaurantDistance> tmp2 = tree.allNodes();
+        for (int i = 0; i < tmp2.size(); i++) {
+            res[i] = tmp2.get(i);
+        }
+
+        return res;
     }
 
-    public RestaurantDistance[] getRestaurantsByDistanceFrom(Restaurant[] restaurants, float latitude,
-            float longitude) {
-        RestaurantDistance[] restaurantDistances = new RestaurantDistance[restaurants.length];
-        for (int i = 0; i < restaurants.length; i++) {
-            float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude, restaurants[i].getLatitude(),
-                    restaurants[i].getLongitude());
-            restaurantDistances[i] = new RestaurantDistance(restaurants[i], distance);
+    public RestaurantDistance[] getRestaurantsByDistanceFrom(Restaurant[] restaurants, float latitude, float longitude) {
+        // create a new tree that can sort Restaurant Distance
+        RestaurantDistanceAVLTree tree = new RestaurantDistanceAVLTree();
+        // create a new array to hold answers
+        RestaurantDistance[] res = new RestaurantDistance[restaurants.length];
+        // insert each node into the new avl tree
+        for (Restaurant r : restaurants) {
+            float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude,
+                    r.getLatitude(), r.getLongitude());
+            tree.insert(new RestaurantDistance(r, distance));
         }
-        restaurantSortByDistance(restaurantDistances, 0, restaurantDistances.length - 1);
-        return restaurantDistances;
+        MyArrayList<RestaurantDistance> tmp = tree.allNodes();
+        for (int i = 0; i < tmp.size(); i++) {
+            res[i] = tmp.get(i);
+        }
+
+        return res;
     }
 
     public Restaurant[] getRestaurantsContaining(String searchTerm) {
@@ -346,24 +239,32 @@ public class RestaurantStore implements IRestaurantStore {
         if (searchTermConvertedFaster.length() == 0) {
             return new Restaurant[0];
         }
+        MyArrayList<Restaurant> restaurants = restaurantTree.allNodes();
         MyArrayList<Restaurant> resList = new MyArrayList<>();
-        for (int i = 0; i < restaurantArray.size(); i++) {
+        for (int i = 0; i < restaurants.size(); i++) {
             ConvertToPlace convertToPlace = new ConvertToPlace();
-            Place place = convertToPlace.convert(restaurantArray.get(i).getLatitude(),
-                    restaurantArray.get(i).getLongitude());
-            if (restaurantArray.get(i).getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())
-                    || restaurantArray.get(i).getCuisine().toString()
+            Place place = convertToPlace.convert(restaurants.get(i).getLatitude(),
+                    restaurants.get(i).getLongitude());
+            if (restaurants.get(i).getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())
+                    || restaurants.get(i).getCuisine().toString()
                             .contains(searchTermConvertedFaster.toLowerCase())
                     || place.getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())) {
 
-                resList.add(restaurantArray.get(i));
+                resList.add(restaurants.get(i));
             }
         }
+
+        // sort results in avl tree
+        RestaurantAVLTree tree = new RestaurantAVLTree("name");
+        for (int i = 0; i < resList.size(); i++) {
+            tree.insert(resList.get(i));
+        }
+        resList.clear();
+        resList = tree.allNodes();
         Restaurant[] res = new Restaurant[resList.size()];
         for (int i = 0; i < resList.size(); i++) {
             res[i] = resList.get(i);
         }
-        this.restaurantArrayQuickSortByName(res);
         return res;
     }
 }

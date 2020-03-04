@@ -5,41 +5,41 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
 
     private AVLTreeNode<E> insert(AVLTreeNode<E> tree, E key) {
         if (tree == null) {
-             // 新建节点
-             tree = new AVLTreeNode<E>(key, null, null);
-             if (tree==null) {
-                 System.out.println("ERROR: create AVL Tree node failed!");
-                 return null;
-             }
-         } else {
-             int cmp = key.compareTo(tree.getKey());
+            // 新建节点
+            tree = new AVLTreeNode<E>(key, null, null);
+            if (tree == null) {
+                System.out.println("ERROR: create AVL Tree node failed!");
+                return null;
+            }
+        } else {
+            int cmp = key.compareTo(tree.getKey());
 
-                if (cmp < 0) {    // 应该将key插入到"tree的左子树"的情况
-                 tree.setLeft(insert(tree.getLeft(), key));
-                 // 插入节点后，若AVL树失去平衡，则进行相应的调节。
-                 if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
-                     if (key.compareTo(tree.getLeft().getKey()) < 0)
-                         tree = leftLeftRotation(tree);
-                     else
-                         tree = leftRightRotation(tree);
-                 }
-             } else if (cmp > 0) {    // 应该将key插入到"tree的右子树"的情况
-                 tree.setRight(insert(tree.getRight(), key));
-                 // 插入节点后，若AVL树失去平衡，则进行相应的调节。
-                 if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
-                     if (key.compareTo(tree.getRight().getKey()) > 0)
-                         tree = rightRightRotation(tree);
-                     else
-                         tree = rightLeftRotation(tree);
-                 }
-             } else {    // cmp==0
-                 System.out.println("添加失败：不允许添加相同的节点！");
-             }
-         }
+            if (cmp < 0) {    // 应该将key插入到"tree的左子树"的情况
+                tree.setLeft(insert(tree.getLeft(), key));
+                // 插入节点后，若AVL树失去平衡，则进行相应的调节。
+                if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
+                    if (key.compareTo(tree.getLeft().getKey()) < 0)
+                        tree = leftLeftRotation(tree);
+                    else
+                        tree = leftRightRotation(tree);
+                }
+            } else if (cmp > 0) {    // 应该将key插入到"tree的右子树"的情况
+                tree.setRight(insert(tree.getRight(), key));
+                // 插入节点后，若AVL树失去平衡，则进行相应的调节。
+                if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
+                    if (key.compareTo(tree.getRight().getKey()) > 0)
+                        tree = rightRightRotation(tree);
+                    else
+                        tree = rightLeftRotation(tree);
+                }
+            } else {    // cmp==0
+                System.out.println("添加失败：不允许添加相同的节点！");
+            }
+        }
 
-         tree.setHeight(max( height(tree.getLeft()), height(tree.getRight())) + 1);
+        tree.setHeight(max(height(tree.getLeft()), height(tree.getRight())) + 1);
 
-         return tree;
+        return tree;
     }
 
     public void insert(E key) {
@@ -57,7 +57,7 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
      */
     private AVLTreeNode<E> remove(AVLTreeNode<E> tree, AVLTreeNode<E> rm) {
         // 根为空 或者 没有要删除的节点，直接返回null。
-        if (tree==null || rm==null)
+        if (tree == null || rm == null)
             return null;
 
         int cmp = rm.getKey().compareTo(tree.getKey());
@@ -65,7 +65,7 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
             tree.setLeft(remove(tree.getLeft(), rm));
             // 删除节点后，若AVL树失去平衡，则进行相应的调节。
             if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
-                AVLTreeNode<E> r =  tree.getRight();
+                AVLTreeNode<E> r = tree.getRight();
                 if (height(r.getLeft()) > height(r.getRight()))
                     tree = rightLeftRotation(tree);
                 else
@@ -75,7 +75,7 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
             tree.setRight(remove(tree.getRight(), rm));
             // 删除节点后，若AVL树失去平衡，则进行相应的调节。
             if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
-                AVLTreeNode<E> l =  tree.getLeft();
+                AVLTreeNode<E> l = tree.getLeft();
                 if (height(l.getRight()) > height(l.getLeft()))
                     tree = leftRightRotation(tree);
                 else
@@ -83,7 +83,7 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
             }
         } else {    // tree是对应要删除的节点。
             // tree的左右孩子都非空
-            if ((tree.getLeft()!=null) && (tree.getRight()!=null)) {
+            if ((tree.getLeft() != null) && (tree.getRight() != null)) {
                 if (height(tree.getLeft()) > height(tree.getRight())) {
                     // 如果tree的左子树比右子树高；
                     // 则(01)找出tree的左子树中的最大节点
@@ -107,7 +107,7 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
                 }
             } else {
                 AVLTreeNode<E> tmp = tree;
-                tree = (tree.getLeft()!=null) ? tree.getLeft() : tree.getRight();
+                tree = (tree.getLeft() != null) ? tree.getLeft() : tree.getRight();
                 tmp = null;
             }
         }
@@ -121,16 +121,16 @@ public class AVLTreeCom<E extends Comparable> extends AVLTree<E> {
             root = remove(root, tmp);
     }
 
-    public AVLTreeNode<E> search(AVLTreeNode<E> node, E key) {
+    private AVLTreeNode<E> search(AVLTreeNode<E> node, E key) {
 
         if (node == null) {
-             return null;  // missing from tree
+            return null;  // missing from tree
         } else if (key.compareTo(node.getKey()) < 0) {
-             return search(node.getLeft(), key);
+            return search(node.getLeft(), key);
         } else if (key.compareTo(node.getKey()) > 0) {
-             return search(node.getRight(), key);
+            return search(node.getRight(), key);
         } else {
-             return node;  // found it
+            return node;  // found it
         }
     }
 

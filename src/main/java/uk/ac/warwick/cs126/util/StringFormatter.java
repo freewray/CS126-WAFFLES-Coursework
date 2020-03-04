@@ -222,13 +222,13 @@ public class StringFormatter {
     static {
         // Initialise things here
         accentAndConvertedAccentMap = new HashMap<>();
-        for (int i = 0; i < accentAndConvertedAccent.length; i++) {
-            char[] charArr = accentAndConvertedAccent[i][0].toCharArray();
+        for (String[] strings : accentAndConvertedAccent) {
+            char[] charArr = strings[0].toCharArray();
             int key = 0;
             for (char ch : charArr)
                 key += ch;
-//            System.out.println("add: key = " + key + ", value = " + accentAndConvertedAccent[i][1]);
-            accentAndConvertedAccentMap.add(key, accentAndConvertedAccent[i][1]);
+//            System.out.println("add: key = " + key + ", value = " + strings[1]);
+            accentAndConvertedAccentMap.add(key, strings[1]);
         }
     }
 
@@ -236,9 +236,8 @@ public class StringFormatter {
         String replacedString = str;
         for (int i = 0; i < replacedString.length(); i++) {
             char letter = replacedString.charAt(i);
-            int uni = letter;
             // if the character isn't alpha numerical
-            if (!((uni >= 65 && uni <= 90) || (uni >= 97 && uni <= 122) || (uni >= 48 && uni <= 57) || uni == 32)) {
+            if (!(((int) letter >= 65 && (int) letter <= 90) || ((int) letter >= 97 && (int) letter <= 122) || ((int) letter >= 48 && (int) letter <= 57) || (int) letter == 32)) {
                 // System.out.println((int) letter + " -> " +
                 // accentAndConvertedAccentMap.find((int) letter));
                 replacedString = replacedString.replace(String.valueOf(replacedString.charAt(i)),

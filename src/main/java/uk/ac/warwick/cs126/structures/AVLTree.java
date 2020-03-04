@@ -1,7 +1,7 @@
 package uk.ac.warwick.cs126.structures;
 
 public class AVLTree<E> {
-    private AVLTreeNode<E> root;    // 根结点
+    protected AVLTreeNode<E> root;    // 根结点
 
     protected int height(AVLTreeNode<E> tree) {
         if (tree != null)

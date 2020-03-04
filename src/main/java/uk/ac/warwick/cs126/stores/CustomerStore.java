@@ -88,7 +88,7 @@ public class CustomerStore implements ICustomerStore {
             customerTree.remove(this.getCustomer(customer.getID()));
             return false;
         }
-        customerTree.insert(customer, "id");
+        customerTree.insert(customer);
         return true;
     }
 
@@ -117,7 +117,7 @@ public class CustomerStore implements ICustomerStore {
         CustomerAVLTree tree = new CustomerAVLTree();
 
         for (Customer c : customers)
-            tree.insert(c, "id");
+            tree.insert(c);
 
         MyArrayList<Customer> resList = new MyArrayList<>();
         tree.inOrder(resList);
@@ -129,9 +129,9 @@ public class CustomerStore implements ICustomerStore {
     public Customer[] getCustomersByName() {
         Customer[] tmp = this.getCustomers();
         MyArrayList<Customer> resList = new MyArrayList<>();
-        CustomerAVLTree tree = new CustomerAVLTree();
+        CustomerAVLTree tree = new CustomerAVLTree("name");
         for (Customer c : tmp) {
-            tree.insert(c, "name");
+            tree.insert(c);
         }
         tree.inOrder(resList);
         Customer[] result = new Customer[resList.size()];
@@ -141,9 +141,9 @@ public class CustomerStore implements ICustomerStore {
 
     public Customer[] getCustomersByName(Customer[] customers) {
         MyArrayList<Customer> resList = new MyArrayList<>();
-        CustomerAVLTree tree = new CustomerAVLTree();
+        CustomerAVLTree tree = new CustomerAVLTree("name");
         for (Customer c : customers) {
-            tree.insert(c, "name");
+            tree.insert(c);
         }
         tree.inOrder(resList);
         Customer[] result = new Customer[resList.size()];
@@ -174,9 +174,9 @@ public class CustomerStore implements ICustomerStore {
                     resList.add(customerList.get(i));
             }
         }
-        CustomerAVLTree tree = new CustomerAVLTree();
+        CustomerAVLTree tree = new CustomerAVLTree("name");
         for (int i = 0; i < resList.size(); i++) {
-            tree.insert(resList.get(i), "name");
+            tree.insert(resList.get(i));
         }
         resList.clear();
         tree.inOrder(resList);

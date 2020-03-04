@@ -1,7 +1,7 @@
 package uk.ac.warwick.cs126.structures;
 
 public class AVLTree<E> {
-    protected AVLTreeNode<E> root;    // 根结点
+    protected AVLTreeNode<E> root; // 根结点
 
     protected int height(AVLTreeNode<E> tree) {
         if (tree != null)
@@ -32,8 +32,8 @@ public class AVLTree<E> {
         k2.setLeft(k1.getRight());
         k1.setRight(k2);
 
-        k2.setHeight(max( height(k2.getLeft()), height(k2.getRight())) + 1);
-        k1.setHeight(max( height(k1.getLeft()), k2.getHeight()) + 1);
+        k2.setHeight(max(height(k2.getLeft()), height(k2.getRight())) + 1);
+        k1.setHeight(max(height(k1.getLeft()), k2.getHeight()) + 1);
 
         return k1;
     }
@@ -50,8 +50,8 @@ public class AVLTree<E> {
         k1.setRight(k2.getLeft());
         k2.setLeft(k1);
 
-        k1.setHeight(max( height(k1.getLeft()), height(k1.getRight())) + 1);
-        k2.setHeight(max( height(k2.getRight()), k1.getHeight()) + 1);
+        k1.setHeight(max(height(k1.getLeft()), height(k1.getRight())) + 1);
+        k2.setHeight(max(height(k2.getRight()), k1.getHeight()) + 1);
 
         return k2;
     }
@@ -78,7 +78,7 @@ public class AVLTree<E> {
         return rightRightRotation(k1);
     }
 
-    protected AVLTreeNode<E> maximum(AVLTreeNode<E> node){
+    protected AVLTreeNode<E> maximum(AVLTreeNode<E> node) {
         AVLTreeNode<E> tmp = node;
         while (tmp.getRight() != null)
             tmp = tmp.getRight();
@@ -86,7 +86,7 @@ public class AVLTree<E> {
         return tmp;
     }
 
-    protected AVLTreeNode<E> minimum(AVLTreeNode<E> node){
+    protected AVLTreeNode<E> minimum(AVLTreeNode<E> node) {
         AVLTreeNode<E> tmp = node;
         while (tmp.getLeft() != null)
             tmp = tmp.getLeft();
@@ -94,15 +94,14 @@ public class AVLTree<E> {
         return tmp;
     }
 
-     /*
-      * 中序遍历"AVL树"
-      */
+    /*
+     * 中序遍历"AVL树"
+     */
     public void inOrder(AVLTreeNode<E> tree) {
-        if(tree != null)
-        {
+        if (tree != null) {
             inOrder(tree.getLeft());
-//            arr.add(tree.getKey());
-            System.out.println(tree.getKey()+"---");
+            // arr.add(tree.getKey());
+            System.out.println(tree.getKey() + "---");
             inOrder(tree.getRight());
         }
     }

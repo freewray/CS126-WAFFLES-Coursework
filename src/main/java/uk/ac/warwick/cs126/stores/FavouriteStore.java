@@ -3,10 +3,10 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IFavouriteStore;
 import uk.ac.warwick.cs126.models.Favourite;
+import uk.ac.warwick.cs126.structures.AVLTreeCom;
 import uk.ac.warwick.cs126.structures.IDCounter;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.structures.MyComparableArrayList;
-import uk.ac.warwick.cs126.structures.MySet;
 import uk.ac.warwick.cs126.util.DataChecker;
 
 import java.io.*;
@@ -17,13 +17,13 @@ import java.text.SimpleDateFormat;
 public class FavouriteStore implements IFavouriteStore {
 
     private MyArrayList<Favourite> favouriteArray;
-    private MyArrayList<Long> blackListedFavouriteID;
+    private AVLTreeCom<Long> blackListedFavouriteID;
     private DataChecker dataChecker;
 
     public FavouriteStore() {
         // Initialise variables here
         favouriteArray = new MyArrayList<>();
-        blackListedFavouriteID = new MyArrayList<>();
+        blackListedFavouriteID = new AVLTreeCom<>();
         dataChecker = new DataChecker();
     }
 
@@ -74,11 +74,11 @@ public class FavouriteStore implements IFavouriteStore {
     }
 
     public boolean addFavourite(Favourite favourite) {
-        if (!dataChecker.isValid(favourite) || blackListedFavouriteID.contains(favourite.getID()))
+        if (!dataChecker.isValid(favourite) || blackListedFavouriteID.search(favourite.getID()) != null)
             return false;
         if (getFavourite(favourite.getID()) != null) {
             favouriteArray.remove(getFavourite(favourite.getID()));
-            blackListedFavouriteID.add(favourite.getID());
+            blackListedFavouriteID.insert(favourite.getID());
             return false;
         } else if (getFavouritesByCustomerID(favourite.getCustomerID()) != null
                 || getFavouritesByRestaurantID(favourite.getRestaurantID()) != null) {
@@ -87,7 +87,7 @@ public class FavouriteStore implements IFavouriteStore {
                 if (favouriteArray.get(i).getRestaurantID().equals(favourite.getRestaurantID())
                         && favouriteArray.get(i).getCustomerID().equals(favourite.getCustomerID())
                         && favouriteArray.get(i).getDateFavourited().after(favourite.getDateFavourited())) {
-                    blackListedFavouriteID.add(favouriteArray.get(i).getID());
+                    blackListedFavouriteID.insert(favouriteArray.get(i).getID());
                     favouriteArray.remove(favouriteArray.get(i));
                     favouriteArray.add(favourite);
                     return true;

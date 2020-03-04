@@ -1,10 +1,10 @@
 package uk.ac.warwick.cs126.structures;
 
-public class Counter<E extends Comparable<? super E>> implements Comparable<Counter<E>>{
+public class Counter<E extends Comparable<E>> implements Comparable<Counter<E>> {
     private E identifier;
     private int count;
 
-    public Counter(E identifier){
+    public Counter(E identifier) {
         this.identifier = identifier;
         this.count = 1;
     }
@@ -20,7 +20,6 @@ public class Counter<E extends Comparable<? super E>> implements Comparable<Coun
     public void addCount() {
         this.count = count + 1;
     }
-
 
     @Override
     public int compareTo(Counter<E> c) {

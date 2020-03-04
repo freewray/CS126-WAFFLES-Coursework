@@ -9,7 +9,7 @@ public class HashMap<K extends Comparable<K>, V> {
 
     public HashMap() {
         /* for very simple hashing, primes reduce collisions */
-        this(1003);
+        this(511);
     }
 
     public HashMap(int size) {
@@ -23,12 +23,14 @@ public class HashMap<K extends Comparable<K>, V> {
         // Search.
         int hash_code = hash(key);
         int location = hash_code % table.length;
-        int cnt = 0; // count the number of comparisons
+        // int cnt = 0; // count the number of comparisons
         ListElement<KeyValuePair<K, V>> ptr = table[location].getHead();
         while (ptr != null) {
-            cnt++;
+            // cnt++;
             if (key.equals(ptr.getValue().getKey())) {
-//                System.out.println("found: [" + ptr.getValue().getKey() + "," + ptr.getValue().getValue() + "] tried: " + cnt + " times");
+                // System.out.println("found: [" + ptr.getValue().getKey() + "," +
+                // ptr.getValue().getValue() + "] tried: "
+                // + cnt + " times");
                 return ptr.getValue().getValue();
             }
             ptr = ptr.getNext();
@@ -50,7 +52,7 @@ public class HashMap<K extends Comparable<K>, V> {
     public void add(K key, V value) {
         int hash_code = hash(key);
         int location = hash_code % table.length;
-//        System.out.println("Adding " + value + " under key " + key + " at location " + location);
+        System.out.println("Adding " + value + " under key " + key + " at location " + location);
         table[location].add(key, value);
     }
 

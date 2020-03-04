@@ -20,13 +20,13 @@ public class ReviewStore implements IReviewStore {
 
     private MyArrayList<Review> reviewArray;
     private DataChecker dataChecker;
-    private MyArrayList<Long> blackListedReviewID;
+    private AVLTreeCom<Long> blackListedReviewID;
 
     public ReviewStore() {
         // Initialise variables here
         reviewArray = new MyArrayList<>();
         dataChecker = new DataChecker();
-        blackListedReviewID = new MyArrayList<>();
+        blackListedReviewID = new AVLTreeCom<>();
     }
 
     public Review[] loadReviewDataToArray(InputStream resource) {
@@ -34,8 +34,8 @@ public class ReviewStore implements IReviewStore {
 
         try {
             byte[] inputStreamBytes = IOUtils.toByteArray(resource);
-            BufferedReader lineReader = new BufferedReader(new InputStreamReader(
-                    new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
+            BufferedReader lineReader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
 
             int lineCount = 0;
             String line;
@@ -48,8 +48,8 @@ public class ReviewStore implements IReviewStore {
 
             Review[] loadedReviews = new Review[lineCount - 1];
 
-            BufferedReader tsvReader = new BufferedReader(new InputStreamReader(
-                    new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
+            BufferedReader tsvReader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(inputStreamBytes), StandardCharsets.UTF_8));
 
             int reviewCount = 0;
             String row;
@@ -59,13 +59,8 @@ public class ReviewStore implements IReviewStore {
             while ((row = tsvReader.readLine()) != null) {
                 if (!("".equals(row))) {
                     String[] data = row.split("\t");
-                    Review review = new Review(
-                            Long.parseLong(data[0]),
-                            Long.parseLong(data[1]),
-                            Long.parseLong(data[2]),
-                            formatter.parse(data[3]),
-                            data[4],
-                            Integer.parseInt(data[5]));
+                    Review review = new Review(Long.parseLong(data[0]), Long.parseLong(data[1]),
+                            Long.parseLong(data[2]), formatter.parse(data[3]), data[4], Integer.parseInt(data[5]));
                     loadedReviews[reviewCount++] = review;
                 }
             }
@@ -81,21 +76,21 @@ public class ReviewStore implements IReviewStore {
     }
 
     public boolean addReview(Review review) {
-        if (blackListedReviewID.contains(review.getID()) || !dataChecker.isValid(review)) {
+        if (blackListedReviewID.search(review.getID()) != null || !dataChecker.isValid(review)) {
             return false;
         }
 
-        if (this.getReview(review.getID()) != null){
-            blackListedReviewID.add(review.getID());
+        if (this.getReview(review.getID()) != null) {
+            blackListedReviewID.insert(review.getID());
             reviewArray.remove(this.getReview(review.getID()));
             return false;
         }
         for (int i = 0; i < reviewArray.size(); i++) {
             if (reviewArray.get(i).getCustomerID().equals(review.getCustomerID())
-                && reviewArray.get(i).getRestaurantID().equals(review.getRestaurantID())
-                && reviewArray.get(i).getDateReviewed().before(review.getDateReviewed())) {
+                    && reviewArray.get(i).getRestaurantID().equals(review.getRestaurantID())
+                    && reviewArray.get(i).getDateReviewed().before(review.getDateReviewed())) {
 
-                blackListedReviewID.add(reviewArray.get(i).getID());
+                blackListedReviewID.insert(reviewArray.get(i).getID());
                 reviewArray.remove(reviewArray.get(i));
                 reviewArray.add(review);
                 return true;
@@ -115,7 +110,7 @@ public class ReviewStore implements IReviewStore {
     }
 
     public Review getReview(Long id) {
-        if (dataChecker.isValid(id)){
+        if (dataChecker.isValid(id)) {
             for (int i = 0; i < reviewArray.size(); i++) {
                 if (reviewArray.get(i).getID().equals(id)) {
                     return reviewArray.get(i);
@@ -138,11 +133,11 @@ public class ReviewStore implements IReviewStore {
         reviewArrayQuickSort(reviews, "id", 0, reviews.length - 1);
     }
 
-    public void reviewArrayQuickSortByDateReviewed(Review[] reviews){
+    public void reviewArrayQuickSortByDateReviewed(Review[] reviews) {
         reviewArrayQuickSort(reviews, "dateReviewed", 0, reviews.length - 1);
     }
 
-    public void reviewArrayQuickSortByRating(Review[] reviews){
+    public void reviewArrayQuickSortByRating(Review[] reviews) {
         reviewArrayQuickSort(reviews, "rating", 0, reviews.length - 1);
     }
 
@@ -311,7 +306,8 @@ public class ReviewStore implements IReviewStore {
             for (j = 0; j < topCustomerReviewCnt.size(); j++) {
                 if (topCustomerReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getCustomerID())) {
                     topCustomerReviewCnt.get(j).addCount();
-                    if (topCustomerReviewCnt.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                    if (topCustomerReviewCnt.get(j).getLatestReviewDate()
+                            .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
                         topCustomerReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
                     break;
@@ -319,14 +315,16 @@ public class ReviewStore implements IReviewStore {
             }
 
             if (j == topCustomerReviewCnt.size()) {
-                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getCustomerID(), reviewArray.get(i).getDateReviewed());
+                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getCustomerID(),
+                        reviewArray.get(i).getDateReviewed());
                 topCustomerReviewCnt.add(customerFavourite);
             }
         }
         topCustomerReviewCnt.quicksort(0, topCustomerReviewCnt.size() - 1);
         for (int i = 0; i < topCustomers.length && i < topCustomerReviewCnt.size(); i++) {
             topCustomers[i] = topCustomerReviewCnt.get(i).getIdentifier();
-            System.out.println(topCustomerReviewCnt.get(i).getIdentifier() + " - " + topCustomerReviewCnt.get(i).getCount());
+            System.out.println(
+                    topCustomerReviewCnt.get(i).getIdentifier() + " - " + topCustomerReviewCnt.get(i).getCount());
         }
 
         return topCustomers;
@@ -340,7 +338,8 @@ public class ReviewStore implements IReviewStore {
             for (j = 0; j < topRestaurantReviewCnt.size(); j++) {
                 if (topRestaurantReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getRestaurantID())) {
                     topRestaurantReviewCnt.get(j).addCount();
-                    if (topRestaurantReviewCnt.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+                    if (topRestaurantReviewCnt.get(j).getLatestReviewDate()
+                            .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
                         topRestaurantReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
                     break;
@@ -348,14 +347,16 @@ public class ReviewStore implements IReviewStore {
             }
 
             if (j == topRestaurantReviewCnt.size()) {
-                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed());
+                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getRestaurantID(),
+                        reviewArray.get(i).getDateReviewed());
                 topRestaurantReviewCnt.add(customerFavourite);
             }
         }
         topRestaurantReviewCnt.quicksort(0, topRestaurantReviewCnt.size() - 1);
         for (int i = 0; i < topRestaurants.length && i < topRestaurantReviewCnt.size(); i++) {
             topRestaurants[i] = topRestaurantReviewCnt.get(i).getIdentifier();
-            System.out.println(topRestaurantReviewCnt.get(i).getIdentifier() + " - " + topRestaurantReviewCnt.get(i).getCount());
+            System.out.println(
+                    topRestaurantReviewCnt.get(i).getIdentifier() + " - " + topRestaurantReviewCnt.get(i).getCount());
         }
 
         return topRestaurants;
@@ -369,7 +370,8 @@ public class ReviewStore implements IReviewStore {
                 if (ratings.get(j).getId().equals(reviewArray.get(i).getRestaurantID())) {
                     ratings.get(j).addCnt();
                     ratings.get(j).addSumRating(reviewArray.get(i).getRating());
-//                     System.out.println(ratings.get(j).getId() + " - " + ratings.get(j).getAverageRating());
+                    // System.out.println(ratings.get(j).getId() + " - " +
+                    // ratings.get(j).getAverageRating());
                     if (ratings.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
                         ratings.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
 
@@ -378,7 +380,8 @@ public class ReviewStore implements IReviewStore {
             }
 
             if (j == ratings.size()) {
-                Rating rating = new Rating(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating());
+                Rating rating = new Rating(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(),
+                        reviewArray.get(i).getRating());
                 ratings.add(rating);
             }
         }
@@ -399,7 +402,7 @@ public class ReviewStore implements IReviewStore {
                 reviewString.append(r.getReview());
         }
         String[] reviewWords = reviewString.toString().split("\\W+");
-        MyComparableArrayList<Counter<String>> keywordList = new MyComparableArrayList<>();
+        MyComparableArrayList<Counter<String>> keywordList = new MyComparableArrayList<Counter<String>>();
         KeywordChecker keywordChecker = new KeywordChecker();
         for (int j = 0, i; j < reviewWords.length; j++) {
             if (keywordChecker.isAKeyword(reviewWords[j])) {
@@ -410,15 +413,20 @@ public class ReviewStore implements IReviewStore {
                     }
                 }
                 if (i == keywordList.size()) {
-                    Counter<String> w = new Counter<String>(reviewWords[j]);
+                    Counter<String> w = new Counter<String>(reviewWords[j].toLowerCase());
                     keywordList.add(w);
                 }
             }
         }
+        for (int i = 0; i < keywordList.size(); i++) {
+            System.out.println("Before sorting: [cnt = " + keywordList.get(i).getCount() + "] Word: "
+                    + keywordList.get(i).getIdentifier());
+        }
         keywordList.quicksort(0, keywordList.size() - 1);
-        for (int i = 0; i < res.length && i < keywordList.size(); i++) {
+        for (int i = 0; i < keywordList.size() && i < res.length; i++) {
             res[i] = keywordList.get(i).getIdentifier();
-            System.out.println("[cnt = " + keywordList.get(i).getCount() + "] Word: " + keywordList.get(i).getIdentifier());
+            System.out.println(
+                    "[cnt = " + keywordList.get(i).getCount() + "] Word: " + keywordList.get(i).getIdentifier());
         }
         return res;
     }
@@ -441,9 +449,10 @@ public class ReviewStore implements IReviewStore {
             res[i] = resList.get(i);
         }
         this.reviewArrayQuickSortByDateReviewed(res);
-        for (Review r : res){
-            System.out.println(String.format("Date: %19s",
-                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed())) + ", review: " + r.getReview());
+        for (Review r : res) {
+            System.out.println(
+                    String.format("Date: %19s", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed()))
+                            + ", review: " + r.getReview());
         }
         return res;
     }

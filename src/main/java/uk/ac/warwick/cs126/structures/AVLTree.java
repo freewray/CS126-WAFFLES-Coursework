@@ -97,17 +97,17 @@ public class AVLTree<E> {
      /*
       * 中序遍历"AVL树"
       */
-    public void inOrder(AVLTreeNode<E> tree) {
-        if(tree != null)
-        {
-            inOrder(tree.getLeft());
+//    public void inOrder(AVLTreeNode<E> tree, MyArrayList<E> arr) {
+//        if(tree != null)
+//        {
+//            inOrder(tree.getLeft(), arr);
 //            arr.add(tree.getKey());
-            System.out.println(tree.getKey()+"---");
-            inOrder(tree.getRight());
-        }
-    }
-
-    public void inOrder() {
-        inOrder(root);
-    }
+////            System.out.println(tree.getKey()+"---");
+//            inOrder(tree.getRight(), arr);
+//        }
+//    }
+//
+//    public void inOrder(MyArrayList<E> arr) {
+//        inOrder(root, arr);
+//    }
 }

@@ -3,6 +3,10 @@ package uk.ac.warwick.cs126.structures;
 public class AVLTree<E> {
     protected AVLTreeNode<E> root; // 根结点
 
+
+    /**
+     * @return height of the tree
+     */
     protected int height(AVLTreeNode<E> tree) {
         if (tree != null)
             return tree.getHeight();
@@ -13,8 +17,11 @@ public class AVLTree<E> {
         return height(root);
     }
 
-    /*
-     * 比较两个值的大小
+    /**
+     * compare the value of 2 integers
+     * @param a
+     * @param b
+     * @return larger integer
      */
     protected int max(int a, int b) {
         return Math.max(a, b);
@@ -23,7 +30,7 @@ public class AVLTree<E> {
     /**
      * Left-Left case
      * @param k2
-     * @return
+     * @return root after rotation
      */
     protected AVLTreeNode<E> leftLeftRotation(AVLTreeNode<E> k2) {
         AVLTreeNode<E> k1;
@@ -38,10 +45,10 @@ public class AVLTree<E> {
         return k1;
     }
 
-    /*
-     * Right-Right Case
-     *
-     * @Return 旋转后的根节点
+    /**
+     * right right case
+     * @param k1
+     * @return root after rotation
      */
     protected AVLTreeNode<E> rightRightRotation(AVLTreeNode<E> k1) {
         AVLTreeNode<E> k2;
@@ -56,10 +63,10 @@ public class AVLTree<E> {
         return k2;
     }
 
-    /*
-     * Left-Right Case
-     *
-     * @Return 旋转后的根节点
+    /**
+     * left-right rotation
+     * @param k3
+     * @return root after rotation
      */
     protected AVLTreeNode<E> leftRightRotation(AVLTreeNode<E> k3) {
         k3.setLeft(rightRightRotation(k3.getLeft()));
@@ -67,10 +74,10 @@ public class AVLTree<E> {
         return leftLeftRotation(k3);
     }
 
-    /*
-     * Right-Left Case
-     *
-     * @Return 旋转后的根节点
+    /**
+     * right-left rotation
+     * @param k1
+     * @return root after rotation
      */
     protected AVLTreeNode<E> rightLeftRotation(AVLTreeNode<E> k1) {
         k1.setRight(leftLeftRotation(k1.getRight()));
@@ -78,6 +85,11 @@ public class AVLTree<E> {
         return rightRightRotation(k1);
     }
 
+
+    /**
+     * @param node to start with
+     * @return the maximum node in current tree
+     */
     protected AVLTreeNode<E> maximum(AVLTreeNode<E> node) {
         AVLTreeNode<E> tmp = node;
         while (tmp.getRight() != null)
@@ -86,6 +98,10 @@ public class AVLTree<E> {
         return tmp;
     }
 
+    /**
+     * @param node to start with
+     * @return the minimum node in current tree
+     */
     protected AVLTreeNode<E> minimum(AVLTreeNode<E> node) {
         AVLTreeNode<E> tmp = node;
         while (tmp.getLeft() != null)
@@ -94,8 +110,10 @@ public class AVLTree<E> {
         return tmp;
     }
 
-    /*
-     * 中序遍历"AVL树"
+
+    /**
+     * traversal the tree in order
+     * @param tree
      */
     public void inOrder(AVLTreeNode<E> tree) {
         if (tree != null) {

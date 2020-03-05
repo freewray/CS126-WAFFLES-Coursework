@@ -29,7 +29,7 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
                         tree = rightLeftRotation(tree);
                 }
             } else { // cmp==0
-                System.out.println("添加失败：不允许添加相同的节点！");
+                System.out.println("FAILED: Same nodes are not allowed in AVL Tree");
             }
         }
 
@@ -128,8 +128,11 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
         return search(root, key);
     }
 
-    /*
-     * 中序遍历"AVL树"
+
+    /**
+     * Traverse the tree in order and add each element in to the passed in array
+     * @param tree
+     * @param arr
      */
     public void inOrder(AVLTreeNode<E> tree, MyArrayList<E> arr) {
         if (tree != null) {

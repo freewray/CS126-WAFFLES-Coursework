@@ -25,6 +25,7 @@ public class ReviewStore implements IReviewStore {
         dataChecker = new DataChecker();
         blackListedReviewID = new AVLTreeCom<>();
     }
+
     /**
      * Loads data from a TSV file containing the Review data into a Review array, parsing the attributes where required.
      * @param resource       The source csv file to be loaded.
@@ -382,33 +383,53 @@ public class ReviewStore implements IReviewStore {
      */
     public Long[] getTopCustomersByReviewCount() {
         Long[] topCustomers = new Long[20];
-
-        MyComparableArrayList<IDCounter> topCustomerReviewCnt = new MyComparableArrayList<>();
-        for (int i = 0, j; i < reviewArray.size(); i++) {
-            for (j = 0; j < topCustomerReviewCnt.size(); j++) {
-                if (topCustomerReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getCustomerID())) {
-                    topCustomerReviewCnt.get(j).addCount();
-                    if (topCustomerReviewCnt.get(j).getLatestReviewDate()
-                            .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
-                        topCustomerReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-
-                    break;
+        // MyComparableArrayList<IDCounter> topCustomerReviewCnt = new MyComparableArrayList<>();
+        // for (int i = 0, j; i < reviewArray.size(); i++) {
+        //     for (j = 0; j < topCustomerReviewCnt.size(); j++) {
+        //         if (topCustomerReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getCustomerID())) {
+        //             topCustomerReviewCnt.get(j).addCount();
+        //             if (topCustomerReviewCnt.get(j).getLatestReviewDate()
+        //                     .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+        //                 topCustomerReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
+        //             break;
+        //         }
+        //     }
+        //     if (j == topCustomerReviewCnt.size()) {
+        //         IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getCustomerID(),
+        //                 reviewArray.get(i).getDateReviewed());
+        //         topCustomerReviewCnt.add(customerFavourite);
+        //     }
+        // }
+        // topCustomerReviewCnt.quicksort(0, topCustomerReviewCnt.size() - 1);
+        // for (int i = 0; i < topCustomers.length && i < topCustomerReviewCnt.size(); i++) {
+        //     topCustomers[i] = topCustomerReviewCnt.get(i).getIdentifier();
+        //     System.out.println(
+        //             topCustomerReviewCnt.get(i).getIdentifier() + " - " + topCustomerReviewCnt.get(i).getCount());
+        // }
+        AVLIDCounter tree = new AVLIDCounter();
+        for (int i = 0; i < reviewArray.size(); i++) {
+            Long id = reviewArray.get(i).getCustomerID();
+            if (tree.searchByID(id) != null) {
+                tree.searchByID(id).getKey().addCount();
+                if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
+                    tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
-            }
-
-            if (j == topCustomerReviewCnt.size()) {
-                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getCustomerID(),
-                        reviewArray.get(i).getDateReviewed());
-                topCustomerReviewCnt.add(customerFavourite);
+            } else {
+                System.out.println("Insertion:  " + id + " -");
+                tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
-        topCustomerReviewCnt.quicksort(0, topCustomerReviewCnt.size() - 1);
-        for (int i = 0; i < topCustomers.length && i < topCustomerReviewCnt.size(); i++) {
-            topCustomers[i] = topCustomerReviewCnt.get(i).getIdentifier();
-            System.out.println(
-                    topCustomerReviewCnt.get(i).getIdentifier() + " - " + topCustomerReviewCnt.get(i).getCount());
+        MyArrayList<IDCounter> tmp = tree.toArrayList();
+        AVLIDCounter tree2 = new AVLIDCounter();
+        for (int i = 0; i < tmp.size(); i++) {
+            tree2.insert(tmp.get(i));
         }
-
+        tmp.clear();
+        tmp = tree2.toArrayList();
+        for (int i = 0; i < topCustomers.length && i < tmp.size(); i++) {
+            topCustomers[i] = tmp.get(i).getIdentifier();
+            System.out.println(tmp.get(i).getIdentifier() + " - " + tmp.get(i).getCount());
+        }
         return topCustomers;
     }
 
@@ -421,32 +442,53 @@ public class ReviewStore implements IReviewStore {
     public Long[] getTopRestaurantsByReviewCount() {
         Long[] topRestaurants = new Long[20];
 
-        MyComparableArrayList<IDCounter> topRestaurantReviewCnt = new MyComparableArrayList<>();
-        for (int i = 0, j; i < reviewArray.size(); i++) {
-            for (j = 0; j < topRestaurantReviewCnt.size(); j++) {
-                if (topRestaurantReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getRestaurantID())) {
-                    topRestaurantReviewCnt.get(j).addCount();
-                    if (topRestaurantReviewCnt.get(j).getLatestReviewDate()
-                            .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
-                        topRestaurantReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-
-                    break;
+        // MyComparableArrayList<IDCounter> topRestaurantReviewCnt = new MyComparableArrayList<>();
+        // for (int i = 0, j; i < reviewArray.size(); i++) {
+        //     for (j = 0; j < topRestaurantReviewCnt.size(); j++) {
+        //         if (topRestaurantReviewCnt.get(j).getIdentifier().equals(reviewArray.get(i).getRestaurantID())) {
+        //             topRestaurantReviewCnt.get(j).addCount();
+        //             if (topRestaurantReviewCnt.get(j).getLatestReviewDate()
+        //                     .compareTo(reviewArray.get(i).getDateReviewed()) < 0)
+        //                 topRestaurantReviewCnt.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
+        //             break;
+        //         }
+        //     }
+        //     if (j == topRestaurantReviewCnt.size()) {
+        //         IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getRestaurantID(),
+        //                 reviewArray.get(i).getDateReviewed());
+        //         topRestaurantReviewCnt.add(customerFavourite);
+        //     }
+        // }
+        // topRestaurantReviewCnt.quicksort(0, topRestaurantReviewCnt.size() - 1);
+        // for (int i = 0; i < topRestaurants.length && i < topRestaurantReviewCnt.size(); i++) {
+        //     topRestaurants[i] = topRestaurantReviewCnt.get(i).getIdentifier();
+        //     System.out.println(
+        //             topRestaurantReviewCnt.get(i).getIdentifier() + " - " + topRestaurantReviewCnt.get(i).getCount());
+        // }
+        AVLIDCounter tree = new AVLIDCounter();
+        for (int i = 0; i < reviewArray.size(); i++) {
+            Long id = reviewArray.get(i).getRestaurantID();
+            if (tree.searchByID(id) != null) {
+                tree.searchByID(id).getKey().addCount();
+                if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
+                    tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
-            }
-
-            if (j == topRestaurantReviewCnt.size()) {
-                IDCounter customerFavourite = new IDCounter(reviewArray.get(i).getRestaurantID(),
-                        reviewArray.get(i).getDateReviewed());
-                topRestaurantReviewCnt.add(customerFavourite);
+            } else {
+                System.out.println("Insertion:  " + id + " -");
+                tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
-        topRestaurantReviewCnt.quicksort(0, topRestaurantReviewCnt.size() - 1);
-        for (int i = 0; i < topRestaurants.length && i < topRestaurantReviewCnt.size(); i++) {
-            topRestaurants[i] = topRestaurantReviewCnt.get(i).getIdentifier();
-            System.out.println(
-                    topRestaurantReviewCnt.get(i).getIdentifier() + " - " + topRestaurantReviewCnt.get(i).getCount());
+        MyArrayList<IDCounter> tmp = tree.toArrayList();
+        AVLIDCounter tree2 = new AVLIDCounter();
+        for (int i = 0; i < tmp.size(); i++) {
+            tree2.insert(tmp.get(i));
         }
-
+        tmp.clear();
+        tmp = tree2.toArrayList();
+        for (int i = 0; i < topRestaurants.length && i < tmp.size(); i++) {
+            topRestaurants[i] = tmp.get(i).getIdentifier();
+            System.out.println(tmp.get(i).getIdentifier() + " - " + tmp.get(i).getCount());
+        }
         return topRestaurants;
     }
 
@@ -468,11 +510,9 @@ public class ReviewStore implements IReviewStore {
                     // ratings.get(j).getAverageRating());
                     if (ratings.get(j).getLatestReviewDate().compareTo(reviewArray.get(i).getDateReviewed()) < 0)
                         ratings.get(j).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-
                     break;
                 }
             }
-
             if (j == ratings.size()) {
                 Rating rating = new Rating(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(),
                         reviewArray.get(i).getRating());
@@ -483,7 +523,6 @@ public class ReviewStore implements IReviewStore {
         for (int i = 0; i < res.length && i < ratings.size(); i++) {
             res[i] = ratings.get(i).getId();
         }
-
         return res;
     }
 
@@ -503,32 +542,54 @@ public class ReviewStore implements IReviewStore {
                 reviewString.append(r.getReview());
         }
         String[] reviewWords = reviewString.toString().split("\\W+");
-        MyComparableArrayList<Counter<String>> keywordList = new MyComparableArrayList<Counter<String>>();
+        AVLCounter tree = new AVLCounter();
         KeywordChecker keywordChecker = new KeywordChecker();
-        for (int j = 0, i; j < reviewWords.length; j++) {
+        for (int j = 0; j < reviewWords.length; j++) {
             if (keywordChecker.isAKeyword(reviewWords[j])) {
-                for (i = 0; i < keywordList.size(); i++) {
-                    if (keywordList.get(i).getIdentifier().equalsIgnoreCase(reviewWords[j])) {
-                        keywordList.get(i).addCount();
-                        break;
-                    }
-                }
-                if (i == keywordList.size()) {
-                    Counter<String> w = new Counter<String>(reviewWords[j].toLowerCase());
-                    keywordList.add(w);
+                if (tree.searchKeyword(reviewWords[j]) != null) {
+                    // word is already in tree
+                    tree.searchKeyword(reviewWords[j]).getKey().addCount();
+                } else {
+                    tree.insert(new Counter<String>(reviewWords[j].toLowerCase()));
                 }
             }
         }
-        for (int i = 0; i < keywordList.size(); i++) {
-            System.out.println("Before sorting: [cnt = " + keywordList.get(i).getCount() + "] Word: "
-                    + keywordList.get(i).getIdentifier());
+        MyArrayList<Counter<String>> tmp = tree.toArrayList();
+        AVLCounter tree2 = new AVLCounter();
+        for (int i = 0; i < tmp.size(); i++) {
+            tree2.insert(tmp.get(i));
         }
-        keywordList.quicksort(0, keywordList.size() - 1);
-        for (int i = 0; i < keywordList.size() && i < res.length; i++) {
-            res[i] = keywordList.get(i).getIdentifier();
-            System.out.println(
-                    "[cnt = " + keywordList.get(i).getCount() + "] Word: " + keywordList.get(i).getIdentifier());
+        tmp.clear();
+        tmp = tree2.toArrayList();
+        for (int i = 0; i < res.length && i < tmp.size(); i++) {
+            res[i] = tmp.get(i).getIdentifier();
+            System.out.println("[cnt = " + tmp.get(i).getCount() + "] Word: " + tmp.get(i).getIdentifier());
         }
+        // MyComparableArrayList<Counter<String>> keywordList = new MyComparableArrayList<Counter<String>>();
+        // for (int j = 0, i; j < reviewWords.length; j++) {
+        //     if (keywordChecker.isAKeyword(reviewWords[j])) {
+        //         for (i = 0; i < keywordList.size(); i++) {
+        //             if (keywordList.get(i).getIdentifier().equalsIgnoreCase(reviewWords[j])) {
+        //                 keywordList.get(i).addCount();
+        //                 break;
+        //             }
+        //         }
+        //         if (i == keywordList.size()) {
+        //             Counter<String> w = new Counter<String>(reviewWords[j].toLowerCase());
+        //             keywordList.add(w);
+        //         }
+        //     }
+        // }
+        // for (int i = 0; i < keywordList.size(); i++) {
+        //     System.out.println("Before sorting: [cnt = " + keywordList.get(i).getCount() + "] Word: "
+        //             + keywordList.get(i).getIdentifier());
+        // }
+        // keywordList.quicksort(0, keywordList.size() - 1);
+        // for (int i = 0; i < keywordList.size() && i < res.length; i++) {
+        //     res[i] = keywordList.get(i).getIdentifier();
+        //     System.out.println(
+        //             "[cnt = " + keywordList.get(i).getCount() + "] Word: " + keywordList.get(i).getIdentifier());
+        // }
         return res;
     }
 

@@ -52,7 +52,7 @@ public class HashMap<K extends Comparable<K>, V> {
     public void add(K key, V value) {
         int hash_code = hash(key);
         int location = hash_code % table.length;
-        System.out.println("Adding " + value + " under key " + key + " at location " + location);
+        // System.out.println("Adding " + value + " under key " + key + " at location " + location);
         table[location].add(key, value);
     }
 

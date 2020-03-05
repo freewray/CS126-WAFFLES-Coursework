@@ -3,7 +3,6 @@ package uk.ac.warwick.cs126.structures;
 public class AVLTree<E> {
     protected AVLTreeNode<E> root; // 根结点
 
-
     /**
      * @return height of the tree
      */
@@ -85,7 +84,6 @@ public class AVLTree<E> {
         return rightRightRotation(k1);
     }
 
-
     /**
      * @param node to start with
      * @return the maximum node in current tree
@@ -110,7 +108,6 @@ public class AVLTree<E> {
         return tmp;
     }
 
-
     /**
      * traversal the tree in order
      * @param tree
@@ -126,5 +123,9 @@ public class AVLTree<E> {
 
     public void inOrder() {
         inOrder(root);
+    }
+
+    public void clear() {
+        root = null;
     }
 }

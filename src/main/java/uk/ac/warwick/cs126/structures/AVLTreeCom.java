@@ -1,40 +1,45 @@
 package uk.ac.warwick.cs126.structures;
 
+/**
+ * AVL tree structure for comparable elements
+ */
 public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
     protected AVLTreeNode<E> root;
 
+    /** 
+     * @param tree
+     * @param key to be insert into the tree
+     * @return AVLTreeNode<E>
+     */
     private AVLTreeNode<E> insert(AVLTreeNode<E> tree, E key) {
         if (tree == null) {
-            // 新建节点
+            // if the tree is empty, create a new node as root
             tree = new AVLTreeNode<E>(key, null, null);
         } else {
-            int cmp = key.compareTo(tree.getKey());
-
-            if (cmp < 0) { // 应该将key插入到"tree的左子树"的情况
+            if (key.compareTo(tree.getKey()) < 0) { // insert the new node to left subtree
                 tree.setLeft(insert(tree.getLeft(), key));
-                // 插入节点后，若AVL树失去平衡，则进行相应的调节。
+                // rebalance the tree after the insertion
                 if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
                     if (key.compareTo(tree.getLeft().getKey()) < 0)
                         tree = leftLeftRotation(tree);
                     else
                         tree = leftRightRotation(tree);
                 }
-            } else if (cmp > 0) { // 应该将key插入到"tree的右子树"的情况
+            } else if (key.compareTo(tree.getKey()) > 0) { // insert the new node to right subtree
                 tree.setRight(insert(tree.getRight(), key));
-                // 插入节点后，若AVL树失去平衡，则进行相应的调节。
+                // rebalance the tree after the insertion
                 if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
                     if (key.compareTo(tree.getRight().getKey()) > 0)
                         tree = rightRightRotation(tree);
                     else
                         tree = rightLeftRotation(tree);
                 }
-            } else { // cmp==0
+            } else { // key.compareTo(tree.getKey()) == 0
                 System.out.println("FAILED: Same nodes are not allowed in AVL Tree");
             }
         }
-
+        // set the new height of the tree
         tree.setHeight(max(height(tree.getLeft()), height(tree.getRight())) + 1);
-
         return tree;
     }
 
@@ -42,20 +47,18 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
         root = insert(root, key);
     }
 
-    /*
-     * 删除结点(z)，返回根节点
-     *
-     * 参数说明： tree AVL树的根结点 z 待删除的结点 返回值： 根节点
+    /** 
+     * @param tree
+     * @param rm
+     * @return AVLTreeNode<E>
      */
     private AVLTreeNode<E> remove(AVLTreeNode<E> tree, AVLTreeNode<E> rm) {
-        // 根为空 或者 没有要删除的节点，直接返回null。
+        // the tree is empty, or the param is invalid . nothing to remove
         if (tree == null || rm == null)
             return null;
-
-        int cmp = rm.getKey().compareTo(tree.getKey());
-        if (cmp < 0) { // 待删除的节点在"tree的左子树"中
+        if (rm.getKey().compareTo(tree.getKey()) < 0) { // 'rm' is in the left subtree
             tree.setLeft(remove(tree.getLeft(), rm));
-            // 删除节点后，若AVL树失去平衡，则进行相应的调节。
+            // rebalance the tree after the deletion
             if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
                 AVLTreeNode<E> r = tree.getRight();
                 if (height(r.getLeft()) > height(r.getRight()))
@@ -63,9 +66,9 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
                 else
                     tree = rightRightRotation(tree);
             }
-        } else if (cmp > 0) { // 待删除的节点在"tree的右子树"中
+        } else if (rm.getKey().compareTo(tree.getKey()) > 0) { // 'rm' is in the right subtree
             tree.setRight(remove(tree.getRight(), rm));
-            // 删除节点后，若AVL树失去平衡，则进行相应的调节。
+            // rebalance the tree after the deletion
             if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
                 AVLTreeNode<E> l = tree.getLeft();
                 if (height(l.getRight()) > height(l.getLeft()))
@@ -73,46 +76,50 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
                 else
                     tree = leftLeftRotation(tree);
             }
-        } else { // tree是对应要删除的节点。
-            // tree的左右孩子都非空
+        } else {
             if ((tree.getLeft() != null) && (tree.getRight() != null)) {
+                // 'rm' has 2 children
                 if (height(tree.getLeft()) > height(tree.getRight())) {
-                    // 如果tree的左子树比右子树高；
-                    // 则(01)找出tree的左子树中的最大节点
-                    // (02)将该最大节点的值赋值给tree。
-                    // (03)删除该最大节点。
-                    // 这类似于用"tree的左子树中最大节点"做"tree"的替身；
-                    // 采用这种方式的好处是：删除"tree的左子树中最大节点"之后，AVL树仍然是平衡的。
+                    /**
+                     * if 'rm's left subtree is higher than the right subtree
+                     * 1. find the maximum in the right subtree
+                     * 2. set the maximum onto the 'rm' place
+                     * 3. delete the maximum
+                     */
                     AVLTreeNode<E> max = maximum(tree.getLeft());
                     tree.setKey(max.getKey());
                     tree.setLeft(remove(tree.getLeft(), max));
                 } else {
-                    // 如果tree的左子树不比右子树高(即它们相等，或右子树比左子树高1)
-                    // 则(01)找出tree的右子树中的最小节点
-                    // (02)将该最小节点的值赋值给tree。
-                    // (03)删除该最小节点。
-                    // 这类似于用"tree的右子树中最小节点"做"tree"的替身；
-                    // 采用这种方式的好处是：删除"tree的右子树中最小节点"之后，AVL树仍然是平衡的。
+                    /**
+                     * if 'rm's right subtree is higher than or equal to the left subtree
+                     * 1. find the minimum in the right subtree
+                     * 2. set the minimum onto the 'rm' place
+                     * 3. delete the minimum
+                     */
                     AVLTreeNode<E> min = minimum(tree.getRight());
                     tree.setKey(min.getKey());
                     tree.setRight(remove(tree.getRight(), min));
                 }
             } else {
+                // 'rm' has 1 children, delete rm by treating it child as itself
                 tree = (tree.getLeft() != null) ? tree.getLeft() : tree.getRight();
             }
         }
-        return tree;
+        return tree; // 'rm's successor
     }
 
     public void remove(E key) {
         AVLTreeNode<E> tmp;
-
         if ((tmp = search(root, key)) != null)
             root = remove(root, tmp);
     }
 
+    /** 
+     * @param node
+     * @param key
+     * @return AVLTreeNode<E>
+     */
     private AVLTreeNode<E> search(AVLTreeNode<E> node, E key) {
-
         if (node == null) {
             return null; // missing from tree
         } else if (key.compareTo(node.getKey()) < 0) {
@@ -128,9 +135,9 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
         return search(root, key);
     }
 
-
     /**
      * Traverse the tree in order and add each element in to the passed in array
+     * 
      * @param tree
      * @param arr
      */
@@ -146,6 +153,9 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
         inOrder(root, arr);
     }
 
+    /** 
+     * @return MyArrayList<E>
+     */
     public MyArrayList<E> toArrayList() {
         MyArrayList<E> res = new MyArrayList<>();
         inOrder(res);

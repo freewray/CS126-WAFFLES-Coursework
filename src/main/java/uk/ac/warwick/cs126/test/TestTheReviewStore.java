@@ -640,7 +640,7 @@ public class TestTheReviewStore extends TestRunner {
             Review[] reviews = reviewStore.loadReviewDataToArray(loadData("/test-review/review-10.tsv"));
             reviewStore.addReview(reviews);
             System.out.println("   [TEST]  ReviewStore: testGetTopKeywordsForRestaurant()");
-            String[] res = reviewStore.getTopKeywordsForRestaurant(6121593872758742L);
+            String[] res = reviewStore.getTopKeywordsForRestaurant(2516282978916487L);
             // 1. Meh - 2
             // 2. Lame - 1
 

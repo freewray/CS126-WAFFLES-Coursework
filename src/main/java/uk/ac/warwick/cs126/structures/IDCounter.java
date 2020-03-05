@@ -2,7 +2,7 @@ package uk.ac.warwick.cs126.structures;
 
 import java.util.Date;
 
-public class IDCounter implements Comparable<IDCounter>{
+public class IDCounter implements Comparable<IDCounter> {
 
     private Date latestReviewDate;
     private Long identifier;
@@ -39,7 +39,7 @@ public class IDCounter implements Comparable<IDCounter>{
         int countCompare = c.getCount() - this.getCount();
         int identifierCompare = this.getIdentifier().compareTo(c.getIdentifier());
         int dateCompare = this.getLatestReviewDate().compareTo(c.getLatestReviewDate());
-        if (countCompare == 0 && dateCompare == 0){
+        if (countCompare == 0 && dateCompare == 0) {
             return identifierCompare;
         } else if (countCompare == 0) {
             return dateCompare;

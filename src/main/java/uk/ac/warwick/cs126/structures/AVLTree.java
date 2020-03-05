@@ -17,13 +17,13 @@ public class AVLTree<E> {
      * 比较两个值的大小
      */
     protected int max(int a, int b) {
-        return a > b ? a : b;
+        return Math.max(a, b);
     }
 
-    /*
-     * LL：左左对应的情况(左单旋转)。
-     *
-     * 返回值：旋转后的根节点
+    /**
+     * Left-Left case
+     * @param k2
+     * @return
      */
     protected AVLTreeNode<E> leftLeftRotation(AVLTreeNode<E> k2) {
         AVLTreeNode<E> k1;
@@ -39,9 +39,9 @@ public class AVLTree<E> {
     }
 
     /*
-     * RR：右右对应的情况(右单旋转)。
+     * Right-Right Case
      *
-     * 返回值：旋转后的根节点
+     * @Return 旋转后的根节点
      */
     protected AVLTreeNode<E> rightRightRotation(AVLTreeNode<E> k1) {
         AVLTreeNode<E> k2;
@@ -57,9 +57,9 @@ public class AVLTree<E> {
     }
 
     /*
-     * LR：左右对应的情况(左双旋转)。
+     * Left-Right Case
      *
-     * 返回值：旋转后的根节点
+     * @Return 旋转后的根节点
      */
     protected AVLTreeNode<E> leftRightRotation(AVLTreeNode<E> k3) {
         k3.setLeft(rightRightRotation(k3.getLeft()));
@@ -68,9 +68,9 @@ public class AVLTree<E> {
     }
 
     /*
-     * RL：右左对应的情况(右双旋转)。
+     * Right-Left Case
      *
-     * 返回值：旋转后的根节点
+     * @Return 旋转后的根节点
      */
     protected AVLTreeNode<E> rightLeftRotation(AVLTreeNode<E> k1) {
         k1.setRight(leftLeftRotation(k1.getRight()));

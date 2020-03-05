@@ -14,10 +14,21 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+/**
+ * Class stores customers and perform actions on customers
+ */
 public class CustomerStore implements ICustomerStore {
 
+
+    /**
+     * customers are stored in an AVL tree therefore quicker to insert,
+     * delete and search
+     */
     private CustomerAVLTree customerTree;
     private DataChecker dataChecker;
+    /**
+     * Comparable AVL Tree stores blackListed customerID
+     */
     private AVLTreeCom<Long> blackListedCustomerID;
 
     public CustomerStore() {
@@ -26,6 +37,11 @@ public class CustomerStore implements ICustomerStore {
         customerTree = new CustomerAVLTree();
     }
 
+    /**
+     * Loads data from a csv file containing the Customer data into a Customer array, parsing the attributes where required.
+     * @param resource       The source csv file to be loaded.
+     * @return A Customer array with all Customers contained within the data file, regardless of the validity of the ID.
+     */
     public Customer[] loadCustomerDataToArray(InputStream resource) {
         Customer[] customerArray = new Customer[0];
 
@@ -79,6 +95,15 @@ public class CustomerStore implements ICustomerStore {
         return customerArray;
     }
 
+
+    /**
+     * Add a new Customer to the store. The method should return true if the Customer is successfully added to the data store.
+     * The Customer should not be added if a Customer with the same ID already exists in the store.
+     * If a duplicate ID is encountered, the existing Customer should be removed and the ID blacklisted from further use.
+     * An invalid ID is one that contains zeros or more than 3 of the same digit, these should not be added, although they do not need to be blacklisted.
+     * @param customer       The Customer object to add to the data store.
+     * @return True if the Customer was successfully added, false otherwise.
+     */
     public boolean addCustomer(Customer customer) {
         if (!dataChecker.isValid(customer) || blackListedCustomerID.search(customer.getID()) != null){
             return false;
@@ -92,6 +117,12 @@ public class CustomerStore implements ICustomerStore {
         return true;
     }
 
+    /**
+     * Add new Customers in the input array to the store. The method should return true if the Customers are all successfully added to the data store.
+     * Reference the {@link #addCustomer(Customer) addCustomer} method for details on ID handling.
+     * @param customers       An array of Customer objects to add to the data store.
+     * @return True if all of the Customers were successfully added, false otherwise.
+     */
     public boolean addCustomer(Customer[] customers) {
         boolean res = true;
         for (Customer customer : customers) {
@@ -101,10 +132,20 @@ public class CustomerStore implements ICustomerStore {
         return res;
     }
 
+    /**
+     * Returns a single Customer, the Customer with the given ID, or null if not found.
+     * @param id       The ID of the Customer to be retrieved.
+     * @return The Customer with the given ID, or null if not found.
+     */
     public Customer getCustomer(Long id) {
         return customerTree.searchByID(id);
     }
 
+    /**
+     * Returns an array of all Customers, sorted in ascending order of ID.
+     * The Customer with the lowest ID should be the first element in the array.
+     * @return A sorted array of Customer objects, with lowest ID first.
+     */
     public Customer[] getCustomers() {
         MyArrayList<Customer> resList = new MyArrayList<>();
         customerTree.inOrder(resList);
@@ -113,6 +154,13 @@ public class CustomerStore implements ICustomerStore {
         return result;
     }
 
+    /**
+     * Returns an array of Customers, sorted in ascending order of ID.
+     * The Customer with the lowest ID should be the first element in the array.
+     * Similar functionality to the {@link #getCustomers() getCustomers} method.
+     * @param customers       An array of Customer objects to be sorted.
+     * @return A sorted array of Customer objects, with lowest ID first.
+     */
     public Customer[] getCustomers(Customer[] customers) {
         CustomerAVLTree tree = new CustomerAVLTree();
 
@@ -126,6 +174,13 @@ public class CustomerStore implements ICustomerStore {
         return result;
     }
 
+
+    /**
+     * Returns an array of all Customers, sorted in alphabetical order of Last Name, then First Name.
+     * If the First Name and Last Name are identical for multiple Customers, they should be further sorted in ascending order of ID.
+     * The Customer with the Last Name, First Name combination that is nearest to 'A' alphabetically should be the first element in the array.
+     * @return A sorted array of Customer objects, where the first element is the Customer with the Last Name, First Name combination that is nearest to 'A' alphabetically, followed by ID if the Last Name, First Name combination is equal.
+     */
     public Customer[] getCustomersByName() {
         Customer[] tmp = this.getCustomers();
         MyArrayList<Customer> resList = new MyArrayList<>();
@@ -139,6 +194,15 @@ public class CustomerStore implements ICustomerStore {
         return result;
     }
 
+
+    /**
+     * Returns an array of all Customers, sorted in alphabetical order of Last Name, then First Name.
+     * If the First Name and Last Name are identical for multiple Customers, they should be further sorted in ascending order of ID.
+     * The Customer with the Last Name, First Name combination that is nearest to 'A' alphabetically should be the first element in the array.
+     * Similar functionality to the {@link #getCustomersByName() getCustomersByName} method.
+     * @param customers       An array of Customer objects to be sorted.
+     * @return A sorted array of Customer objects, where the first element is the Customer with the Last Name, First Name combination that is nearest to 'A' alphabetically, followed by ID if the Last Name, First Name combination is equal.
+     */
     public Customer[] getCustomersByName(Customer[] customers) {
         MyArrayList<Customer> resList = new MyArrayList<>();
         CustomerAVLTree tree = new CustomerAVLTree("name");
@@ -151,6 +215,13 @@ public class CustomerStore implements ICustomerStore {
         return result;
     }
 
+    /**
+     * Return an array of all the Customers whose Last Name and First Name (sorted in that order) contain the given query.
+     * Search queries are accent-insensitive, case-insensitive and space-insensitive.
+     * The array should be sorted using the criteria defined for the {@link #getCustomersByName() getCustomersByName} method.
+     * @param searchTerm       The search string to find.
+     * @return A array of Customer objects, sorted using the criteria defined for the {@link #getCustomersByName() getCustomersByName} method.
+     */
     public Customer[] getCustomersContaining(String searchTerm) {
         // ignore multiple spaces, only use the one space.
         if (searchTerm.length() == 0)

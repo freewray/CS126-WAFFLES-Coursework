@@ -1,20 +1,17 @@
 package uk.ac.warwick.cs126.stores;
 
+import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IReviewStore;
 import uk.ac.warwick.cs126.models.Review;
+import uk.ac.warwick.cs126.structures.*;
+import uk.ac.warwick.cs126.util.DataChecker;
+import uk.ac.warwick.cs126.util.KeywordChecker;
+import uk.ac.warwick.cs126.util.StringFormatter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import org.apache.commons.io.IOUtils;
-
-import uk.ac.warwick.cs126.structures.*;
-
-import uk.ac.warwick.cs126.util.DataChecker;
-import uk.ac.warwick.cs126.util.KeywordChecker;
-import uk.ac.warwick.cs126.util.StringFormatter;
 
 public class ReviewStore implements IReviewStore {
 
@@ -28,7 +25,11 @@ public class ReviewStore implements IReviewStore {
         dataChecker = new DataChecker();
         blackListedReviewID = new AVLTreeCom<>();
     }
-
+    /**
+     * Loads data from a TSV file containing the Review data into a Review array, parsing the attributes where required.
+     * @param resource       The source csv file to be loaded.
+     * @return A Review array with all Reviews contained within the data file, regardless of the validity of the ID.
+     */
     public Review[] loadReviewDataToArray(InputStream resource) {
         Review[] reviewArray = new Review[0];
 
@@ -75,6 +76,16 @@ public class ReviewStore implements IReviewStore {
         return reviewArray;
     }
 
+    /**
+     * Add a new Review to the store. The method should return true if the Review is successfully added to the data store.
+     * The Review should not be added if a Review with the same ID already exists in the store.
+     * If a duplicate ID is encountered, the existing Review should be removed and the ID blacklisted from further use.
+     * If a Review has a unique ID but there already exists a Review with the same Customer ID and Restaurant ID, you replace it with the newest of the pair.
+     * The ID of the Review that was subsequently replaced is now blacklisted, and should not exist in the store.
+     * An invalid ID is one that contains zeros or more than 3 of the same digit, these should not be added, although they do not need to be blacklisted.
+     * @param review       The Review object to add to the data store.
+     * @return True if the Review was successfully added, false otherwise.
+     */
     public boolean addReview(Review review) {
         if (blackListedReviewID.search(review.getID()) != null || !dataChecker.isValid(review)) {
             return false;
@@ -100,6 +111,12 @@ public class ReviewStore implements IReviewStore {
         return true;
     }
 
+    /**
+     * Add new Reviews in the input array to the store. The method should return true if the Reviews are all successfully added to the data store.
+     * Reference the {@link #addReview(Review) addReview} method for details on ID handling and existing Customer/Restaurant Reviews.
+     * @param reviews       An array of Review objects to add to the data store.
+     * @return True if all of the Reviews were successfully added, false otherwise.
+     */
     public boolean addReview(Review[] reviews) {
         boolean res = true;
         for (Review review : reviews) {
@@ -109,6 +126,11 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns a single Review, the Review with the given ID, or null if not found.
+     * @param id       The ID of the Review to be retrieved.
+     * @return The Review with the given ID, or null if not found.
+     */
     public Review getReview(Long id) {
         if (dataChecker.isValid(id)) {
             for (int i = 0; i < reviewArray.size(); i++) {
@@ -120,6 +142,11 @@ public class ReviewStore implements IReviewStore {
         return null;
     }
 
+    /**
+     * Returns an array of all Reviews, sorted in ascending order of ID.
+     * The Review with the lowest ID should be the first element in the array.
+     * @return A sorted array of Review objects, with lowest ID first.
+     */
     public Review[] getReviews() {
         Review[] res = new Review[reviewArray.size()];
         for (int i = 0; i < reviewArray.size(); i++) {
@@ -200,18 +227,37 @@ public class ReviewStore implements IReviewStore {
         }
     }
 
+    /**
+     * Returns an array of all Reviews, sorted in descending order of date reviewed (newest first).
+     * If the date reviewed is the same, then sort by ascending order of ID.
+     * The newest Review should be the first element in the array, followed by lowest ID should the date reviewed be equal.
+     * @return A sorted array of Review objects, with the newest Review first.
+     */
     public Review[] getReviewsByDate() {
         Review[] res = this.getReviews();
         this.reviewArrayQuickSortByDateReviewed(res);
         return res;
     }
 
+    /**
+     * Returns an array of all Reviews, sorted in descending order of rating (highest first).
+     * If the rating is the same, then sort by date reviewed (newest first), if still same then sort by ascending order of ID.
+     * The highest rated Review should be the first element in the array, followed by lowest ID should the ratings be equal.
+     * @return A sorted array of Review objects, with the highest rated Review first.
+     */
     public Review[] getReviewsByRating() {
         Review[] res = this.getReviews();
         this.reviewArrayQuickSortByRating(res);
         return res;
     }
 
+    /**
+     * Returns an array of all Reviews by the Customer with the given ID.
+     * The array is sorted by date reviewed from newest to oldest, with ascending order of ID for matching dates.
+     * The newest Review should be the first element in the array, with the lowest ID should the date reviewed be equal.
+     * @param id       The ID of the Customer who's Reviews are to be retrieved.
+     * @return A sorted array of Review objects, with the newest Review first.
+     */
     public Review[] getReviewsByCustomerID(Long id) {
         if (!dataChecker.isValid(id))
             return new Review[0];
@@ -227,6 +273,12 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns an array of all Reviews for the Restaurant with the given ID.
+     * The array should be sorted using the criteria defined for the {@link #getReviewsByCustomerID(Long) getReviewsByCustomerID} method.
+     * @param id       The ID of the Restaurant who's Reviews are to be retrieved.
+     * @return A sorted array of Review objects, with the newest Review first.
+     */
     public Review[] getReviewsByRestaurantID(Long id) {
         if (!dataChecker.isValid(id))
             return new Review[0];
@@ -242,6 +294,12 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns the average rating given by a Customer (to 1 dp), with the given ID.
+     * If no ratings are found, return a rating of 0.
+     * @param id       The ID of the Customer to retrieve the average rating for.
+     * @return The average rating given by the Customer with the given ID, or 0 if no ratings found.
+     */
     public float getAverageCustomerReviewRating(Long id) {
         if (!dataChecker.isValid(id))
             return -1;
@@ -258,6 +316,12 @@ public class ReviewStore implements IReviewStore {
         return ((float) sum) / cnt;
     }
 
+    /**
+     * Returns the rating for a Restaurant (to 1 dp), with the given ID, which is taken as the average of all ratings for that Restaurant.
+     * If no ratings are found, return a rating of 0.
+     * @param id       The ID of the Restaurant to retrieve the rating for.
+     * @return The rating for the Restaurant with the given ID, or 0 if no ratings found.
+     */
     public float getAverageRestaurantReviewRating(Long id) {
         if (!dataChecker.isValid(id))
             return -1;
@@ -274,6 +338,12 @@ public class ReviewStore implements IReviewStore {
         return ((float) sum) / cnt;
     }
 
+    /**
+     * Returns an array of 5 counts, corresponding to the Review ratings given by the Customer.
+     * e.g. int[0] will contain the number of 1-star reviews given by the Customer, int[1] will contain the number of 2-star reviews etc.
+     * @param id       The ID of the Customer who's Rating breakdown is to be retrieved.
+     * @return An array of 5 counts detailing the breakdown of number of n-star reviews given by the Customer.
+     */
     public int[] getCustomerReviewHistogramCount(Long id) {
         if (!dataChecker.isValid(id))
             return new int[0];
@@ -286,6 +356,12 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns an array of 5 counts, corresponding to the Review ratings for the given Restaurant.
+     * e.g. int[0] will contain the number of 1-star reviews for the Restaurant, int[1] will contain the number of 2-star reviews etc.
+     * @param id       The ID of the Restaurant who's Rating breakdown is to be retrieved.
+     * @return An array of 5 counts detailing the breakdown of number of n-star reviews for the given Restaurant.
+     */
     public int[] getRestaurantReviewHistogramCount(Long id) {
         int[] res = new int[5];
         if (!dataChecker.isValid(id))
@@ -298,6 +374,12 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns an array of 20 Customer IDs that have reviewed the most Restaurants.
+     * If there are less than 20 IDs, the remaining indexes should be set to null.
+     * The array should be sorted by descending Review count, then by date of the oldest Review, and finally by ascending order of Customer ID for matching counts.
+     * @return A sorted array of 20 Customer IDs, with the Customer with the highest Review count first.
+     */
     public Long[] getTopCustomersByReviewCount() {
         Long[] topCustomers = new Long[20];
 
@@ -330,6 +412,12 @@ public class ReviewStore implements IReviewStore {
         return topCustomers;
     }
 
+    /**
+     * Returns an array of 20 Restaurant IDs that have been reviewed the most.
+     * If there are less than 20 IDs, the remaining indexes should be set to null.
+     * The array should be sorted by descending Review count, then by date of the oldest Review, and finally by ascending order of Restaurant ID for matching counts.
+     * @return A sorted array of 20 Restaurant IDs, with the Restaurant with the highest Review count first.
+     */
     public Long[] getTopRestaurantsByReviewCount() {
         Long[] topRestaurants = new Long[20];
 
@@ -362,6 +450,12 @@ public class ReviewStore implements IReviewStore {
         return topRestaurants;
     }
 
+    /**
+     * Returns an array of 20 Restaurant IDs that have the highest rating.
+     * If there are less than 20 IDs, the remaining indexes should be set to null.
+     * The array should be sorted by descending average Review rating, then by date of the oldest Review, and finally by ascending order of Restaurant ID for matching counts.
+     * @return A sorted array of 20 Restaurant IDs, with the Restaurant with the highest Review count first.
+     */
     public Long[] getTopRatedRestaurants() {
         MyComparableArrayList<Rating> ratings = new MyComparableArrayList<>();
         Long[] res = new Long[20];
@@ -393,6 +487,13 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Returns an array of 5 keywords for the given Restaurant that have the highest frequency of use in the reviews.
+     * If there are less than 5 keywords, the remaining indexes should be set to null.
+     * The array should be sorted by descending count of frequency, then by alphabetical order (0-9 then A-Z) for matching counts.
+     * @param id       The ID of the Restaurant who's top keywords are to be retrieved.
+     * @return A sorted array of 5 keywords for the given Restaurant, with the highest frequency first.
+     */
     public String[] getTopKeywordsForRestaurant(Long id) {
         String[] res = new String[5];
         Review[] restaurantReviews = this.getReviewsByRestaurantID(id);
@@ -431,6 +532,13 @@ public class ReviewStore implements IReviewStore {
         return res;
     }
 
+    /**
+     * Return an array of all the Reviews whose review message contain the given query.
+     * Search queries are accent-insensitive, case-insensitive and space-insensitive.
+     * The array should be sorted using the criteria defined for the {@link #getReviewsByDate() getReviewsByDate} method.
+     * @param searchTerm       The search string to find.
+     * @return A array of Customer objects, sorted using the criteria defined for the {@link #getReviewsByDate() getReviewsByDate} method.
+     */
     public Review[] getReviewsContaining(String searchTerm) {
         // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
         String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));

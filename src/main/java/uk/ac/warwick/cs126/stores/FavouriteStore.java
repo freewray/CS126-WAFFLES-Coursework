@@ -27,6 +27,11 @@ public class FavouriteStore implements IFavouriteStore {
         dataChecker = new DataChecker();
     }
 
+    /**
+     * Loads data from a csv file containing the Favourite data into a Favourite array, parsing the attributes where required.
+     * @param resource       The source csv file to be loaded.
+     * @return A Favourite array with all Favourites contained within the data file, regardless of the validity of the ID.
+     */
     public Favourite[] loadFavouriteDataToArray(InputStream resource) {
         Favourite[] favouriteArray = new Favourite[0];
 
@@ -73,6 +78,16 @@ public class FavouriteStore implements IFavouriteStore {
         return favouriteArray;
     }
 
+    /**
+     * Add a new Favourite to the store. The method should return true if the Favourite is successfully added to the data store.
+     * The Favourite should not be added if a Favourite with the same ID already exists in the store.
+     * If a duplicate ID is encountered, the existing Favourite should be removed and the ID blacklisted from further use.
+     * If a Favourite has a unique ID but there already exists a Favourite with the same Customer ID and Restaurant ID, you replace it with the oldest of the pair.
+     * The ID of the Favourite that was subsequently replaced is now blacklisted, and should not exist in the store.
+     * An invalid ID is one that contains zeros or more than 3 of the same digit, these should not be added, although they do not need to be blacklisted.
+     * @param favourite       The Favourite object to add to the data store.
+     * @return True if the Favourite was successfully added, false otherwise.
+     */
     public boolean addFavourite(Favourite favourite) {
         if (!dataChecker.isValid(favourite) || blackListedFavouriteID.search(favourite.getID()) != null)
             return false;
@@ -98,6 +113,12 @@ public class FavouriteStore implements IFavouriteStore {
         return true;
     }
 
+    /**
+     * Add new Favourites in the input array to the store. The method should return true if the Favourites are all successfully added to the data store.
+     * Reference the {@link #addFavourite(Favourite) addFavourite} method for details on ID handling and existing Customer/Restaurant Favourites.
+     * @param favourites       An array of Favourite objects to add to the data store.
+     * @return True if all of the Favourites were successfully added, false otherwise.
+     */
     public boolean addFavourite(Favourite[] favourites) {
         boolean res = true;
         for (Favourite newFave : favourites) {
@@ -107,6 +128,11 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Returns a single Favourite, the Favourite with the given ID, or null if not found.
+     * @param id       The ID of the Favourite to be retrieved.
+     * @return The Favourite with the given ID, or null if not found.
+     */
     public Favourite getFavourite(Long id) {
         for (int i = 0; i < favouriteArray.size(); i++) {
             if (favouriteArray.get(i).getID().equals(id))
@@ -127,7 +153,7 @@ public class FavouriteStore implements IFavouriteStore {
             return dateCompare;
     }
 
-    public void favouriteQuickSort(Favourite array[], String sortBy, int begin, int end) {
+    public void favouriteQuickSort(Favourite[] array, String sortBy, int begin, int end) {
         if (begin < end) {
             int partitionIndex = 0;
             Favourite pivot = array[end];
@@ -161,6 +187,11 @@ public class FavouriteStore implements IFavouriteStore {
         }
     }
 
+    /**
+     * Returns an array of all Favourites, sorted in ascending order of ID.
+     * The Favourite with the lowest ID should be the first element in the array.
+     * @return A sorted array of Favourite objects, with lowest ID first.
+     */
     public Favourite[] getFavourites() {
         Favourite[] res = new Favourite[favouriteArray.size()];
         for (int i = 0; i < res.length; i++) {
@@ -170,6 +201,13 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Returns an array of all Favourites by the Customer with the given ID.
+     * The array is sorted by date favourited from newest to oldest, with ascending order of ID for matching dates.
+     * The newest Favourite should be the first element in the array, with the lowest ID should the date favourited be equal.
+     * @param id       The ID of the Customer who's Favourites are to be retrieved.
+     * @return A sorted array of Favourite objects, with the newest Favourite first.
+     */
     public Favourite[] getFavouritesByCustomerID(Long id) {
         if (!dataChecker.isValid(id))
             return new Favourite[0];
@@ -187,6 +225,12 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Returns an array of all Favourites for the Restaurant with the given ID.
+     * The array should be sorted using the criteria defined for the {@link #getFavouritesByCustomerID(Long) getFavouritesByCustomerID} method.
+     * @param id       The ID of the Restaurant who's Favourites are to be retrieved.
+     * @return A sorted array of Favourite objects, with the newest Favourite first.
+     */
     public Favourite[] getFavouritesByRestaurantID(Long id) {
         if (!dataChecker.isValid(id))
             return new Favourite[0];
@@ -204,6 +248,15 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Return an array of IDs of all the Restaurants that have been favourited by both Customer with ID customer1ID and Customer with ID customer2ID.
+     * The date favourited is taken as the latest of the favourited date of either Customer.
+     * The array is sorted by date favourited from newest to oldest, with ascending order of Restaurant ID for matching dates.
+     * The newest Favourite should be the first element in the array, with the lowest ID should the date favourited be equal.
+     * @param customer1ID       The ID of the first Customer.
+     * @param customer2ID       The ID of the second Customer.
+     * @return A sorted array of Restaurant IDs, with the newest Favourite first.
+     */
     public Long[] getCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
@@ -239,6 +292,13 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Return an array of IDs of all the Restaurants that have been favourited by Customer with ID customer1ID but not Customer with ID customer2ID.
+     * The array should be sorted using the criteria defined for the {@link #getCommonFavouriteRestaurants(Long, Long) getCommonFavouriteRestaurants} method.
+     * @param customer1ID       The ID of the first Customer.
+     * @param customer2ID       The ID of the second Customer.
+     * @return A sorted array of Restaurant IDs, with the newest Favourite first.
+     */
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
@@ -271,6 +331,17 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Return an array of IDs of all the Restaurants that have either:
+     * <ul>
+     *     <li>been favourited by Customer with ID customer1ID but not Customer with ID customer2ID</li>
+     *     <li>been favourited by Customer with ID customer2ID but not Customer with ID customer1ID</li>
+     * </ul>
+     * The array should be sorted using the criteria defined for the {@link #getCommonFavouriteRestaurants(Long, Long) getCommonFavouriteRestaurants} method.
+     * @param customer1ID       The ID of the first Customer.
+     * @param customer2ID       The ID of the second Customer.
+     * @return A sorted array of Restaurant IDs, with the newest Favourite first.
+     */
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
@@ -318,6 +389,12 @@ public class FavouriteStore implements IFavouriteStore {
         return res;
     }
 
+    /**
+     * Returns an array of 20 Customer IDs that have favourited the most Restaurants.
+     * If there are less than 20 IDs, the remaining indexes should be set to null.
+     * The array should be sorted by descending Favourite count, then by date of the oldest Favourite, and finally by ascending order of Customer ID for matching counts.
+     * @return A sorted array of 20 Customer IDs, with the Customer with the highest Favourite count first.
+     */
     public Long[] getTopCustomersByFavouriteCount() {
         // arraylist of fav in rank sorted by their length
         Long[] topCustomer = new Long[20];
@@ -353,6 +430,12 @@ public class FavouriteStore implements IFavouriteStore {
         return topCustomer;
     }
 
+    /**
+     * Returns an array of 20 Restaurant IDs that have been favourited the most.
+     * If there are less than 20 IDs, the remaining indexes should be set to null.
+     * The array should be sorted by descending Favourite count, then by date of the oldest Favourite, and finally by ascending order of Restaurant ID for matching counts.
+     * @return A sorted array of 20 Restaurant IDs, with the Restaurant with the highest Favourite count first.
+     */
     public Long[] getTopRestaurantsByFavouriteCount() {
         Long[] topRestaurants = new Long[20];
 

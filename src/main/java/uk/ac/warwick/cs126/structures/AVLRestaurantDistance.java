@@ -2,7 +2,7 @@ package uk.ac.warwick.cs126.structures;
 
 import uk.ac.warwick.cs126.models.RestaurantDistance;
 
-public class RestaurantDistanceAVLTree extends AVLTree<RestaurantDistance> {
+public class AVLRestaurantDistance extends AVLTree<RestaurantDistance> {
 
     /**
      * sorted in ascending order of distance If they have the same Distance, then it

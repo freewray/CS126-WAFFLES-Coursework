@@ -1,79 +1,39 @@
 package uk.ac.warwick.cs126.structures;
 
-import uk.ac.warwick.cs126.models.Restaurant;
+import uk.ac.warwick.cs126.models.Customer;
 
-public class RestaurantAVLTree extends AVLTree<Restaurant> {
+public class AVLCustomer extends AVLTree<Customer> {
+    // private AVLTreeNode<Customer> root;
     private String sortBy;
 
-    public RestaurantAVLTree() {
-        sortBy = "id";
+    public AVLCustomer() {
+        this.sortBy = "id";
     }
 
-    public RestaurantAVLTree(String sortBy) {
+    public AVLCustomer(String sortBy) {
         this.sortBy = sortBy;
     }
 
-    private int idCompare(Restaurant r1, Restaurant r2) {
-        return r1.getID().compareTo(r2.getID());
+    private int idCompare(Customer c1, Customer c2) {
+        return c1.getID().compareTo(c2.getID());
     }
 
-    private int nameCompare(Restaurant r1, Restaurant r2) {
-        int nameCompare = r1.getName().compareToIgnoreCase(r2.getName());
-        if (nameCompare == 0)
-            return idCompare(r1, r2);
+    private int nameCompare(Customer c1, Customer c2) {
+        int firstNameCompare = c1.getFirstName().compareToIgnoreCase(c2.getFirstName());
+        int lastNameCompare = c1.getLastName().compareToIgnoreCase((c2.getLastName()));
+        if (firstNameCompare == 0 && lastNameCompare == 0)
+            return idCompare(c1, c2);
+        else if (lastNameCompare == 0)
+            return firstNameCompare;
         else
-            return nameCompare;
+            return lastNameCompare;
     }
 
-    /**
-     * sorted by Date Established, from oldest to most recent. If they have the same
-     * Date Established, then it is sorted alphabetically by the restaurant Name. If
-     * they have the same restaurant Name, then it is sorted in ascending order of
-     * their ID.
-     */
-    private int dateCompare(Restaurant r1, Restaurant r2) {
-        int dateCompare = r1.getDateEstablished().compareTo(r2.getDateEstablished());
-        if (dateCompare == 0)
-            return nameCompare(r1, r2);
-        else
-            return dateCompare;
-    }
-
-    /**
-     * sorted in descending order of Warwick Stars. If they have the same Warwick
-     * Stars, then it is sorted alphabetically by the restaurant Name. If they have
-     * the same restaurant Name, then it is sorted in ascending order of their ID.
-     */
-    private int warwickStarCompare(Restaurant r1, Restaurant r2) {
-        if (r1.getWarwickStars() == r2.getWarwickStars())
-            return nameCompare(r1, r2);
-        else
-            return r2.getWarwickStars() - r1.getWarwickStars();
-    }
-
-    /**
-     * sorted in descending order of Rating. If they have the same Rating, then it
-     * is sorted alphabetically by the restaurant Name. If they have the same
-     * restaurant Name, then it is sorted in ascending order of their ID.
-     */
-    private int ratingCompare(Restaurant r1, Restaurant r2) {
-        if (r1.getCustomerRating() == r2.getCustomerRating())
-            return nameCompare(r1, r2);
-        else
-            return r2.getCustomerRating() < r1.getCustomerRating() ? -1 : 1;
-    }
-
-    private int compare(Restaurant r1, Restaurant r2) {
+    private int compare(Customer r1, Customer r2) {
         if (this.sortBy.equalsIgnoreCase("id"))
             return this.idCompare(r1, r2);
         else if (this.sortBy.equalsIgnoreCase("name"))
             return this.nameCompare(r1, r2);
-        else if (this.sortBy.equalsIgnoreCase("date"))
-            return this.dateCompare(r1, r2);
-        else if (this.sortBy.equalsIgnoreCase("warwickStar"))
-            return this.warwickStarCompare(r1, r2);
-        else if (this.sortBy.equalsIgnoreCase("rating"))
-            return this.ratingCompare(r1, r2);
         else
             return 0;
     }
@@ -83,7 +43,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
      *
      * 参数说明： tree AVL树的根结点 key 插入的结点的键值 返回值： 根节点
      */
-    private AVLTreeNode<Restaurant> insert(AVLTreeNode<Restaurant> tree, Restaurant key) {
+    private AVLTreeNode<Customer> insert(AVLTreeNode<Customer> tree, Customer key) {
         if (tree == null) {
             // 新建节点
             tree = new AVLTreeNode<>(key, null, null);
@@ -106,7 +66,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
                     else
                         tree = rightLeftRotation(tree);
                 }
-            } else { // compare(key, tree.getKey()) == 0
+            } else { // cmp==0
                 System.out.println("FAILED: Same nodes are not allowed in AVL Tree");
             }
         }
@@ -115,7 +75,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
         return tree;
     }
 
-    public void insert(Restaurant key) {
+    public void insert(Customer key) {
         root = insert(root, key);
     }
 
@@ -124,7 +84,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
      *
      * 参数说明： tree AVL树的根结点 z 待删除的结点 返回值： 根节点
      */
-    private AVLTreeNode<Restaurant> remove(AVLTreeNode<Restaurant> tree, AVLTreeNode<Restaurant> rm) {
+    private AVLTreeNode<Customer> remove(AVLTreeNode<Customer> tree, AVLTreeNode<Customer> rm) {
         // 根为空 或者 没有要删除的节点，直接返回null。
         if (tree == null || rm == null)
             return null;
@@ -134,7 +94,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
             tree.setLeft(remove(tree.getLeft(), rm));
             // 删除节点后，若AVL树失去平衡，则进行相应的调节。
             if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
-                AVLTreeNode<Restaurant> r = tree.getRight();
+                AVLTreeNode<Customer> r = tree.getRight();
                 if (height(r.getLeft()) > height(r.getRight()))
                     tree = rightLeftRotation(tree);
                 else
@@ -144,7 +104,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
             tree.setRight(remove(tree.getRight(), rm));
             // 删除节点后，若AVL树失去平衡，则进行相应的调节。
             if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
-                AVLTreeNode<Restaurant> l = tree.getLeft();
+                AVLTreeNode<Customer> l = tree.getLeft();
                 if (height(l.getRight()) > height(l.getLeft()))
                     tree = leftRightRotation(tree);
                 else
@@ -160,7 +120,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
                     // (03)删除该最大节点。
                     // 这类似于用"tree的左子树中最大节点"做"tree"的替身；
                     // 采用这种方式的好处是：删除"tree的左子树中最大节点"之后，AVL树仍然是平衡的。
-                    AVLTreeNode<Restaurant> max = maximum(tree.getLeft());
+                    AVLTreeNode<Customer> max = maximum(tree.getLeft());
                     tree.setKey(max.getKey());
                     tree.setLeft(remove(tree.getLeft(), max));
                 } else {
@@ -170,7 +130,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
                     // (03)删除该最小节点。
                     // 这类似于用"tree的右子树中最小节点"做"tree"的替身；
                     // 采用这种方式的好处是：删除"tree的右子树中最小节点"之后，AVL树仍然是平衡的。
-                    AVLTreeNode<Restaurant> min = minimum(tree.getRight());
+                    AVLTreeNode<Customer> min = minimum(tree.getRight());
                     tree.setKey(min.getKey());
                     tree.setRight(remove(tree.getRight(), min));
                 }
@@ -181,14 +141,14 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
         return tree;
     }
 
-    public void remove(Restaurant key) {
-        AVLTreeNode<Restaurant> tmp;
+    public void remove(Customer key) {
+        AVLTreeNode<Customer> tmp;
 
         if ((tmp = search(root, key)) != null)
             root = remove(root, tmp);
     }
 
-    public AVLTreeNode<Restaurant> search(AVLTreeNode<Restaurant> node, Restaurant key) {
+    public AVLTreeNode<Customer> search(AVLTreeNode<Customer> node, Customer key) {
 
         if (node == null) {
             return null; // missing from tree
@@ -201,11 +161,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
         }
     }
 
-    public AVLTreeNode<Restaurant> search(Restaurant key) {
-        return search(root, key);
-    }
-
-    private Restaurant searchByID(AVLTreeNode<Restaurant> node, Long id) {
+    private Customer searchByID(AVLTreeNode<Customer> node, Long id) {
 
         if (node == null) {
             return null; // missing from tree
@@ -218,11 +174,11 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
         }
     }
 
-    public Restaurant searchByID(Long id) {
+    public Customer searchByID(Long id) {
         return searchByID(root, id);
     }
 
-    public void inOrder(AVLTreeNode<Restaurant> tree, MyArrayList<Restaurant> arr) {
+    public void inOrder(AVLTreeNode<Customer> tree, MyArrayList<Customer> arr) {
         if (tree != null) {
             inOrder(tree.getLeft(), arr);
             arr.add(tree.getKey());
@@ -230,13 +186,7 @@ public class RestaurantAVLTree extends AVLTree<Restaurant> {
         }
     }
 
-    public void inOrder(MyArrayList<Restaurant> arr) {
+    public void inOrder(MyArrayList<Customer> arr) {
         inOrder(root, arr);
-    }
-
-    public MyArrayList<Restaurant> allNodes() {
-        MyArrayList<Restaurant> list = new MyArrayList<>();
-        inOrder(root, list);
-        return list;
     }
 }

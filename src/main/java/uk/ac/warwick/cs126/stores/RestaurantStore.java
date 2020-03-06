@@ -3,10 +3,10 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IRestaurantStore;
 import uk.ac.warwick.cs126.models.*;
+import uk.ac.warwick.cs126.structures.AVLRestaurant;
+import uk.ac.warwick.cs126.structures.AVLRestaurantDistance;
 import uk.ac.warwick.cs126.structures.AVLTreeCom;
 import uk.ac.warwick.cs126.structures.MyArrayList;
-import uk.ac.warwick.cs126.structures.RestaurantAVLTree;
-import uk.ac.warwick.cs126.structures.RestaurantDistanceAVLTree;
 import uk.ac.warwick.cs126.util.ConvertToPlace;
 import uk.ac.warwick.cs126.util.DataChecker;
 import uk.ac.warwick.cs126.util.HaversineDistanceCalculator;
@@ -31,13 +31,13 @@ public class RestaurantStore implements IRestaurantStore {
      * restaurants are stored in AVL tree and sorted by their ID
      * by default
      */
-    private RestaurantAVLTree restaurantTree;
+    private AVLRestaurant restaurantTree;
 
     public RestaurantStore() {
         // Initialise variables here
         dataChecker = new DataChecker();
         blackListedRestaurantID = new AVLTreeCom<>();
-        restaurantTree = new RestaurantAVLTree();
+        restaurantTree = new AVLRestaurant();
     }
 
     /**
@@ -171,7 +171,7 @@ public class RestaurantStore implements IRestaurantStore {
      * @return A sorted array of Restaurant objects, with lowest ID first.
      */
     public Restaurant[] getRestaurants(Restaurant[] restaurants) {
-        RestaurantAVLTree tree = new RestaurantAVLTree();
+        AVLRestaurant tree = new AVLRestaurant();
         for (Restaurant r : restaurants) {
             tree.insert(r);
         }
@@ -184,7 +184,7 @@ public class RestaurantStore implements IRestaurantStore {
 
     public Restaurant[] getSortedRestaurant(String sortBy){
         // create new tree with the sorting method
-        RestaurantAVLTree tree = new RestaurantAVLTree(sortBy);
+        AVLRestaurant tree = new AVLRestaurant(sortBy);
         // get all nodes from previous tree
         MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
         // insert nodes into new tree
@@ -231,7 +231,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public Restaurant[] getRestaurantsByDateEstablished(Restaurant[] restaurants) {
         // create new tree with the sorting method
-        RestaurantAVLTree tree = new RestaurantAVLTree("date");
+        AVLRestaurant tree = new AVLRestaurant("date");
         // get all nodes from array
         for (Restaurant r : restaurants) {
             tree.insert(r);
@@ -275,7 +275,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public RestaurantDistance[] getRestaurantsByDistanceFrom(float latitude, float longitude) {
         // create a new tree that can sort Restaurant Distance
-        RestaurantDistanceAVLTree tree = new RestaurantDistanceAVLTree();
+        AVLRestaurantDistance tree = new AVLRestaurantDistance();
         // copy nodes from previous stored tree
         MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
         // create an array to hold sorted RestaurantDistances
@@ -305,7 +305,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public RestaurantDistance[] getRestaurantsByDistanceFrom(Restaurant[] restaurants, float latitude, float longitude) {
         // create a new tree that can sort Restaurant Distance
-        RestaurantDistanceAVLTree tree = new RestaurantDistanceAVLTree();
+        AVLRestaurantDistance tree = new AVLRestaurantDistance();
         // create a new array to hold answers
         RestaurantDistance[] res = new RestaurantDistance[restaurants.length];
         // insert each node into the new avl tree
@@ -358,7 +358,7 @@ public class RestaurantStore implements IRestaurantStore {
         }
 
         // sort results in avl tree
-        RestaurantAVLTree tree = new RestaurantAVLTree("name");
+        AVLRestaurant tree = new AVLRestaurant("name");
         for (int i = 0; i < resList.size(); i++) {
             tree.insert(resList.get(i));
         }

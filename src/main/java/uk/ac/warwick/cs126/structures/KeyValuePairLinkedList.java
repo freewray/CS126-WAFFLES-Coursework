@@ -11,7 +11,7 @@ public class KeyValuePairLinkedList<K extends Comparable<K>, V> {
     }
 
     public void add(K key, V value) {
-        this.add(new KeyValuePair<K, V>(key, value));
+        this.add(new KeyValuePair<>(key, value));
     }
 
     public void add(KeyValuePair<K, V> kvp) {

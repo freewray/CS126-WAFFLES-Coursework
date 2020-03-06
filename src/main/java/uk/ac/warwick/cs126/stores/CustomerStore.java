@@ -126,7 +126,7 @@ public class CustomerStore implements ICustomerStore {
     public boolean addCustomer(Customer[] customers) {
         boolean res = true;
         for (Customer customer : customers) {
-            if (this.addCustomer(customer) == false)
+            if (!this.addCustomer(customer))
                 res = false;
         }
         return res;

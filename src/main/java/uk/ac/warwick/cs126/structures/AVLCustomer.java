@@ -4,7 +4,7 @@ import uk.ac.warwick.cs126.models.Customer;
 
 public class AVLCustomer extends AVLTree<Customer> {
     // private AVLTreeNode<Customer> root;
-    private String sortBy;
+    private final String sortBy;
 
     public AVLCustomer() {
         this.sortBy = "id";

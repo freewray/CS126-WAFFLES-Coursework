@@ -155,7 +155,7 @@ public class FavouriteStore implements IFavouriteStore {
 
     public void favouriteQuickSort(Favourite[] array, String sortBy, int begin, int end) {
         if (begin < end) {
-            int partitionIndex = 0;
+            int partitionIndex;
             Favourite pivot = array[end];
             int i = (begin - 1);
 
@@ -286,7 +286,7 @@ public class FavouriteStore implements IFavouriteStore {
         }
         favouriteQuickSort(favRes, "date", 0, favRes.length - 1);
         Long[] res = new Long[favRes.length];
-        for (int i = 0; i < favRes.length && i < res.length; i++) {
+        for (int i = 0; i < favRes.length; i++) {
             res[i] = favRes[i].getRestaurantID();
         }
         return res;
@@ -307,17 +307,17 @@ public class FavouriteStore implements IFavouriteStore {
         MyArrayList<Favourite> missing = new MyArrayList<>();
 
         // remove commons from all
-        for (int i = 0; i < customer2Favs.length; i++) {
+        for (Favourite customer2Fav : customer2Favs) {
             for (int j = 0; j < missing.size(); j++) {
-                if (missing.get(j).getRestaurantID().equals(customer2Favs[i].getRestaurantID())) {
+                if (missing.get(j).getRestaurantID().equals(customer2Fav.getRestaurantID())) {
                     missing.remove(missing.get(j));
                 }
             }
         }
 
         // transfer cus1 favs into an arraylist
-        for (int i = 0; i < customer1Favs.length; i++) {
-            missing.add(customer1Favs[i]);
+        for (Favourite customer1Fav : customer1Favs) {
+            missing.add(customer1Fav);
         }
 
         // transfer the missings back to array and then sort by date
@@ -325,7 +325,7 @@ public class FavouriteStore implements IFavouriteStore {
         missing.toArray(resArr);
         favouriteQuickSort(resArr, "date", 0, resArr.length - 1);
         Long[] res = new Long[resArr.length];
-        for (int i = 0; i < resArr.length && i < res.length; i++) {
+        for (int i = 0; i < resArr.length; i++) {
             res[i] = resArr[i].getRestaurantID();
         }
         return res;
@@ -367,8 +367,8 @@ public class FavouriteStore implements IFavouriteStore {
         // remove commons
         Long[] common = this.getCommonFavouriteRestaurants(customer1ID, customer2ID);
         for (int i = 0; i < notCommon.size(); i++) {
-            for (int j = 0; j < common.length; j++) {
-                if (notCommon.get(i).getRestaurantID().equals(common[j]))
+            for (Long aLong : common) {
+                if (notCommon.get(i).getRestaurantID().equals(aLong))
                     notCommon.remove(notCommon.get(i));
             }
         }

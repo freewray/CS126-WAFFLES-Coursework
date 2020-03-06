@@ -32,7 +32,7 @@ public class AVLIDCounter extends AVLTreeCom<IDCounter> {
     private AVLTreeNode<IDCounter> insertByID(AVLTreeNode<IDCounter> tree, IDCounter key) {
         if (tree == null) {
             // if the tree is empty, create a new node as root
-            tree = new AVLTreeNode<IDCounter>(key, null, null);
+            tree = new AVLTreeNode<>(key, null, null);
         } else {
             if (key.getIdentifier().compareTo(tree.getKey().getIdentifier()) < 0) { // insert the new node to left subtree
                 tree.setLeft(insertByID(tree.getLeft(), key));

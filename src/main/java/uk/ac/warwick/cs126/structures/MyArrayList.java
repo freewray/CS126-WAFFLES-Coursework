@@ -112,9 +112,9 @@ public class MyArrayList<E> {
             return "Empty";
         }
 
-        StringBuilder ret = new StringBuilder("");
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < this.size; i++) {
-            ret.append("Index: " + i + "    Element: " + this.get(i) + "\n");
+            ret.append("Index: ").append(i).append("    Element: ").append(this.get(i)).append("\n");
         }
 
         ret.deleteCharAt(ret.length() - 1);

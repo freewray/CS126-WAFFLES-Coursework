@@ -253,8 +253,8 @@ public class StringFormatter {
         }
 
         String replacedString = str;
-        for (int i = 0; i < accentAndConvertedAccent.length; i++) {
-            replacedString = replacedString.replace(accentAndConvertedAccent[i][0], accentAndConvertedAccent[i][1]);
+        for (String[] strings : accentAndConvertedAccent) {
+            replacedString = replacedString.replace(strings[0], strings[1]);
         }
         return replacedString;
     }

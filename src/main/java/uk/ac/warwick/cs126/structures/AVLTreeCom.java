@@ -14,7 +14,7 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
     private AVLTreeNode<E> insert(AVLTreeNode<E> tree, E key) {
         if (tree == null) {
             // if the tree is empty, create a new node as root
-            tree = new AVLTreeNode<E>(key, null, null);
+            tree = new AVLTreeNode<>(key, null, null);
         } else {
             if (key.compareTo(tree.getKey()) < 0) { // insert the new node to left subtree
                 tree.setLeft(insert(tree.getLeft(), key));

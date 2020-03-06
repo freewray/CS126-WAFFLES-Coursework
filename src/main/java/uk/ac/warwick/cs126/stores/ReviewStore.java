@@ -496,14 +496,14 @@ public class ReviewStore implements IReviewStore {
         String[] reviewWords = reviewString.toString().split("\\W+");
         AVLCounter tree = new AVLCounter(); // stores keyword in alphabetical order
         KeywordChecker keywordChecker = new KeywordChecker();
-        for (int j = 0; j < reviewWords.length; j++) {
-            if (keywordChecker.isAKeyword(reviewWords[j])) {
-                if (tree.searchKeyword(reviewWords[j]) != null) {
+        for (String reviewWord : reviewWords) {
+            if (keywordChecker.isAKeyword(reviewWord)) {
+                if (tree.searchKeyword(reviewWord) != null) {
                     // word is already in tree
-                    tree.searchKeyword(reviewWords[j]).getKey().addCount();
+                    tree.searchKeyword(reviewWord).getKey().addCount();
                 } else {
                     // insert keyword in alphabetical order
-                    tree.insertByWord(new Counter<>(reviewWords[j].toLowerCase()));
+                    tree.insertByWord(new Counter<>(reviewWord.toLowerCase()));
                 }
             }
         }

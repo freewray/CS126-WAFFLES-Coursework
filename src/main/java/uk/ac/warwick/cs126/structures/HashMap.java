@@ -45,8 +45,7 @@ public class HashMap<K extends Comparable<K>, V> {
     }
 
     protected int hash(K key) {
-        int code = key.hashCode();
-        return code;
+        return key.hashCode();
     }
 
     public void add(K key, V value) {
@@ -66,17 +65,17 @@ public class HashMap<K extends Comparable<K>, V> {
     }
 
     public String toString() {
-        String res = "{";
+        StringBuilder res = new StringBuilder("{");
         for (int i = 0; i < table.length; i++) {
             ListElement<KeyValuePair<K, V>> ptr = table[i].getHead();
             while (ptr != null) {
-                res += "[" + ptr.getValue().getKey() + ",\"" + ptr.getValue().getValue() + "\"]";
+                res.append("[").append(ptr.getValue().getKey()).append(",\"").append(ptr.getValue().getValue()).append("\"]");
                 ptr = ptr.getNext();
             }
             if (i < table.length - 1)
-                res += "\n";
+                res.append("\n");
         }
-        res += "}";
-        return res;
+        res.append("}");
+        return res.toString();
     }
 }

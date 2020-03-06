@@ -56,7 +56,7 @@ public class AVLRestaurantDistance extends AVLTree<RestaurantDistance> {
         root = insert(root, key);
     }
 
-    public void inOrder(AVLTreeNode<RestaurantDistance> tree, MyArrayList<RestaurantDistance> arr) {
+    private void inOrder(AVLTreeNode<RestaurantDistance> tree, MyArrayList<RestaurantDistance> arr) {
         if (tree != null) {
             inOrder(tree.getLeft(), arr);
             arr.add(tree.getKey());

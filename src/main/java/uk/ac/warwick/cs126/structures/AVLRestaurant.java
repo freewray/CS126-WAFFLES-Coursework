@@ -188,7 +188,7 @@ public class AVLRestaurant extends AVLTree<Restaurant> {
             root = remove(root, tmp);
     }
 
-    public AVLTreeNode<Restaurant> search(AVLTreeNode<Restaurant> node, Restaurant key) {
+    private AVLTreeNode<Restaurant> search(AVLTreeNode<Restaurant> node, Restaurant key) {
 
         if (node == null) {
             return null; // missing from tree
@@ -222,7 +222,7 @@ public class AVLRestaurant extends AVLTree<Restaurant> {
         return searchByID(root, id);
     }
 
-    public void inOrder(AVLTreeNode<Restaurant> tree, MyArrayList<Restaurant> arr) {
+    private void inOrder(AVLTreeNode<Restaurant> tree, MyArrayList<Restaurant> arr) {
         if (tree != null) {
             inOrder(tree.getLeft(), arr);
             arr.add(tree.getKey());

@@ -125,7 +125,4 @@ public class AVLTree<E> {
         inOrder(root);
     }
 
-    public void clear() {
-        root = null;
-    }
 }

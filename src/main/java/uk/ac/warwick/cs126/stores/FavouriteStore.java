@@ -3,9 +3,9 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IFavouriteStore;
 import uk.ac.warwick.cs126.models.Favourite;
+import uk.ac.warwick.cs126.structures.AVLIDCounter;
 import uk.ac.warwick.cs126.structures.AVLTreeCom;
 import uk.ac.warwick.cs126.structures.IDCounter;
-import uk.ac.warwick.cs126.structures.AVLIDCounter;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.util.DataChecker;
 
@@ -398,35 +398,6 @@ public class FavouriteStore implements IFavouriteStore {
     public Long[] getTopCustomersByFavouriteCount() {
         // arraylist of fav in rank sorted by their length
         Long[] topCustomer = new Long[20];
-
-        // MyComparableArrayList<IDCounter> customerFavourites = new MyComparableArrayList<>();
-        // for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
-        //     for (j = 0; j < customerFavourites.size(); j++) {
-        //         if (customerFavourites.get(j).getIdentifier().equals(favouriteArray.get(i).getCustomerID())) {
-        //             customerFavourites.get(j).addCount();
-        //             if (customerFavourites.get(j).getLatestReviewDate()
-        //                     .before(favouriteArray.get(i).getDateFavourited()))
-        //                 customerFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
-
-        //             break;
-        //         }
-        //     }
-
-        //     if (j == customerFavourites.size()) {
-        //         IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getCustomerID(),
-        //                 favouriteArray.get(i).getDateFavourited());
-        //         customerFavourites.add(customerFavourite);
-        //     }
-        // }
-        // // sort by favourite times
-        // customerFavourites.quicksort(0, customerFavourites.size() - 1);
-        // // sort by latest date (oldest to newest)
-        // for (int i = 0; i < topCustomer.length && i < customerFavourites.size(); i++) {
-        //     topCustomer[i] = customerFavourites.get(i).getIdentifier();
-        //     System.out.println("[cnt = " + customerFavourites.get(i).getCount() + "] fave: "
-        //             + customerFavourites.get(i).getIdentifier());
-        // }
-
         AVLIDCounter tree = new AVLIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
             Long id = favouriteArray.get(i).getCustomerID();
@@ -464,35 +435,6 @@ public class FavouriteStore implements IFavouriteStore {
      */
     public Long[] getTopRestaurantsByFavouriteCount() {
         Long[] topRestaurants = new Long[20];
-
-        // MyComparableArrayList<IDCounter> topRestaurantFavourites = new MyComparableArrayList<>();
-        // for (int i = 0, j = 0; i < favouriteArray.size(); i++) {
-        //     for (j = 0; j < topRestaurantFavourites.size(); j++) {
-        //         if (topRestaurantFavourites.get(j).getIdentifier()
-        //                 .compareTo(favouriteArray.get(i).getRestaurantID()) == 0) {
-        //             topRestaurantFavourites.get(j).addCount();
-        //             if (topRestaurantFavourites.get(j).getLatestReviewDate()
-        //                     .compareTo(favouriteArray.get(i).getDateFavourited()) < 0)
-        //                 topRestaurantFavourites.get(j).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
-
-        //             break;
-        //         }
-        //     }
-
-        //     if (j == topRestaurantFavourites.size()) {
-        //         IDCounter customerFavourite = new IDCounter(favouriteArray.get(i).getRestaurantID(),
-        //                 favouriteArray.get(i).getDateFavourited());
-        //         topRestaurantFavourites.add(customerFavourite);
-        //     }
-        // }
-        // // sort by favourite times
-        // topRestaurantFavourites.quicksort(0, topRestaurantFavourites.size() - 1);
-        // // sort by latest date (oldest to newest)
-        // for (int i = 0; i < topRestaurants.length && i < topRestaurantFavourites.size(); i++) {
-        //     topRestaurants[i] = topRestaurantFavourites.get(i).getIdentifier();
-        //     System.out.println("[cnt = " + topRestaurantFavourites.get(i).getCount() + "] fave: "
-        //             + topRestaurantFavourites.get(i).getIdentifier());
-        // }
         AVLIDCounter tree = new AVLIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
             Long id = favouriteArray.get(i).getRestaurantID();

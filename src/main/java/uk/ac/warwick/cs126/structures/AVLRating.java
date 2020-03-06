@@ -1,53 +1,53 @@
 package uk.ac.warwick.cs126.structures;
 
-public class AVLTreeStore extends AVLTree<E extends ICustomer&IRestaurant&IFavourite&IReview>{
+public class AVLRating extends AVLTreeCom<Rating> {
 
-    /** 
+    /**
      * Find id in tree
      * @param node
-     * @param keyword
-     * @return AVLTreeNode<IDCounter>
+     * @param id
+     * @return AVLTreeNode<Rating>
      */
-    private AVLTreeNode<IDCounter> searchByID(AVLTreeNode<IDCounter> node, Long id) {
+    private AVLTreeNode<Rating> searchByID(AVLTreeNode<Rating> node, Long id) {
         if (node == null) {
             return null; // missing from tree
-        } else if (id.compareTo(node.getKey().getIdentifier()) < 0) {
+        } else if (id.compareTo(node.getKey().getId()) < 0) {
             return searchByID(node.getLeft(), id);
-        } else if (id.compareTo(node.getKey().getIdentifier()) > 0) {
+        } else if (id.compareTo(node.getKey().getId()) > 0) {
             return searchByID(node.getRight(), id);
         } else {
             return node; // found it
         }
     }
 
-    public AVLTreeNode<IDCounter> searchByID(Long id) {
+    public AVLTreeNode<Rating> searchByID(Long id) {
         return searchByID(root, id);
     }
 
-    /** 
-    * @param tree
-    * @param key to be insert into the tree
-    * @return AVLTreeNode<IDCounter>
-    */
-    private AVLTreeNode<IDCounter> insertByID(AVLTreeNode<IDCounter> tree, IDCounter key) {
+    /**
+     * @param tree
+     * @param key to be insert into the tree
+     * @return AVLTreeNode<Rating>
+     */
+    private AVLTreeNode<Rating> insertByID(AVLTreeNode<Rating> tree, Rating key) {
         if (tree == null) {
             // if the tree is empty, create a new node as root
-            tree = new AVLTreeNode<IDCounter>(key, null, null);
+            tree = new AVLTreeNode<>(key, null, null);
         } else {
-            if (key.getIdentifier().compareTo(tree.getKey().getIdentifier()) < 0) { // insert the new node to left subtree
+            if (key.getId().compareTo(tree.getKey().getId()) < 0) { // insert the new node to left subtree
                 tree.setLeft(insertByID(tree.getLeft(), key));
                 // rebalance the tree after the insertion
                 if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
-                    if (key.getIdentifier().compareTo(tree.getLeft().getKey().getIdentifier()) < 0)
+                    if (key.getId().compareTo(tree.getLeft().getKey().getId()) < 0)
                         tree = leftLeftRotation(tree);
                     else
                         tree = leftRightRotation(tree);
                 }
-            } else if (key.getIdentifier().compareTo(tree.getKey().getIdentifier()) > 0) { // insert the new node to right subtree
+            } else if (key.getId().compareTo(tree.getKey().getId()) > 0) { // insert the new node to right subtree
                 tree.setRight(insertByID(tree.getRight(), key));
                 // rebalance the tree after the insertion
                 if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
-                    if (key.getIdentifier().compareTo(tree.getRight().getKey().getIdentifier()) > 0)
+                    if (key.getId().compareTo(tree.getRight().getKey().getId()) > 0)
                         tree = rightRightRotation(tree);
                     else
                         tree = rightLeftRotation(tree);
@@ -61,7 +61,7 @@ public class AVLTreeStore extends AVLTree<E extends ICustomer&IRestaurant&IFavou
         return tree;
     }
 
-    public void insertByID(IDCounter key) {
+    public void insertByID(Rating key) {
         root = insertByID(root, key);
     }
 }

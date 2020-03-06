@@ -5,7 +5,7 @@ public class AVLIDCounter extends AVLTreeCom<IDCounter> {
     /** 
      * Find id in tree
      * @param node
-     * @param keyword
+     * @param id
      * @return AVLTreeNode<IDCounter>
      */
     private AVLTreeNode<IDCounter> searchByID(AVLTreeNode<IDCounter> node, Long id) {

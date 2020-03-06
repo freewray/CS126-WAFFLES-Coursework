@@ -4,7 +4,7 @@ import uk.ac.warwick.cs126.models.Favourite;
 import uk.ac.warwick.cs126.stores.FavouriteStore;
 
 public class TestTheFavouriteStore extends TestRunner {
-    TestTheFavouriteStore(){
+    TestTheFavouriteStore() {
         System.out.println("\n[Testing FavouriteStore]");
 
         // Run tests, comment out if you want to omit a test, feel free to modify or add more.
@@ -15,10 +15,10 @@ public class TestTheFavouriteStore extends TestRunner {
         testGetFavouritesByCustomerID();
         testGetFavouritesByRestaurantID();
         testGetCommonFavouriteRestaurants();
-        // testGetNotCommonFavouriteRestaurants();
-        // testGetMissingFavouriteRestaurants();
-         testGetTopRestaurantsByFavouriteCount();
-         testGetTopCustomersByFavouriteCount();
+        testGetNotCommonFavouriteRestaurants();
+        testGetMissingFavouriteRestaurants();
+        testGetTopRestaurantsByFavouriteCount();
+        testGetTopCustomersByFavouriteCount();
     }
 
     private void testAddFavourite() {
@@ -31,12 +31,8 @@ public class TestTheFavouriteStore extends TestRunner {
             //           Long customerID,
             //           Long restaurantID,
             //           Date dateFavourited)
-            Favourite favourite = new Favourite(
-                    1112223334445556L,
-                    1112223334445557L,
-                    1112223334445558L,
-                    parseDate("2020-04-30")
-            );
+            Favourite favourite = new Favourite(1112223334445556L, 1112223334445557L, 1112223334445558L,
+                    parseDate("2020-04-30"));
 
             // Add to store
             boolean result = favouriteStore.addFavourite(favourite);
@@ -59,8 +55,8 @@ public class TestTheFavouriteStore extends TestRunner {
             FavouriteStore favouriteStore = new FavouriteStore();
 
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed, should return true as all the data is valid
             boolean result = favouriteStore.addFavourite(favourites);
@@ -83,8 +79,8 @@ public class TestTheFavouriteStore extends TestRunner {
             FavouriteStore favouriteStore = new FavouriteStore();
 
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -111,8 +107,8 @@ public class TestTheFavouriteStore extends TestRunner {
             FavouriteStore favouriteStore = new FavouriteStore();
 
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -121,8 +117,8 @@ public class TestTheFavouriteStore extends TestRunner {
             Favourite[] gotFavourites = favouriteStore.getFavourites();
 
             // Load manually sorted data from /data folder to verify with
-            Favourite[] expectedfavourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10-sorted-by-id.csv"));
+            Favourite[] expectedfavourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10-sorted-by-id.csv"));
 
             // Now we compare
             boolean result = compareTables(expectedfavourites, gotFavourites);
@@ -145,8 +141,8 @@ public class TestTheFavouriteStore extends TestRunner {
             FavouriteStore favouriteStore = new FavouriteStore();
 
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -155,8 +151,8 @@ public class TestTheFavouriteStore extends TestRunner {
             Favourite[] gotFavourites = favouriteStore.getFavouritesByCustomerID(1797633434427591L);
 
             // Load manually sorted data from /data folder to verify with
-            Favourite[] expectedfavourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10-sorted-by-customerid.csv"));
+            Favourite[] expectedfavourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10-sorted-by-customerid.csv"));
 
             boolean result = compareTables(expectedfavourites, gotFavourites);
 
@@ -176,8 +172,8 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -186,8 +182,8 @@ public class TestTheFavouriteStore extends TestRunner {
             Favourite[] gotFavourites = favouriteStore.getFavouritesByRestaurantID(9517651597424422L);
 
             // Load manually sorted data from /data folder to verify with
-            Favourite[] expectedfavourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10-sorted-by-restaurant-id.csv"));
+            Favourite[] expectedfavourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10-sorted-by-restaurant-id.csv"));
 
             boolean result = compareTables(expectedfavourites, gotFavourites);
 
@@ -207,8 +203,8 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -217,7 +213,7 @@ public class TestTheFavouriteStore extends TestRunner {
             Long[] gotFavourites = favouriteStore.getCommonFavouriteRestaurants(1797633434427591L, 2649541714385159L);
 
             // Load manually sorted data from /data folder to verify with
-            Long[] expectedfavourites = {9517651597424422L, 9986542917841834L};
+            Long[] expectedfavourites = { 9517651597424422L, 9986542917841834L };
 
             boolean result = false;
             if (gotFavourites.length == expectedfavourites.length) {
@@ -266,8 +262,8 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -280,13 +276,13 @@ public class TestTheFavouriteStore extends TestRunner {
                 System.out.println(missing[i]);
             }
 
-//            boolean result = false;
-//
-//            if (result) {
-//                System.out.println("[SUCCESS]    FavouriteStore: testGetMissingFavouriteRestaurants()");
-//            } else {
-//                System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
-//            }
+            //            boolean result = false;
+            //
+            //            if (result) {
+            //                System.out.println("[SUCCESS]    FavouriteStore: testGetMissingFavouriteRestaurants()");
+            //            } else {
+            //                System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
+            //            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetMissingFavouriteRestaurants()");
             e.printStackTrace();
@@ -298,8 +294,8 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -312,13 +308,13 @@ public class TestTheFavouriteStore extends TestRunner {
                 System.out.println(unCommon[i]);
             }
 
-//            boolean result = false;
-//
-//            if (result) {
-//                System.out.println("[SUCCESS]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
-//            } else {
-//                System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
-//            }
+            //            boolean result = false;
+            //
+            //            if (result) {
+            //                System.out.println("[SUCCESS]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
+            //            } else {
+            //                System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
+            //            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetNotCommonFavouriteRestaurants()");
             e.printStackTrace();
@@ -330,8 +326,8 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
 
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
@@ -339,17 +335,17 @@ public class TestTheFavouriteStore extends TestRunner {
             System.out.println("   [TEST]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
             // Get favourites sorted by ID from store
             Long[] res = favouriteStore.getTopCustomersByFavouriteCount();
-//            for (int i = 0; i < res.length; i++) {
-//                System.out.println(res[i]);
-//            }
+            //            for (int i = 0; i < res.length; i++) {
+            //                System.out.println(res[i]);
+            //            }
 
-//            boolean result = false;
-//
-//            if (result) {
-//                System.out.println("[SUCCESS]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
-//            } else {
-//                System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
-//            }
+            //            boolean result = false;
+            //
+            //            if (result) {
+            //                System.out.println("[SUCCESS]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
+            //            } else {
+            //                System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
+            //            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetTopCustomersByFavouriteCount()");
             e.printStackTrace();
@@ -361,25 +357,25 @@ public class TestTheFavouriteStore extends TestRunner {
         try {
             FavouriteStore favouriteStore = new FavouriteStore();
             // Load test data from /data folder
-            Favourite[] favourites = favouriteStore.loadFavouriteDataToArray(
-                    loadData("/test-favourite/favourite-10.csv"));
+            Favourite[] favourites = favouriteStore
+                    .loadFavouriteDataToArray(loadData("/test-favourite/favourite-10.csv"));
             // Add to store to be processed
             favouriteStore.addFavourite(favourites);
             System.out.println("   [TEST]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
             // Get favourites sorted by ID from store
             Long[] res = favouriteStore.getTopRestaurantsByFavouriteCount();
 
-//            for (int i = 0; i < res.length; i++) {
-//                System.out.println(res[i]);
-//            }
+            //            for (int i = 0; i < res.length; i++) {
+            //                System.out.println(res[i]);
+            //            }
 
-//            boolean result = false;
-//
-//            if (result) {
-//                System.out.println("[SUCCESS]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
-//            } else {
-//                System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
-//            }
+            //            boolean result = false;
+            //
+            //            if (result) {
+            //                System.out.println("[SUCCESS]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+            //            } else {
+            //                System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
+            //            }
         } catch (Exception e) {
             System.out.println(" [FAILED]    FavouriteStore: testGetTopRestaurantsByFavouriteCount()");
             e.printStackTrace();

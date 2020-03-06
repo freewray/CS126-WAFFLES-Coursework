@@ -408,7 +408,6 @@ public class FavouriteStore implements IFavouriteStore {
                     tree.searchByID(id).getKey().setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
                 }
             } else {
-                System.out.println("Insertion:  " + id + " -");
                 tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
             }
         }
@@ -421,7 +420,7 @@ public class FavouriteStore implements IFavouriteStore {
         tmp = tree2.toArrayList();
         for (int i = 0; i < topCustomer.length && i < tmp.size(); i++) {
             topCustomer[i] = tmp.get(i).getIdentifier();
-            System.out.println(tmp.get(i).getIdentifier() + " - " + tmp.get(i).getCount());
+            System.out.println("Top Customer: " + tmp.get(i).getIdentifier() + " - cnt: " + tmp.get(i).getCount());
         }
 
         return topCustomer;
@@ -445,7 +444,6 @@ public class FavouriteStore implements IFavouriteStore {
                     tree.searchByID(id).getKey().setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
                 }
             } else {
-                System.out.println("Insertion:  " + id + " -");
                 tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
             }
         }
@@ -458,7 +456,7 @@ public class FavouriteStore implements IFavouriteStore {
         tmp = tree2.toArrayList();
         for (int i = 0; i < topRestaurants.length && i < tmp.size(); i++) {
             topRestaurants[i] = tmp.get(i).getIdentifier();
-            System.out.println(tmp.get(i).getIdentifier() + " - " + tmp.get(i).getCount());
+            System.out.println("Top Restaurant: " + tmp.get(i).getIdentifier() + " - cnt: " + tmp.get(i).getCount());
         }
         return topRestaurants;
     }

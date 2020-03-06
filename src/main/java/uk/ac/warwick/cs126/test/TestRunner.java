@@ -18,7 +18,7 @@ public class TestRunner {
         new TestTheFavouriteStore();
         // new TestTheRestaurantStore();
         new TestTheReviewStore();
-        // new TestTheUtils();
+        new TestTheUtils();
     }
 
     static InputStream loadData(String filename) {

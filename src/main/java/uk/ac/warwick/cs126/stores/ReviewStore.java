@@ -392,7 +392,6 @@ public class ReviewStore implements IReviewStore {
                     tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
             } else {
-                System.out.println("Insertion:  " + id + " -");
                 tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
@@ -427,7 +426,6 @@ public class ReviewStore implements IReviewStore {
                     tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
             } else {
-                System.out.println("Insertion:  " + id + " -");
                 tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
@@ -440,7 +438,7 @@ public class ReviewStore implements IReviewStore {
         tmp = tree2.toArrayList();
         for (int i = 0; i < topRestaurants.length && i < tmp.size(); i++) {
             topRestaurants[i] = tmp.get(i).getIdentifier();
-            System.out.println(tmp.get(i).getIdentifier() + " - " + tmp.get(i).getCount());
+            System.out.println("Top Restaurant: " + tmp.get(i).getIdentifier() + " - cnt: " + tmp.get(i).getCount());
         }
         return topRestaurants;
     }
@@ -454,17 +452,15 @@ public class ReviewStore implements IReviewStore {
     public Long[] getTopRatedRestaurants() {
         Long[] res = new Long[20];
         AVLRating tree = new AVLRating();
-        for (int i = 0, j; i < reviewArray.size(); i++) {
+        for (int i = 0; i < reviewArray.size(); i++) {
             Long id = reviewArray.get(i).getRestaurantID();
-            if (tree.searchByID(id) != null){
+            if (tree.searchByID(id) != null) {
                 tree.searchByID(id).getKey().addCnt();
                 tree.searchByID(id).getKey().addSumRating(reviewArray.get(i).getRating());
                 if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed()))
                     tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-            }
-            else {
-                tree.insertByID(new Rating(id, reviewArray.get(i).getDateReviewed(),
-                        reviewArray.get(i).getRating()));
+            } else {
+                tree.insertByID(new Rating(id, reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating()));
             }
         }
         MyArrayList<Rating> ratings = tree.toArrayList();
@@ -476,7 +472,8 @@ public class ReviewStore implements IReviewStore {
         ratings = tree2.toArrayList();
         for (int i = 0; i < res.length && i < ratings.size(); i++) {
             res[i] = ratings.get(i).getId();
-            System.out.println("Restaurant: " + ratings.get(i).getId() + " - rating " + ratings.get(i).getAverageRating());
+            System.out.println(
+                    "Restaurant: " + ratings.get(i).getId() + " - rating " + ratings.get(i).getAverageRating());
         }
         return res;
     }

@@ -10,14 +10,15 @@ public class HaversineDistanceCalculator {
         double rlat2 = Math.toRadians(lat2);
         double rlon1 = Math.toRadians(lon1);
         double rlon2 = Math.toRadians(lon2);
-        double res = Math.pow(Math.sin((rlat2-rlat1)/2), 2) + (Math.cos(rlat1) * Math.cos(rlat2) * Math.pow(Math.sin((rlon2-rlon1)/2), 2));
+        double res = Math.pow(Math.sin((rlat2 - rlat1) / 2), 2)
+                + (Math.cos(rlat1) * Math.cos(rlat2) * Math.pow(Math.sin((rlon2 - rlon1) / 2), 2));
         res = R * 2 * Math.asin(Math.pow(res, 0.5));
-        return (float)(Math.round(res * 10) / 10.0);
+        return (float) (Math.round(res * 10) / 10.0);
     }
 
     public static float inMiles(float lat1, float lon1, float lat2, float lon2) {
         float km = inKilometres(lat1, lon1, lat2, lon2);
-        return (float)(Math.round(km / kilometresInAMile * 10) / 10.0);
+        return (float) (Math.round((km / kilometresInAMile) * 10) / 10.0);
     }
 
 }

@@ -282,7 +282,7 @@ public class RestaurantStore implements IRestaurantStore {
         RestaurantDistance[] res = new RestaurantDistance[tmp.size()];
         // insert each node into the new avl tree
         for (int i = 0; i < tmp.size(); i++) {
-            float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude,
+            float distance = HaversineDistanceCalculator.inKilometres(latitude, longitude,
                     tmp.get(i).getLatitude(), tmp.get(i).getLongitude());
             tree.insert(new RestaurantDistance(tmp.get(i), distance));
         }
@@ -310,7 +310,7 @@ public class RestaurantStore implements IRestaurantStore {
         RestaurantDistance[] res = new RestaurantDistance[restaurants.length];
         // insert each node into the new avl tree
         for (Restaurant r : restaurants) {
-            float distance = HaversineDistanceCalculator.inKilometres(latitude, latitude,
+            float distance = HaversineDistanceCalculator.inKilometres(latitude, longitude,
                     r.getLatitude(), r.getLongitude());
             tree.insert(new RestaurantDistance(r, distance));
         }

@@ -29,21 +29,18 @@ public class DataChecker implements IDataChecker {
     public boolean isValid(Long inputID) {
         String stringID = String.valueOf(inputID);
         // 1. must be 16 digits
+        int[] cnt = new int[10];
         if (stringID.length() < 16 || inputID == null)
             return false;
         // 2. must all be numbers
         for (int i = 0; i < stringID.length(); i++) {
             if (!Character.isDigit(stringID.charAt(i)))
                 return false;
-            int freq = 0;
-            for (int j = 0; j < stringID.length(); j++) {
-                if (stringID.charAt(j) == stringID.charAt(i))
-                    freq++;
-            }
-            // 3. no number appears more than 3 times
-            if (freq > 3)
-                return false;
+            cnt[stringID.charAt(i) - '0']++;
         }
+        // 3. no number appears more than 3 times
+        for (int i : cnt)
+            if (i > 3) return false;
 
         return true;
     }
@@ -53,8 +50,7 @@ public class DataChecker implements IDataChecker {
         if (customer.getID() == null || !isValid(customer.getID())) return false;
         if (customer.getFirstName() == null) return false;
         if (customer.getLastName() == null) return false;
-        if (customer.getDateJoined() == null) return false;
-        return true;
+        return customer.getDateJoined() != null;
     }
 
     public boolean isValid(Restaurant restaurant) {
@@ -75,10 +71,7 @@ public class DataChecker implements IDataChecker {
             return false;
         if (restaurant.getWarwickStars() > 3 || restaurant.getWarwickStars() < 0)
             return false;
-        if (restaurant.getCustomerRating() > 5.0f || restaurant.getCustomerRating() < 0.0f)
-            return false;
-
-        return true;
+        return !(restaurant.getCustomerRating() > 5.0f) && !(restaurant.getCustomerRating() < 0.0f);
     }
 
     public boolean isValid(Favourite favourite) {
@@ -86,8 +79,7 @@ public class DataChecker implements IDataChecker {
         if (favourite.getID() == null || !isValid(favourite.getID())) return false;
         if (!isValid(favourite.getRestaurantID())) return false;
         if (!isValid(favourite.getCustomerID())) return false;
-        if (favourite.getDateFavourited() == null) return false;
-        return true;
+        return favourite.getDateFavourited() != null;
     }
 
     public boolean isValid(Review review) {
@@ -95,8 +87,6 @@ public class DataChecker implements IDataChecker {
         if (!isValid(review.getID()) || !isValid(review.getCustomerID()) || !isValid(review.getRestaurantID()))
             return false;
         if (review.getReview() == null) return false;
-        if (review.getDateReviewed() == null) return false;
-
-        return true;
+        return review.getDateReviewed() != null;
     }
 }

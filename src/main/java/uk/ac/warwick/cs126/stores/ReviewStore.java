@@ -17,13 +17,13 @@ public class ReviewStore implements IReviewStore {
 
     private final MyArrayList<Review> reviewArray;
     private final DataChecker dataChecker;
-    private final AVLTreeCom<Long> blackListedReviewID;
+    private final AVLTreeID blackListedReviewID;
 
     public ReviewStore() {
         // Initialise variables here
         reviewArray = new MyArrayList<>();
         dataChecker = new DataChecker();
-        blackListedReviewID = new AVLTreeCom<>();
+        blackListedReviewID = new AVLTreeID();
     }
 
     /**
@@ -383,20 +383,20 @@ public class ReviewStore implements IReviewStore {
      */
     public Long[] getTopCustomersByReviewCount() {
         Long[] topCustomers = new Long[20];
-        AVLIDCounter tree = new AVLIDCounter();
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < reviewArray.size(); i++) {
             Long id = reviewArray.get(i).getCustomerID();
             if (tree.searchByID(id) != null) {
-                tree.searchByID(id).getKey().addCount();
-                if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
-                    tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
+                tree.searchByID(id).addCount();
+                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
+                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
             } else {
                 tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
-        AVLIDCounter tree2 = new AVLIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
         for (int i = 0; i < tmp.size(); i++) {
             tree2.insert(tmp.get(i));
         }
@@ -417,20 +417,20 @@ public class ReviewStore implements IReviewStore {
      */
     public Long[] getTopRestaurantsByReviewCount() {
         Long[] topRestaurants = new Long[20];
-        AVLIDCounter tree = new AVLIDCounter();
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < reviewArray.size(); i++) {
             Long id = reviewArray.get(i).getRestaurantID();
             if (tree.searchByID(id) != null) {
-                tree.searchByID(id).getKey().addCount();
-                if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
-                    tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
+                tree.searchByID(id).addCount();
+                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
+                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
                 }
             } else {
                 tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
             }
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
-        AVLIDCounter tree2 = new AVLIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
         for (int i = 0; i < tmp.size(); i++) {
             tree2.insert(tmp.get(i));
         }
@@ -451,20 +451,20 @@ public class ReviewStore implements IReviewStore {
      */
     public Long[] getTopRatedRestaurants() {
         Long[] res = new Long[20];
-        AVLRating tree = new AVLRating();
+        AVLTreeRating tree = new AVLTreeRating();
         for (int i = 0; i < reviewArray.size(); i++) {
             Long id = reviewArray.get(i).getRestaurantID();
             if (tree.searchByID(id) != null) {
-                tree.searchByID(id).getKey().addCnt();
-                tree.searchByID(id).getKey().addSumRating(reviewArray.get(i).getRating());
-                if (tree.searchByID(id).getKey().getLatestReviewDate().before(reviewArray.get(i).getDateReviewed()))
-                    tree.searchByID(id).getKey().setLatestReviewDate(reviewArray.get(i).getDateReviewed());
+                tree.searchByID(id).addCnt();
+                tree.searchByID(id).addSumRating(reviewArray.get(i).getRating());
+                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed()))
+                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
             } else {
                 tree.insertByID(new Rating(id, reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating()));
             }
         }
         MyArrayList<Rating> ratings = tree.toArrayList();
-        AVLRating tree2 = new AVLRating();
+        AVLTreeRating tree2 = new AVLTreeRating();
         for (int i = 0; i < ratings.size(); i++) {
             tree2.insert(ratings.get(i));
         }
@@ -494,13 +494,13 @@ public class ReviewStore implements IReviewStore {
                 reviewString.append(r.getReview());
         }
         String[] reviewWords = reviewString.toString().split("\\W+");
-        AVLCounter tree = new AVLCounter(); // stores keyword in alphabetical order
+        AVLTreeCounter tree = new AVLTreeCounter(); // stores keyword in alphabetical order
         KeywordChecker keywordChecker = new KeywordChecker();
         for (String reviewWord : reviewWords) {
             if (keywordChecker.isAKeyword(reviewWord)) {
                 if (tree.searchKeyword(reviewWord) != null) {
                     // word is already in tree
-                    tree.searchKeyword(reviewWord).getKey().addCount();
+                    tree.searchKeyword(reviewWord).addCount();
                 } else {
                     // insert keyword in alphabetical order
                     tree.insertByWord(new Counter<>(reviewWord.toLowerCase()));
@@ -508,7 +508,7 @@ public class ReviewStore implements IReviewStore {
             }
         }
         MyArrayList<Counter<String>> tmp = tree.toArrayList();
-        AVLCounter tree2 = new AVLCounter();
+        AVLTreeCounter tree2 = new AVLTreeCounter();
         for (int i = 0; i < tmp.size(); i++) {
             tree2.insert(tmp.get(i)); // insert keyword in frequency and then alphabetical order
         }

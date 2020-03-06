@@ -10,12 +10,12 @@ public class TestTheCustomerStore extends TestRunner {
         // Run tests, comment out if you want to omit a test, feel free to modify or add more.
         testAddCustomer();
         testAddCustomers();
-        testGetCustomer();
-        testGetCustomers();
-        testGetCustomersInputArray();
-        testGetCustomersByName();
-        testGetCustomersByNameInputArray();
-        testGetCustomersContaining();
+//        testGetCustomer();
+//        testGetCustomers();
+//        testGetCustomersInputArray();
+//        testGetCustomersByName();
+//        testGetCustomersByNameInputArray();
+//        testGetCustomersContaining();
     }
 
     private void testAddCustomer() {

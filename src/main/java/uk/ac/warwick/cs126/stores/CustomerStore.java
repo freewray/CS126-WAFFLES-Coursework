@@ -3,8 +3,8 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.ICustomerStore;
 import uk.ac.warwick.cs126.models.Customer;
-import uk.ac.warwick.cs126.structures.AVLCustomer;
-import uk.ac.warwick.cs126.structures.AVLTreeCom;
+import uk.ac.warwick.cs126.structures.AVLTreeCustomer;
+import uk.ac.warwick.cs126.structures.AVLTreeID;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.util.DataChecker;
 import uk.ac.warwick.cs126.util.StringFormatter;
@@ -24,17 +24,17 @@ public class CustomerStore implements ICustomerStore {
      * customers are stored in an AVL tree therefore quicker to insert,
      * delete and search
      */
-    private final AVLCustomer customerTree;
+    private final AVLTreeCustomer customerTree;
     private final DataChecker dataChecker;
     /**
      * Comparable AVL Tree stores blackListed customerID
      */
-    private final AVLTreeCom<Long> blackListedCustomerID;
+    private final AVLTreeID blackListedCustomerID;
 
     public CustomerStore() {
         dataChecker = new DataChecker();
-        blackListedCustomerID = new AVLTreeCom<>();
-        customerTree = new AVLCustomer();
+        blackListedCustomerID = new AVLTreeID();
+        customerTree = new AVLTreeCustomer();
     }
 
     /**
@@ -162,7 +162,7 @@ public class CustomerStore implements ICustomerStore {
      * @return A sorted array of Customer objects, with lowest ID first.
      */
     public Customer[] getCustomers(Customer[] customers) {
-        AVLCustomer tree = new AVLCustomer();
+        AVLTreeCustomer tree = new AVLTreeCustomer();
 
         for (Customer c : customers)
             tree.insert(c);
@@ -184,7 +184,7 @@ public class CustomerStore implements ICustomerStore {
     public Customer[] getCustomersByName() {
         Customer[] tmp = this.getCustomers();
         MyArrayList<Customer> resList = new MyArrayList<>();
-        AVLCustomer tree = new AVLCustomer("name");
+        AVLTreeCustomer tree = new AVLTreeCustomer("name");
         for (Customer c : tmp) {
             tree.insert(c);
         }
@@ -205,7 +205,7 @@ public class CustomerStore implements ICustomerStore {
      */
     public Customer[] getCustomersByName(Customer[] customers) {
         MyArrayList<Customer> resList = new MyArrayList<>();
-        AVLCustomer tree = new AVLCustomer("name");
+        AVLTreeCustomer tree = new AVLTreeCustomer("name");
         for (Customer c : customers) {
             tree.insert(c);
         }
@@ -245,7 +245,7 @@ public class CustomerStore implements ICustomerStore {
                     resList.add(customerList.get(i));
             }
         }
-        AVLCustomer tree = new AVLCustomer("name");
+        AVLTreeCustomer tree = new AVLTreeCustomer("name");
         for (int i = 0; i < resList.size(); i++) {
             tree.insert(resList.get(i));
         }

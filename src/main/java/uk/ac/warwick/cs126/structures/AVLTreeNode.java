@@ -3,10 +3,11 @@ package uk.ac.warwick.cs126.structures;
 // AVL树的节点(内部类)
 public class AVLTreeNode<E> {
 
-    private E key;                // 关键字(键值)
-    private int height;         // 高度
-    private AVLTreeNode<E> left;    // 左孩子
-    private AVLTreeNode<E> right;    // 右孩子
+    private E key;
+    private int height;
+    private AVLTreeNode<E> left;
+    private AVLTreeNode<E> right;
+
     public AVLTreeNode(E key, AVLTreeNode<E> left, AVLTreeNode<E> right) {
         this.key = key;
         this.left = left;

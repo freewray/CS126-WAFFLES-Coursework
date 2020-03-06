@@ -2,13 +2,13 @@ package uk.ac.warwick.cs126.structures;
 
 import uk.ac.warwick.cs126.models.Restaurant;
 
-public class AVLRestaurant extends AVLTreeStore<Restaurant> {
+public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
 
-    public AVLRestaurant() {
+    public AVLTreeRestaurant() {
         super();
     }
 
-    public AVLRestaurant(String sortBy) {
+    public AVLTreeRestaurant(String sortBy) {
         super(sortBy);
     }
 
@@ -62,7 +62,6 @@ public class AVLRestaurant extends AVLTreeStore<Restaurant> {
             return r2.getCustomerRating() < r1.getCustomerRating() ? -1 : 1;
     }
 
-    @Override
     public int customCompare(Restaurant r1, Restaurant r2) {
         if (this.sortBy.equalsIgnoreCase("id"))
             return this.idCompare(r1, r2);
@@ -78,44 +77,11 @@ public class AVLRestaurant extends AVLTreeStore<Restaurant> {
             return 0;
     }
 
-    public void remove(Restaurant key) {
-        AVLTreeNode<Restaurant> tmp;
-
-        if ((tmp = search(root, key)) != null)
-            root = remove(root, tmp);
+    public int idOnlyCompare(Restaurant r1, Restaurant r2) {
+        return idCompare(r1, r2);
     }
 
-    private AVLTreeNode<Restaurant> search(AVLTreeNode<Restaurant> node, Restaurant key) {
-
-        if (node == null) {
-            return null; // missing from tree
-        } else if (key.getID().compareTo(node.getKey().getID()) < 0) {
-            return search(node.getLeft(), key);
-        } else if (key.getID().compareTo(node.getKey().getID()) > 0) {
-            return search(node.getRight(), key);
-        } else {
-            return node; // found it
-        }
-    }
-
-    public AVLTreeNode<Restaurant> search(Restaurant key) {
-        return search(root, key);
-    }
-
-    private Restaurant searchByID(AVLTreeNode<Restaurant> node, Long id) {
-
-        if (node == null) {
-            return null; // missing from tree
-        } else if (id.compareTo(node.getKey().getID()) < 0) {
-            return searchByID(node.getLeft(), id);
-        } else if (id.compareTo(node.getKey().getID()) > 0) {
-            return searchByID(node.getRight(), id);
-        } else {
-            return node.getKey(); // found it
-        }
-    }
-
-    public Restaurant searchByID(Long id) {
-        return searchByID(root, id);
+    public int idOnlyCompare(Long id, Restaurant r) {
+        return id.compareTo(r.getID());
     }
 }

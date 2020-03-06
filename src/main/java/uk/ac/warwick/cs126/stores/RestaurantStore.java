@@ -3,9 +3,9 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IRestaurantStore;
 import uk.ac.warwick.cs126.models.*;
-import uk.ac.warwick.cs126.structures.AVLRestaurant;
-import uk.ac.warwick.cs126.structures.AVLRestaurantDistance;
-import uk.ac.warwick.cs126.structures.AVLTreeCom;
+import uk.ac.warwick.cs126.structures.AVLTreeID;
+import uk.ac.warwick.cs126.structures.AVLTreeRestaurant;
+import uk.ac.warwick.cs126.structures.AVLTreeRestaurantDistance;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.util.ConvertToPlace;
 import uk.ac.warwick.cs126.util.DataChecker;
@@ -26,18 +26,18 @@ public class RestaurantStore implements IRestaurantStore {
      * blackListed ID are stored in an AVL tree therefore
      * quicker search
      */
-    private final AVLTreeCom<Long> blackListedRestaurantID;
+    private final AVLTreeID blackListedRestaurantID;
     /**
      * restaurants are stored in AVL tree and sorted by their ID
      * by default
      */
-    private final AVLRestaurant restaurantTree;
+    private final AVLTreeRestaurant restaurantTree;
 
     public RestaurantStore() {
         // Initialise variables here
         dataChecker = new DataChecker();
-        blackListedRestaurantID = new AVLTreeCom<>();
-        restaurantTree = new AVLRestaurant();
+        blackListedRestaurantID = new AVLTreeID();
+        restaurantTree = new AVLTreeRestaurant();
     }
 
     /**
@@ -171,7 +171,7 @@ public class RestaurantStore implements IRestaurantStore {
      * @return A sorted array of Restaurant objects, with lowest ID first.
      */
     public Restaurant[] getRestaurants(Restaurant[] restaurants) {
-        AVLRestaurant tree = new AVLRestaurant();
+        AVLTreeRestaurant tree = new AVLTreeRestaurant();
         for (Restaurant r : restaurants) {
             tree.insert(r);
         }
@@ -184,7 +184,7 @@ public class RestaurantStore implements IRestaurantStore {
 
     public Restaurant[] getSortedRestaurant(String sortBy){
         // create new tree with the sorting method
-        AVLRestaurant tree = new AVLRestaurant(sortBy);
+        AVLTreeRestaurant tree = new AVLTreeRestaurant(sortBy);
         // get all nodes from previous tree
         MyArrayList<Restaurant> tmp = restaurantTree.toArrayList();
         // insert nodes into new tree
@@ -231,7 +231,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public Restaurant[] getRestaurantsByDateEstablished(Restaurant[] restaurants) {
         // create new tree with the sorting method
-        AVLRestaurant tree = new AVLRestaurant("date");
+        AVLTreeRestaurant tree = new AVLTreeRestaurant("date");
         // get all nodes from array
         for (Restaurant r : restaurants) {
             tree.insert(r);
@@ -275,7 +275,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public RestaurantDistance[] getRestaurantsByDistanceFrom(float latitude, float longitude) {
         // create a new tree that can sort Restaurant Distance
-        AVLRestaurantDistance tree = new AVLRestaurantDistance();
+        AVLTreeRestaurantDistance tree = new AVLTreeRestaurantDistance();
         // copy nodes from previous stored tree
         MyArrayList<Restaurant> tmp = restaurantTree.toArrayList();
         // create an array to hold sorted RestaurantDistances
@@ -305,7 +305,7 @@ public class RestaurantStore implements IRestaurantStore {
      */
     public RestaurantDistance[] getRestaurantsByDistanceFrom(Restaurant[] restaurants, float latitude, float longitude) {
         // create a new tree that can sort Restaurant Distance
-        AVLRestaurantDistance tree = new AVLRestaurantDistance();
+        AVLTreeRestaurantDistance tree = new AVLTreeRestaurantDistance();
         // create a new array to hold answers
         RestaurantDistance[] res = new RestaurantDistance[restaurants.length];
         // insert each node into the new avl tree
@@ -358,7 +358,7 @@ public class RestaurantStore implements IRestaurantStore {
         }
 
         // sort results in avl tree
-        AVLRestaurant tree = new AVLRestaurant("name");
+        AVLTreeRestaurant tree = new AVLTreeRestaurant("name");
         for (int i = 0; i < resList.size(); i++) {
             tree.insert(resList.get(i));
         }

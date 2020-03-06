@@ -3,8 +3,8 @@ package uk.ac.warwick.cs126.stores;
 import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IFavouriteStore;
 import uk.ac.warwick.cs126.models.Favourite;
-import uk.ac.warwick.cs126.structures.AVLIDCounter;
-import uk.ac.warwick.cs126.structures.AVLTreeCom;
+import uk.ac.warwick.cs126.structures.AVLTreeID;
+import uk.ac.warwick.cs126.structures.AVLTreeIDCounter;
 import uk.ac.warwick.cs126.structures.IDCounter;
 import uk.ac.warwick.cs126.structures.MyArrayList;
 import uk.ac.warwick.cs126.util.DataChecker;
@@ -17,19 +17,20 @@ import java.text.SimpleDateFormat;
 public class FavouriteStore implements IFavouriteStore {
 
     private final MyArrayList<Favourite> favouriteArray;
-    private final AVLTreeCom<Long> blackListedFavouriteID;
+    private final AVLTreeID blackListedFavouriteID;
     private final DataChecker dataChecker;
 
     public FavouriteStore() {
         // Initialise variables here
         favouriteArray = new MyArrayList<>();
-        blackListedFavouriteID = new AVLTreeCom<>();
+        blackListedFavouriteID = new AVLTreeID();
         dataChecker = new DataChecker();
     }
 
     /**
      * Loads data from a csv file containing the Favourite data into a Favourite array, parsing the attributes where required.
-     * @param resource       The source csv file to be loaded.
+     *
+     * @param resource The source csv file to be loaded.
      * @return A Favourite array with all Favourites contained within the data file, regardless of the validity of the ID.
      */
     public Favourite[] loadFavouriteDataToArray(InputStream resource) {
@@ -85,7 +86,8 @@ public class FavouriteStore implements IFavouriteStore {
      * If a Favourite has a unique ID but there already exists a Favourite with the same Customer ID and Restaurant ID, you replace it with the oldest of the pair.
      * The ID of the Favourite that was subsequently replaced is now blacklisted, and should not exist in the store.
      * An invalid ID is one that contains zeros or more than 3 of the same digit, these should not be added, although they do not need to be blacklisted.
-     * @param favourite       The Favourite object to add to the data store.
+     *
+     * @param favourite The Favourite object to add to the data store.
      * @return True if the Favourite was successfully added, false otherwise.
      */
     public boolean addFavourite(Favourite favourite) {
@@ -116,7 +118,8 @@ public class FavouriteStore implements IFavouriteStore {
     /**
      * Add new Favourites in the input array to the store. The method should return true if the Favourites are all successfully added to the data store.
      * Reference the {@link #addFavourite(Favourite) addFavourite} method for details on ID handling and existing Customer/Restaurant Favourites.
-     * @param favourites       An array of Favourite objects to add to the data store.
+     *
+     * @param favourites An array of Favourite objects to add to the data store.
      * @return True if all of the Favourites were successfully added, false otherwise.
      */
     public boolean addFavourite(Favourite[] favourites) {
@@ -130,7 +133,8 @@ public class FavouriteStore implements IFavouriteStore {
 
     /**
      * Returns a single Favourite, the Favourite with the given ID, or null if not found.
-     * @param id       The ID of the Favourite to be retrieved.
+     *
+     * @param id The ID of the Favourite to be retrieved.
      * @return The Favourite with the given ID, or null if not found.
      */
     public Favourite getFavourite(Long id) {
@@ -190,6 +194,7 @@ public class FavouriteStore implements IFavouriteStore {
     /**
      * Returns an array of all Favourites, sorted in ascending order of ID.
      * The Favourite with the lowest ID should be the first element in the array.
+     *
      * @return A sorted array of Favourite objects, with lowest ID first.
      */
     public Favourite[] getFavourites() {
@@ -205,7 +210,8 @@ public class FavouriteStore implements IFavouriteStore {
      * Returns an array of all Favourites by the Customer with the given ID.
      * The array is sorted by date favourited from newest to oldest, with ascending order of ID for matching dates.
      * The newest Favourite should be the first element in the array, with the lowest ID should the date favourited be equal.
-     * @param id       The ID of the Customer who's Favourites are to be retrieved.
+     *
+     * @param id The ID of the Customer who's Favourites are to be retrieved.
      * @return A sorted array of Favourite objects, with the newest Favourite first.
      */
     public Favourite[] getFavouritesByCustomerID(Long id) {
@@ -228,7 +234,8 @@ public class FavouriteStore implements IFavouriteStore {
     /**
      * Returns an array of all Favourites for the Restaurant with the given ID.
      * The array should be sorted using the criteria defined for the {@link #getFavouritesByCustomerID(Long) getFavouritesByCustomerID} method.
-     * @param id       The ID of the Restaurant who's Favourites are to be retrieved.
+     *
+     * @param id The ID of the Restaurant who's Favourites are to be retrieved.
      * @return A sorted array of Favourite objects, with the newest Favourite first.
      */
     public Favourite[] getFavouritesByRestaurantID(Long id) {
@@ -253,8 +260,9 @@ public class FavouriteStore implements IFavouriteStore {
      * The date favourited is taken as the latest of the favourited date of either Customer.
      * The array is sorted by date favourited from newest to oldest, with ascending order of Restaurant ID for matching dates.
      * The newest Favourite should be the first element in the array, with the lowest ID should the date favourited be equal.
-     * @param customer1ID       The ID of the first Customer.
-     * @param customer2ID       The ID of the second Customer.
+     *
+     * @param customer1ID The ID of the first Customer.
+     * @param customer2ID The ID of the second Customer.
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
@@ -295,8 +303,9 @@ public class FavouriteStore implements IFavouriteStore {
     /**
      * Return an array of IDs of all the Restaurants that have been favourited by Customer with ID customer1ID but not Customer with ID customer2ID.
      * The array should be sorted using the criteria defined for the {@link #getCommonFavouriteRestaurants(Long, Long) getCommonFavouriteRestaurants} method.
-     * @param customer1ID       The ID of the first Customer.
-     * @param customer2ID       The ID of the second Customer.
+     *
+     * @param customer1ID The ID of the first Customer.
+     * @param customer2ID The ID of the second Customer.
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
@@ -338,8 +347,9 @@ public class FavouriteStore implements IFavouriteStore {
      *     <li>been favourited by Customer with ID customer2ID but not Customer with ID customer1ID</li>
      * </ul>
      * The array should be sorted using the criteria defined for the {@link #getCommonFavouriteRestaurants(Long, Long) getCommonFavouriteRestaurants} method.
-     * @param customer1ID       The ID of the first Customer.
-     * @param customer2ID       The ID of the second Customer.
+     *
+     * @param customer1ID The ID of the first Customer.
+     * @param customer2ID The ID of the second Customer.
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
@@ -393,26 +403,27 @@ public class FavouriteStore implements IFavouriteStore {
      * Returns an array of 20 Customer IDs that have favourited the most Restaurants.
      * If there are less than 20 IDs, the remaining indexes should be set to null.
      * The array should be sorted by descending Favourite count, then by date of the oldest Favourite, and finally by ascending order of Customer ID for matching counts.
+     *
      * @return A sorted array of 20 Customer IDs, with the Customer with the highest Favourite count first.
      */
     public Long[] getTopCustomersByFavouriteCount() {
         // arraylist of fav in rank sorted by their length
         Long[] topCustomer = new Long[20];
-        AVLIDCounter tree = new AVLIDCounter();
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
             Long id = favouriteArray.get(i).getCustomerID();
             if (tree.searchByID(id) != null) {
-                tree.searchByID(id).getKey().addCount();
-                if (tree.searchByID(id).getKey().getLatestReviewDate()
+                tree.searchByID(id).addCount();
+                if (tree.searchByID(id).getLatestReviewDate()
                         .before(favouriteArray.get(i).getDateFavourited())) {
-                    tree.searchByID(id).getKey().setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
+                    tree.searchByID(id).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
                 }
             } else {
                 tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
             }
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
-        AVLIDCounter tree2 = new AVLIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
         for (int i = 0; i < tmp.size(); i++) {
             tree2.insert(tmp.get(i));
         }
@@ -430,25 +441,26 @@ public class FavouriteStore implements IFavouriteStore {
      * Returns an array of 20 Restaurant IDs that have been favourited the most.
      * If there are less than 20 IDs, the remaining indexes should be set to null.
      * The array should be sorted by descending Favourite count, then by date of the oldest Favourite, and finally by ascending order of Restaurant ID for matching counts.
+     *
      * @return A sorted array of 20 Restaurant IDs, with the Restaurant with the highest Favourite count first.
      */
     public Long[] getTopRestaurantsByFavouriteCount() {
         Long[] topRestaurants = new Long[20];
-        AVLIDCounter tree = new AVLIDCounter();
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
             Long id = favouriteArray.get(i).getRestaurantID();
             if (tree.searchByID(id) != null) {
-                tree.searchByID(id).getKey().addCount();
-                if (tree.searchByID(id).getKey().getLatestReviewDate()
+                tree.searchByID(id).addCount();
+                if (tree.searchByID(id).getLatestReviewDate()
                         .before(favouriteArray.get(i).getDateFavourited())) {
-                    tree.searchByID(id).getKey().setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
+                    tree.searchByID(id).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
                 }
             } else {
                 tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
             }
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
-        AVLIDCounter tree2 = new AVLIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
         for (int i = 0; i < tmp.size(); i++) {
             tree2.insert(tmp.get(i));
         }

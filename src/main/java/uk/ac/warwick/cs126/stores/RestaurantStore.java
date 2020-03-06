@@ -21,17 +21,17 @@ import java.text.SimpleDateFormat;
 
 public class RestaurantStore implements IRestaurantStore {
 
-    private DataChecker dataChecker;
+    private final DataChecker dataChecker;
     /**
      * blackListed ID are stored in an AVL tree therefore
      * quicker search
      */
-    private AVLTreeCom<Long> blackListedRestaurantID;
+    private final AVLTreeCom<Long> blackListedRestaurantID;
     /**
      * restaurants are stored in AVL tree and sorted by their ID
      * by default
      */
-    private AVLRestaurant restaurantTree;
+    private final AVLRestaurant restaurantTree;
 
     public RestaurantStore() {
         // Initialise variables here
@@ -155,7 +155,7 @@ public class RestaurantStore implements IRestaurantStore {
      * @return A sorted array of Restaurant objects, with lowest ID first.
      */
     public Restaurant[] getRestaurants() {
-        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        MyArrayList<Restaurant> tmp = restaurantTree.toArrayList();
         Restaurant[] restaurants = new Restaurant[tmp.size()];
         for (int i = 0; i < tmp.size(); i++) {
             restaurants[i] = tmp.get(i);
@@ -175,7 +175,7 @@ public class RestaurantStore implements IRestaurantStore {
         for (Restaurant r : restaurants) {
             tree.insert(r);
         }
-        MyArrayList<Restaurant> tmp = tree.allNodes();
+        MyArrayList<Restaurant> tmp = tree.toArrayList();
         for (int i = 0; i < restaurants.length; i++) {
             restaurants[i] = tmp.get(i);
         }
@@ -186,7 +186,7 @@ public class RestaurantStore implements IRestaurantStore {
         // create new tree with the sorting method
         AVLRestaurant tree = new AVLRestaurant(sortBy);
         // get all nodes from previous tree
-        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        MyArrayList<Restaurant> tmp = restaurantTree.toArrayList();
         // insert nodes into new tree
         for (int i = 0; i < tmp.size(); i++) {
             tree.insert(tmp.get(i));
@@ -194,7 +194,7 @@ public class RestaurantStore implements IRestaurantStore {
 
         // get sorted data from tree
         tmp.clear();
-        tmp = tree.allNodes();
+        tmp = tree.toArrayList();
         // copy data in array list onto an array
         Restaurant[] restaurants = new Restaurant[tmp.size()];
         for (int i = 0; i < restaurants.length; i++) {
@@ -236,7 +236,7 @@ public class RestaurantStore implements IRestaurantStore {
         for (Restaurant r : restaurants) {
             tree.insert(r);
         }
-        MyArrayList<Restaurant> tmp = tree.allNodes();
+        MyArrayList<Restaurant> tmp = tree.toArrayList();
         for (int i = 0; i < restaurants.length; i++) {
             restaurants[i] = tmp.get(i);
         }
@@ -277,7 +277,7 @@ public class RestaurantStore implements IRestaurantStore {
         // create a new tree that can sort Restaurant Distance
         AVLRestaurantDistance tree = new AVLRestaurantDistance();
         // copy nodes from previous stored tree
-        MyArrayList<Restaurant> tmp = restaurantTree.allNodes();
+        MyArrayList<Restaurant> tmp = restaurantTree.toArrayList();
         // create an array to hold sorted RestaurantDistances
         RestaurantDistance[] res = new RestaurantDistance[tmp.size()];
         // insert each node into the new avl tree
@@ -286,7 +286,7 @@ public class RestaurantStore implements IRestaurantStore {
                     tmp.get(i).getLatitude(), tmp.get(i).getLongitude());
             tree.insert(new RestaurantDistance(tmp.get(i), distance));
         }
-        MyArrayList<RestaurantDistance> tmp2 = tree.allNodes();
+        MyArrayList<RestaurantDistance> tmp2 = tree.toArrayList();
         for (int i = 0; i < tmp2.size(); i++) {
             res[i] = tmp2.get(i);
         }
@@ -314,7 +314,7 @@ public class RestaurantStore implements IRestaurantStore {
                     r.getLatitude(), r.getLongitude());
             tree.insert(new RestaurantDistance(r, distance));
         }
-        MyArrayList<RestaurantDistance> tmp = tree.allNodes();
+        MyArrayList<RestaurantDistance> tmp = tree.toArrayList();
         for (int i = 0; i < tmp.size(); i++) {
             res[i] = tmp.get(i);
         }
@@ -342,7 +342,7 @@ public class RestaurantStore implements IRestaurantStore {
         if (searchTermConvertedFaster.length() == 0) {
             return new Restaurant[0];
         }
-        MyArrayList<Restaurant> restaurants = restaurantTree.allNodes();
+        MyArrayList<Restaurant> restaurants = restaurantTree.toArrayList();
         MyArrayList<Restaurant> resList = new MyArrayList<>();
         for (int i = 0; i < restaurants.size(); i++) {
             ConvertToPlace convertToPlace = new ConvertToPlace();
@@ -363,7 +363,7 @@ public class RestaurantStore implements IRestaurantStore {
             tree.insert(resList.get(i));
         }
         resList.clear();
-        resList = tree.allNodes();
+        resList = tree.toArrayList();
         Restaurant[] res = new Restaurant[resList.size()];
         for (int i = 0; i < resList.size(); i++) {
             res[i] = resList.get(i);

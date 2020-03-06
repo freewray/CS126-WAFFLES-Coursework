@@ -1,7 +1,7 @@
 package uk.ac.warwick.cs126.structures;
 
 public class Counter<E extends Comparable<E>> implements Comparable<Counter<E>> {
-    private E identifier;
+    private final E identifier;
     private int count;
 
     public Counter(E identifier) {

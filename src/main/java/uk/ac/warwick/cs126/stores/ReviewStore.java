@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
 
 public class ReviewStore implements IReviewStore {
 
-    private MyArrayList<Review> reviewArray;
-    private DataChecker dataChecker;
-    private AVLTreeCom<Long> blackListedReviewID;
+    private final MyArrayList<Review> reviewArray;
+    private final DataChecker dataChecker;
+    private final AVLTreeCom<Long> blackListedReviewID;
 
     public ReviewStore() {
         // Initialise variables here

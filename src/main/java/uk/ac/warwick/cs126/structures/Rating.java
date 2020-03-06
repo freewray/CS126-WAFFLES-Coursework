@@ -4,17 +4,13 @@ import java.util.Date;
 
 public class Rating implements Comparable<Rating> {
 
-    private Long id;
+    private final Long id;
     private int cnt;
     private int sumRating;
     private Date latestReviewDate;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void addCnt() {
@@ -47,7 +43,7 @@ public class Rating implements Comparable<Rating> {
     @Override
     public int compareTo(Rating r) {
         float ratingCompare = r.getAverageRating() - this.getAverageRating();
-        int dateCompare = this.getLatestReviewDate().compareTo(this.getLatestReviewDate());
+        int dateCompare = this.getLatestReviewDate().compareTo(r.getLatestReviewDate());
         int idCompare = this.getId().compareTo(r.getId());
 
         if (ratingCompare == 0 && dateCompare == 0)

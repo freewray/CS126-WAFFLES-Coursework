@@ -1,5 +1,6 @@
 package uk.ac.warwick.cs126.util;
 
+import org.apache.commons.io.IOUtils;
 import uk.ac.warwick.cs126.interfaces.IConvertToPlace;
 import uk.ac.warwick.cs126.models.Place;
 
@@ -7,10 +8,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.IOUtils;
-
 public class ConvertToPlace implements IConvertToPlace {
-    private Place[] placesArray;
+    private final Place[] placesArray;
     public ConvertToPlace() {
         // Initialise things here
         placesArray = this.getPlacesArray();

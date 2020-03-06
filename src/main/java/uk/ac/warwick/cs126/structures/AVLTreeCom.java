@@ -80,21 +80,21 @@ public class AVLTreeCom<E extends Comparable<E>> extends AVLTree<E> {
             if ((tree.getLeft() != null) && (tree.getRight() != null)) {
                 // 'rm' has 2 children
                 if (height(tree.getLeft()) > height(tree.getRight())) {
-                    /**
-                     * if 'rm's left subtree is higher than the right subtree
-                     * 1. find the maximum in the right subtree
-                     * 2. set the maximum onto the 'rm' place
-                     * 3. delete the maximum
+                    /*
+                      if 'rm's left subtree is higher than the right subtree
+                      1. find the maximum in the right subtree
+                      2. set the maximum onto the 'rm' place
+                      3. delete the maximum
                      */
                     AVLTreeNode<E> max = maximum(tree.getLeft());
                     tree.setKey(max.getKey());
                     tree.setLeft(remove(tree.getLeft(), max));
                 } else {
-                    /**
-                     * if 'rm's right subtree is higher than or equal to the left subtree
-                     * 1. find the minimum in the right subtree
-                     * 2. set the minimum onto the 'rm' place
-                     * 3. delete the minimum
+                    /*
+                      if 'rm's right subtree is higher than or equal to the left subtree
+                      1. find the minimum in the right subtree
+                      2. set the minimum onto the 'rm' place
+                      3. delete the minimum
                      */
                     AVLTreeNode<E> min = minimum(tree.getRight());
                     tree.setKey(min.getKey());

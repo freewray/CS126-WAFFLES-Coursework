@@ -24,12 +24,12 @@ public class CustomerStore implements ICustomerStore {
      * customers are stored in an AVL tree therefore quicker to insert,
      * delete and search
      */
-    private AVLCustomer customerTree;
-    private DataChecker dataChecker;
+    private final AVLCustomer customerTree;
+    private final DataChecker dataChecker;
     /**
      * Comparable AVL Tree stores blackListed customerID
      */
-    private AVLTreeCom<Long> blackListedCustomerID;
+    private final AVLTreeCom<Long> blackListedCustomerID;
 
     public CustomerStore() {
         dataChecker = new DataChecker();

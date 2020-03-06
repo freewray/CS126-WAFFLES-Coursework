@@ -5,7 +5,7 @@ package uk.ac.warwick.cs126.structures;
 @SuppressWarnings("unchecked")
 public class HashMap<K extends Comparable<K>, V> {
 
-    protected KeyValuePairLinkedList<K, V>[] table;
+    protected final KeyValuePairLinkedList<K, V>[] table;
 
     public HashMap() {
         /* for very simple hashing, primes reduce collisions */

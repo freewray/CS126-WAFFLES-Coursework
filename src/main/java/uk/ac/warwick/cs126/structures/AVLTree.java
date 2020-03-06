@@ -108,21 +108,23 @@ public class AVLTree<E> {
         return tmp;
     }
 
-    /**
-     * traversal the tree in order
-     * @param tree
-     */
-    public void inOrder(AVLTreeNode<E> tree) {
+
+    private void inOrder(AVLTreeNode<E> tree, MyArrayList<E> arr) {
         if (tree != null) {
-            inOrder(tree.getLeft());
-            // arr.add(tree.getKey());
-            System.out.println(tree.getKey() + "---");
-            inOrder(tree.getRight());
+            inOrder(tree.getLeft(), arr);
+            arr.add(tree.getKey());
+            inOrder(tree.getRight(), arr);
         }
     }
 
-    public void inOrder() {
-        inOrder(root);
+    public void inOrder(MyArrayList<E> arr) {
+        inOrder(root, arr);
+    }
+
+    public MyArrayList<E> toArrayList() {
+        MyArrayList<E> list = new MyArrayList<>();
+        inOrder(root, list);
+        return list;
     }
 
 }

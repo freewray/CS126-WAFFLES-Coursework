@@ -16,9 +16,9 @@ import java.text.SimpleDateFormat;
 
 public class FavouriteStore implements IFavouriteStore {
 
-    private MyArrayList<Favourite> favouriteArray;
-    private AVLTreeCom<Long> blackListedFavouriteID;
-    private DataChecker dataChecker;
+    private final MyArrayList<Favourite> favouriteArray;
+    private final AVLTreeCom<Long> blackListedFavouriteID;
+    private final DataChecker dataChecker;
 
     public FavouriteStore() {
         // Initialise variables here

@@ -13,10 +13,10 @@ public class TestRunner {
 
     public static void main(String[] args) {
         // Initialise and run tests, comment out if you want to omit those tests
-        // new TestTheConstructorsAndInitializers();
-        // new TestTheCustomerStore();
+        new TestTheConstructorsAndInitializers();
+        new TestTheCustomerStore();
         new TestTheFavouriteStore();
-        // new TestTheRestaurantStore();
+        new TestTheRestaurantStore();
         new TestTheReviewStore();
         new TestTheUtils();
     }

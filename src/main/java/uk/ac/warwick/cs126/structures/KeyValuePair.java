@@ -2,8 +2,8 @@ package uk.ac.warwick.cs126.structures;
 
 public class KeyValuePair<K extends Comparable<K>, V> implements Comparable<KeyValuePair<K, V>> {
 
-    protected K key;
-    protected V value;
+    protected final K key;
+    protected final V value;
 
     public KeyValuePair(K k, V v) {
         key = k;

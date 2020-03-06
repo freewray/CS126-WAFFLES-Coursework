@@ -5,7 +5,7 @@ import java.util.Date;
 public class IDCounter implements Comparable<IDCounter> {
 
     private Date latestReviewDate;
-    private Long identifier;
+    private final Long identifier;
     private int count;
 
     public IDCounter(Long identifier, Date latestReviewDate) {

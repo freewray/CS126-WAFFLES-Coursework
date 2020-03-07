@@ -12,6 +12,12 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
         super(sortBy);
     }
 
+    /**
+     * @param r1 's id to be compared with
+     * @param r2 's id to be compared with
+     * @return negative if r1's id is smaller
+     * positive if r1's id is bigger
+     */
     private int idCompare(Restaurant r1, Restaurant r2) {
         return r1.getID().compareTo(r2.getID());
     }
@@ -62,6 +68,14 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
             return r2.getCustomerRating() < r1.getCustomerRating() ? -1 : 1;
     }
 
+    /**
+     * default comparison decleared by the tree
+     *
+     * @param r1 restaurant 1 to be compared with
+     * @param r2 restaurant 2 to be compared with
+     * @return nagative number if r1 is smaller
+     * positive number if r2 is bigger
+     */
     public int customCompare(Restaurant r1, Restaurant r2) {
         if (this.sortBy.equalsIgnoreCase("id"))
             return this.idCompare(r1, r2);
@@ -77,10 +91,24 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
             return 0;
     }
 
+    /**
+     * id comparison
+     *
+     * @param r1 restaurant 1s'id to be compared with
+     * @param r2 restaurant 2s'id to be compared with
+     * @return nagative number if r1s'id is smaller
+     * positive number if r2s'id is bigger
+     */
     public int idOnlyCompare(Restaurant r1, Restaurant r2) {
         return idCompare(r1, r2);
     }
 
+    /**
+     * @param id identifier to be compared (id or keyword)
+     * @param r  restaurant to be compared with
+     * @return nagative number if o1s'id is smaller
+     * positive number if o1s'id is bigger
+     */
     public int idOnlyCompare(Long id, Restaurant r) {
         return id.compareTo(r.getID());
     }

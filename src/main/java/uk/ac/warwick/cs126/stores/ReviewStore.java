@@ -468,6 +468,7 @@ public class ReviewStore implements IReviewStore {
         for (int i = 0; i < ratings.size(); i++) {
             tree2.insert(ratings.get(i));
         }
+        System.out.println(ratings.size() + "+++++++");
         ratings.clear();
         ratings = tree2.toArrayList();
         for (int i = 0; i < res.length && i < ratings.size(); i++) {

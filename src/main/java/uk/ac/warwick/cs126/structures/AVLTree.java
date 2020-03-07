@@ -1,8 +1,8 @@
 package uk.ac.warwick.cs126.structures;
 
 public abstract class AVLTree<E, F extends Comparable<F>> {
-    protected AVLTreeNode<E> root;
-    protected final String sortBy;
+    protected final String sortBy; // sorting or insertion rule of the tree
+    protected AVLTreeNode<E> root; // root node
 
     public AVLTree() {
         this.sortBy = "id";
@@ -12,10 +12,32 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         this.sortBy = sortBy;
     }
 
+    /**
+     * default comparison decleared by the tree
+     *
+     * @param o1 object 1 to be compared with
+     * @param o2 object 2 to be compared with
+     * @return nagative number if o1 is smaller
+     * positive number if o1 is bigger
+     */
     protected abstract int customCompare(E o1, E o2);
 
+    /**
+     * id comparison
+     *
+     * @param o1 object 1s'id to be compared with
+     * @param o2 object 2s'id to be compared with
+     * @return nagative number if o1s'id is smaller
+     * positive number if o1s'id is bigger
+     */
     protected abstract int idOnlyCompare(E o1, E o2);
 
+    /**
+     * @param id identifier to be compared (id or keyword)
+     * @param o  object to be compared with
+     * @return nagative number if o1s'id is smaller
+     * positive number if o1s'id is bigger
+     */
     protected abstract int idOnlyCompare(F id, E o);
 
     /**
@@ -123,6 +145,13 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         return tmp;
     }
 
+    /**
+     * Insert the node into the tree with its default order
+     *
+     * @param tree to insert the node into
+     * @param key  to be insert into the tree
+     * @return AVLTreeNode<E> root node
+     */
     private AVLTreeNode<E> insert(AVLTreeNode<E> tree, E key) {
         if (tree == null) {
             tree = new AVLTreeNode<>(key, null, null);
@@ -157,9 +186,11 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
     }
 
     /**
-     * @param tree
+     * Insert the node into the tree with only its Identifier order
+     *
+     * @param tree to insert the node into
      * @param key  to be insert into the tree
-     * @return AVLTreeNode<E>
+     * @return AVLTreeNode<E> root node
      */
     private AVLTreeNode<E> insertByID(AVLTreeNode<E> tree, E key) {
         if (tree == null) {
@@ -197,6 +228,11 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         root = insertByID(root, key);
     }
 
+    /**
+     * @param tree to remove the node from
+     * @param rm   node to remove
+     * @return
+     */
     protected AVLTreeNode<E> remove(AVLTreeNode<E> tree, AVLTreeNode<E> rm) {
         if (tree == null || rm == null)
             return null;
@@ -245,6 +281,11 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
             root = remove(root, tmp);
     }
 
+    /**
+     * @param node on the tree to be searched with
+     * @param key  to be searched with
+     * @return object with the identifier
+     */
     private AVLTreeNode<E> search(AVLTreeNode<E> node, E key) {
 
         if (node == null) {
@@ -262,6 +303,11 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         return search(root, key);
     }
 
+    /**
+     * @param node on the tree to be searched with
+     * @param id   to be searched with
+     * @return object with the identifier
+     */
     private E searchByID(AVLTreeNode<E> node, F id) {
 
         if (node == null) {
@@ -279,6 +325,12 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         return searchByID(root, id);
     }
 
+    /**
+     * traverse the tree in order
+     *
+     * @param tree to be traversed
+     * @param arr  to add the node into
+     */
     private void inOrder(AVLTreeNode<E> tree, MyArrayList<E> arr) {
         if (tree != null) {
             inOrder(tree.getLeft(), arr);
@@ -291,6 +343,9 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         inOrder(root, arr);
     }
 
+    /**
+     * @return an ordered tree transferred into an arrayList
+     */
     public MyArrayList<E> toArrayList() {
         MyArrayList<E> list = new MyArrayList<>();
         inOrder(root, list);

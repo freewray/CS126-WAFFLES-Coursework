@@ -266,36 +266,37 @@ public class FavouriteStore implements IFavouriteStore {
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
+//        System.out.println("getCommonFavouriteRestaurants");
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
-        MyArrayList<Favourite> customer1Favs = new MyArrayList<>();
-        MyArrayList<Favourite> customer2Favs = new MyArrayList<>();
-        for (int i = 0; i < favouriteArray.size(); i++) {
-            if (favouriteArray.get(i).getCustomerID().equals(customer1ID))
-                customer1Favs.add(favouriteArray.get(i));
-            if (favouriteArray.get(i).getCustomerID().equals(customer2ID))
-                customer2Favs.add(favouriteArray.get(i));
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter("descendingDate");
+//        for (int i = 0; i < favouriteArray.size(); i++) {
+//            if(favouriteArray.get(i).getCustomerID().equals(customer1ID))
+//                tree.insertByID(new IDCounter(favouriteArray.get(i).getRestaurantID(), favouriteArray.get(i).getDateFavourited()));
+//            else if (favouriteArray.get(i).getCustomerID().equals(customer2ID)){
+//                if (tree.searchByID(favouriteArray.get(i).getRestaurantID()) != null){
+//                    tree2.insert(tree.searchByID(favouriteArray.get(i).getRestaurantID()).getLatestReviewDate().after(favouriteArray.get(i).getDateFavourited()) ?
+//                            tree.searchByID(favouriteArray.get(i).getRestaurantID()) : new IDCounter(favouriteArray.get(i).getRestaurantID(), favouriteArray.get(i).getDateFavourited()));
+//                }
+//            }
+//        }
+        Favourite[] customer1Favourite = getFavouritesByCustomerID(customer1ID);
+        Favourite[] customer2Favourite = getFavouritesByCustomerID(customer2ID);
+        for (Favourite favourite : customer1Favourite) {
+            tree.insertByID(new IDCounter(favourite.getRestaurantID(), favourite.getDateFavourited()));
         }
-        if (customer1Favs.size() == 0 || customer2Favs.size() == 0)
-            return new Long[0];
+        for (Favourite favourite : customer2Favourite) {
+            if (tree.searchByID(favourite.getRestaurantID()) != null) {
+                tree2.insert(tree.searchByID(favourite.getRestaurantID()).getLatestReviewDate().after(favourite.getDateFavourited()) ?
+                        tree.searchByID(favourite.getRestaurantID()) : new IDCounter(favourite.getRestaurantID(), favourite.getDateFavourited()));
 
-        MyArrayList<Favourite> resList = new MyArrayList<>();
-        for (int i = 0; i < customer1Favs.size(); i++) {
-            for (int j = 0; j < customer2Favs.size(); j++) {
-                if (customer2Favs.get(j).getRestaurantID().equals(customer1Favs.get(i).getRestaurantID()))
-                    resList.add(customer1Favs.get(i).getDateFavourited().after(customer2Favs.get(j).getDateFavourited())
-                            ? customer1Favs.get(i)
-                            : customer2Favs.get(j));
             }
         }
-        Favourite[] favRes = new Favourite[resList.size()];
-        for (int i = 0; i < favRes.length; i++) {
-            favRes[i] = resList.get(i);
-        }
-        favouriteQuickSort(favRes, "date", 0, favRes.length - 1);
-        Long[] res = new Long[favRes.length];
-        for (int i = 0; i < favRes.length; i++) {
-            res[i] = favRes[i].getRestaurantID();
+        MyArrayList<IDCounter> tmp = tree2.toArrayList();
+        Long[] res = new Long[tmp.size()];
+        for (int i = 0; i < tmp.size(); i++) {
+            res[i] = tmp.get(i).getIdentifier();
         }
         return res;
     }
@@ -309,33 +310,31 @@ public class FavouriteStore implements IFavouriteStore {
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getMissingFavouriteRestaurants(Long customer1ID, Long customer2ID) {
+        // TODO
+//        System.out.println("getMissingFavouriteRestaurants");
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
         Favourite[] customer1Favs = this.getFavouritesByCustomerID(customer1ID);
         Favourite[] customer2Favs = this.getFavouritesByCustomerID(customer2ID);
-        MyArrayList<Favourite> missing = new MyArrayList<>();
 
-        // remove commons from all
-        for (Favourite customer2Fav : customer2Favs) {
-            for (int j = 0; j < missing.size(); j++) {
-                if (missing.get(j).getRestaurantID().equals(customer2Fav.getRestaurantID())) {
-                    missing.remove(missing.get(j));
-                }
-            }
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter("descendingDate");
+        for (Favourite f : customer1Favs) {
+            tree.insertByID(new IDCounter(f.getRestaurantID(), f.getDateFavourited()));
         }
-
-        // transfer cus1 favs into an arraylist
-        for (Favourite customer1Fav : customer1Favs) {
-            missing.add(customer1Fav);
+        for (Favourite f : customer2Favs) {
+            if (tree.searchByID(f.getRestaurantID()) != null)
+                tree.removeByID(tree.searchByID(f.getRestaurantID()));
         }
-
-        // transfer the missings back to array and then sort by date
-        Favourite[] resArr = new Favourite[missing.size()];
-        missing.toArray(resArr);
-        favouriteQuickSort(resArr, "date", 0, resArr.length - 1);
-        Long[] res = new Long[resArr.length];
-        for (int i = 0; i < resArr.length; i++) {
-            res[i] = resArr[i].getRestaurantID();
+        MyArrayList<IDCounter> missing = tree.toArrayList();
+        for (int i = 0; i < missing.size(); i++) {
+            tree2.insert(missing.get(i));
+        }
+        missing.clear();
+        missing = tree2.toArrayList();
+        Long[] res = new Long[missing.size()];
+        for (int i = 0; i < missing.size(); i++) {
+            res[i] = missing.get(i).getIdentifier();
         }
         return res;
     }
@@ -353,48 +352,31 @@ public class FavouriteStore implements IFavouriteStore {
      * @return A sorted array of Restaurant IDs, with the newest Favourite first.
      */
     public Long[] getNotCommonFavouriteRestaurants(Long customer1ID, Long customer2ID) {
+//        System.out.println("getNotCommonFavouriteRestaurants");
         if (!dataChecker.isValid(customer1ID) || !dataChecker.isValid(customer2ID))
             return new Long[0];
-        MyArrayList<Favourite> notCommon = new MyArrayList<>();
-        Favourite[] cus1 = this.getFavouritesByCustomerID(customer1ID);
-        Favourite[] cus2 = this.getFavouritesByCustomerID(customer2ID);
-
-        for (Favourite favourite : cus1) {
-            notCommon.add(favourite);
+        AVLTreeIDCounter tree = new AVLTreeIDCounter();
+        AVLTreeIDCounter tree2 = new AVLTreeIDCounter("descendingDate");
+        Favourite[] customer1Favourite = getFavouritesByCustomerID(customer1ID);
+        Favourite[] customer2Favourite = getFavouritesByCustomerID(customer2ID);
+        for (Favourite favourite : customer1Favourite) {
+            tree.insertByID(new IDCounter(favourite.getRestaurantID(), favourite.getDateFavourited()));
         }
-
-        // add distinct cus2 fav into array (create union)
-        for (Favourite favourite : cus2) {
-            int i;
-            for (i = 0; i < notCommon.size(); i++) {
-                if (notCommon.get(i).getRestaurantID().equals(favourite.getRestaurantID()))
-                    break;
-            }
-            if (i == notCommon.size())
-                notCommon.add(favourite);
+        for (Favourite favourite : customer2Favourite) {
+            if (tree.searchByID(favourite.getRestaurantID()) != null)
+                tree.removeByID(tree.searchByID(favourite.getRestaurantID()));
+            else
+                tree.insertByID(new IDCounter(favourite.getRestaurantID(), favourite.getDateFavourited()));
         }
-
-        // remove commons
-        Long[] common = this.getCommonFavouriteRestaurants(customer1ID, customer2ID);
-        for (int i = 0; i < notCommon.size(); i++) {
-            for (Long aLong : common) {
-                if (notCommon.get(i).getRestaurantID().equals(aLong))
-                    notCommon.remove(notCommon.get(i));
-            }
+        MyArrayList<IDCounter> tmp = tree.toArrayList();
+        for (int i = 0; i < tmp.size(); i++) {
+            tree2.insert(tmp.get(i));
         }
-
-        // sort
-        Favourite[] notCommonArr = new Favourite[notCommon.size()];
-        notCommonArr = notCommon.toArray(notCommonArr);
-        for (int i = 0; i < notCommon.size(); i++) {
-            notCommonArr[i] = notCommon.get(i);
-        }
-        favouriteQuickSort(notCommonArr, "date", 0, notCommonArr.length - 1);
-
-        // add only ids to result
-        Long[] res = new Long[notCommonArr.length];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = notCommonArr[i].getRestaurantID();
+        tmp.clear();
+        tmp = tree2.toArrayList();
+        Long[] res = new Long[tmp.size()];
+        for (int i = 0; i < tmp.size(); i++) {
+            res[i] = tmp.get(i).getIdentifier();
         }
         return res;
     }
@@ -445,6 +427,7 @@ public class FavouriteStore implements IFavouriteStore {
      * @return A sorted array of 20 Restaurant IDs, with the Restaurant with the highest Favourite count first.
      */
     public Long[] getTopRestaurantsByFavouriteCount() {
+        System.out.println("getTopRestaurantsByFavouriteCount");
         Long[] topRestaurants = new Long[20];
         AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {

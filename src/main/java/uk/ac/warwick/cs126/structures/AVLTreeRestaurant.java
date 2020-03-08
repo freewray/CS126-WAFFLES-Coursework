@@ -69,11 +69,11 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
-     * default comparison decleared by the tree
+     * default comparison declared by the tree
      *
      * @param r1 restaurant 1 to be compared with
      * @param r2 restaurant 2 to be compared with
-     * @return nagative number if r1 is smaller
+     * @return negative number if r1 is smaller
      * positive number if r2 is bigger
      */
     public int customCompare(Restaurant r1, Restaurant r2) {

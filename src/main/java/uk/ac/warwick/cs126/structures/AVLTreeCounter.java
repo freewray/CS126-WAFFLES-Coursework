@@ -39,7 +39,7 @@ public class AVLTreeCounter extends AVLTree<Counter<String>, String> {
      * @return Counter<String> that included with the input string
      */
     public Counter<String> searchKeyword(String keyword) {
-        return searchByID(keyword);
+        return searchByID(keyword.toLowerCase());
     }
 
     /**

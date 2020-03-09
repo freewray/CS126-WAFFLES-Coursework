@@ -387,6 +387,19 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         }
     }
 
+    private E searchInOrder(AVLTreeNode<E> tree, F id) {
+        if (tree != null) {
+            searchInOrder(tree.getLeft(), id);
+            if (idOnlyCompare(id, tree.getKey()) == 0) return tree.getKey();
+            searchInOrder(tree.getRight(), id);
+        }
+        return null;
+    }
+
+    public E searchInOrder(F id) {
+        return searchInOrder(root, id);
+    }
+
     public void inOrder(MyArrayList<E> arr) {
         inOrder(root, arr);
     }

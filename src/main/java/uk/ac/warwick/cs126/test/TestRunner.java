@@ -30,7 +30,7 @@ public class TestRunner {
         } catch (FileNotFoundException e) {
             System.out.println("\n [FAILED]    Could not load file:");
             String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
-            String filePath = Paths.get(currentPath, "data", filename).toString();
+            String     filePath = Paths.get(currentPath, "data", filename).toString();
             System.out.println("             " + filePath);
             return null;
         }

@@ -71,7 +71,10 @@ public class DataChecker implements IDataChecker {
             return false;
         if (restaurant.getWarwickStars() > 3 || restaurant.getWarwickStars() < 0)
             return false;
-        return !(restaurant.getCustomerRating() > 5.0f) && !(restaurant.getCustomerRating() < 0.0f);
+        if (restaurant.getCustomerRating() != 0.0f)
+            return !(restaurant.getCustomerRating() > 5.0f) && !(restaurant.getCustomerRating() < 1.0f);
+        
+        return true;
     }
 
     public boolean isValid(Favourite favourite) {

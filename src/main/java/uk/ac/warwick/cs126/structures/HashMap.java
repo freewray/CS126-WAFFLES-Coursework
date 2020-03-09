@@ -9,7 +9,7 @@ public class HashMap<K extends Comparable<K>, V> {
 
     public HashMap() {
         /* for very simple hashing, primes reduce collisions */
-        this(511);
+        this(237);
     }
 
     public HashMap(int size) {
@@ -28,9 +28,6 @@ public class HashMap<K extends Comparable<K>, V> {
         while (ptr != null) {
             // cnt++;
             if (key.equals(ptr.getValue().getKey())) {
-                // System.out.println("found: [" + ptr.getValue().getKey() + "," +
-                // ptr.getValue().getValue() + "] tried: "
-                // + cnt + " times");
                 return ptr.getValue().getValue();
             }
             ptr = ptr.getNext();
@@ -45,7 +42,7 @@ public class HashMap<K extends Comparable<K>, V> {
     }
 
     protected int hash(K key) {
-        return key.hashCode();
+        return Math.abs(key.hashCode());
     }
 
     public void add(K key, V value) {

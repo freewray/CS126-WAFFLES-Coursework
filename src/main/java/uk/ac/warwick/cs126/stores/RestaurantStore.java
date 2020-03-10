@@ -330,13 +330,9 @@ public class RestaurantStore implements IRestaurantStore {
      * @return A array of Restaurant objects, sorted using the criteria defined for the {@link #getRestaurantsByName() getRestaurantsByName} method.
      */
     public Restaurant[] getRestaurantsContaining(String searchTerm) {
-        // String searchTermConverted = stringFormatter.convertAccents(searchTerm);
-        // String searchTermConvertedFaster =
-        // StringFormatter.convertAccentsFaster(searchTerm.trim().replaceAll("\\s+", "
-        // "));
         // 1. trim leading and tralling white spaces
         // 2. convert accents
-        String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm.replaceAll("\\s+", " "));
+        String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm);
         // 3. change multiple whitespaces with one
         searchTermConvertedFaster = searchTermConvertedFaster.trim();
         if (searchTermConvertedFaster.length() == 0) {

@@ -14,11 +14,9 @@
 <!-- And this is *italic* and this is **bold** -->
 <!-- Words in the grave accents, or in programming terms backticks, formats it as code: `put code here` -->
 
-* I have used an `ArrayList` structure to store and process customers because it was easy to implement.
-*  `quicksort` is used to sort array and arraylist.
-* `Counter` is used to store object with `cnt` that indicates some form of frequency.
-  * e.g. times the keyword string has been appeared in review.
-* `IDCounter` is inherted from `Counter` and on addition of `Counter` it can also stored date and a Long ID.
+* I have used an `AVL Tree` structure to store and process customers because it was quick to search and natrually sorted.
+* The `AVLTreeCustomer` is sorted with `customer id` in default.
+  *  To sort customers in their name will require a new `AVLTreeCustomer` with "name" in it's constructor.
 
 ### Space Complexity
 <!-- Write here what you think the overall store space complexity is and gives a brief reason why. -->
@@ -26,9 +24,9 @@
 <!-- In tables, you don't really need the spaces, it only makes it look nice in text form -->
 <!-- You can just do "CustomerStore|O(n)|I have used a single `ArrayList` to store customers." -->
 
-Store         | Worst Case | Description
-------------- | ---------- | -----------
-CustomerStore | O(n)       | I have used a single `ArrayList` to store customers. <br>Where `n` is total customers added.
+ Store         | Worst Case | Description                                            
+ ------------- | ---------- | ------------------------------------------------------ 
+ CustomerStore | O(n)       | I have used an `AVL Tree` structure to store customers 
 
 ### Time Complexity
 <!-- Tell us the time complexity of each method and give a very short description. -->
@@ -46,20 +44,21 @@ CustomerStore | O(n)       | I have used a single `ArrayList` to store customers
 
 Method                           | Average Case     | Description
 -------------------------------- | ---------------- | -----------
-addCustomer(Customer c)          | O(n)            | Array add is constant time<br>Check existing array with length `n` for if the ID is repeated. 
-addCustomer(Customer[] c)        | O(n*m)           | Add all customers <br>`m` is the length of the input array 
-getCustomer(Long id)             | O(n)             | Linear search <br>`n` is total customers in the store
-getCustomers()                   | O(nlogn)       | Quicksort <br>`n` is total customers in the store 
-getCustomers(Customer[] c)       | O(nlogn)      | Quicksort <br>`n` is the length of the input array 
-getCustomersByName()             | O(nlogn)      | Quicksort <br>`n` is total customers in the store 
+addCustomer(Customer c)          | `Θ(2log(n))` | `n` for the size of the customerTree<br>First `log(n)` is for searching through already added customers finding for the repeated one<br> Second `log(n)` is for adding the customer into the tree.<br> However if deletion happens, that can also takes `log(n)` 
+addCustomer(Customer[] c)        | `Θ(2mlog(n))`    | Above process repeated `m` time 
+getCustomer(Long id)             | `Θ(log(n))` | Linear search <br>`n` is the size of the customerTree 
+getCustomers()                   | `Θ(log(n))` | Sorted <br>Access nodes in order and adding them into an array list then to an array. 
+getCustomers(Customer[] c)       | `Θ(2nlogn + 2n)` | AVL Tree <br>`n` is the length of the customers<br>Insert each one of the array element into the tree.<br> Get everything out from the tree. 
+getCustomersByName()             | `Θ(2nlogn + 2n)` | AVL Tree <br>`n` is the size of the customerTree<br>Get customers out from the original tree<br>Insert each one of then into the tree that is sorted by name<br> 
 getCustomersByName(Customer[] c) | -                | -
-getCustomersContaining(String s) | O(a + n*(a + b)) | Searches all customers <br>`a` is the average time it takes to convert accents <br>`n` is total customers <br>`b` is average string search time
+getCustomersContaining(String s) | `Θ(n)` | Searches all customers <br>`n` is the size of the `customerTree` 
 
 <!-- Don't delete these <div>s! -->
 <!-- And note the spacing, do not change -->
 <!-- This is used to get a page break when we convert your report to PDF to read when marking -->
 <!-- It is not the end of the world if you do remove, it just makes it harder to read if you do -->
 <!-- On things you can remove though, you should remember to remove these comments -->
+
 <div style="page-break-after: always;"></div>
 
 ## FavouriteStore
@@ -68,36 +67,33 @@ getCustomersContaining(String s) | O(a + n*(a + b)) | Searches all customers <br
 * I used `CustomerQuicksort` to sort arrays
   * `idCompare` is used to compare id
   * `nameCompare` is used to compare lastname and first name. if both are same then it will compare by their id.
-* To get favourites by ID use `getFavourites`
-* To get  favourites by name use ``
-* To get top ...
 
 ### Space Complexity
-Store          | Worst Case | Description
--------------- | ---------- | -----------
-FavouriteStore | O(...)     | I have used `ArrayList` for `favouriteArray` and `blacklistedFavouriteID`<br>Where `...` is ...
+ Store          | Worst Case | Description                                                  
+ -------------- | ---------- | ------------------------------------------------------------ 
+ FavouriteStore | O(n)       | I have used `ArrayList` for `favouriteArray` and `blacklistedFavouriteID`<br>Where n is the number of favorite stored in object 
 
 ### Time Complexity
 Method                                                          | Average Case     | Description
 ------------------------------------------------------- | ---------------- | -----------
-`addFavourite(Favourite f)`                             | O(n + m)   | `n` is length of stored `favouriteArray` <br>m is length of `blacklist`
-`addFavourite(Favourite[] f)`                           | O(k(n + m)) | `k` is the length of given array <br>Remaining is the same as the above
-`getFavourite(Long id)`                                 | O(n)        | `n` is length of array
-`getFavourites()`                                       | O(n log n)  | `quicksort` using `IDCompare()`
-`getFavourites(Favourite[] f)`                          | O(n log n) | `quicksort` using `IDCompare()`
-`getFavouritesByCustomerID(Long id)`                    | O(n log n + n) | `n` find matching favourite with given id<br>`quicksort` using `IDCompare()`
-`getFavouritesByRestaurantID(Long id)`                  | O(n log n) | `quicksort` using `IDCompare()`
-`getCommonFavouriteRestaurants(Long id1, Long id2)`     | O(n^2 +m + 2a) | n^2 for finding overlap favourites in `customer1Favs` and  `customer2Favs`<br>`m` is the length of `favouriteArray`<br>`a` is the length of the result array
-`getMissingFavouriteRestaurants(Long id1, Long id2)`    | O(n^2 +m + a + 2b) | `n` is approx the length of `customer1Favs` or `customer2Favs` <br>n^2 for finding missing favourites from `customer2Favs` in `customer1Favs` and  `customer2Favs`<br/>`m` is the length of `favouriteArray`<br/>`a` is the length of the result array
-`getNotCommonFavouriteRestaurants(Long id1, Long id2)`  | O(2n^2)        | First n^2 for create an union between customer 1 favorite and customer 2 favorite <br>Second n^2 is for removing common part in union 
-`getTopCustomersByFavouriteCount()`                     | O(n^2)   | Loop through favouriteArray and add them into topCustomerFavourites.<br/>Then check the newly formed topCustomerFavourites for existed Favourites.
-`getTopRestaurantsByFavouriteCount()`                   | O(n^2)   | Loop through favouriteArray and add them into topRestaurantFavourites.<br>Then check the newly formed topRestaurantFavourites for existed Favourites.
+`addFavourite(Favourite f)`                             | `O(n + m)` | `n` is length of stored `favouriteArray` <br>m is length of `blacklist`
+`addFavourite(Favourite[] f)`                           | `O(k(n + m))` | `k` is the length of given array <br>Remaining is the same as the above
+`getFavourite(Long id)`                                 | `O(n)`      | `n` is length of array
+`getFavourites()`                                       | `O(n log n)` | `quicksort` using `IDCompare()`
+`getFavourites(Favourite[] f)`                          | `O(n log n)` | `quicksort` using `IDCompare()`
+`getFavouritesByCustomerID(Long id)`                    | `O(n log n + n)` | `n` find matching favourite with given id<br>`quicksort` using `IDCompare()`
+`getFavouritesByRestaurantID(Long id)`                  | `O(n log n)` | `quicksort` using `IDCompare()`
+`getCommonFavouriteRestaurants(Long id1, Long id2)`     | `Θ(n)` | linear seach in `hashmap` to get to find commons 
+`getMissingFavouriteRestaurants(Long id1, Long id2)`    | `Θ(n)` | linear seach in `hashmap` to get to remove commons and the remaining are the missings from `customer 1` 
+`getNotCommonFavouriteRestaurants(Long id1, Long id2)`  | `Θ(n)`  | repeat the above `getMissingFavouriteRestaurants(Long id1, Long id2) ` twice 
+`getTopCustomersByFavouriteCount()`                     | `O(n^2)` | Loop through favouriteArray and add them into topCustomerFavourites.<br/>Then check the newly formed topCustomerFavourites for existed Favourites.
+`getTopRestaurantsByFavouriteCount()`                   | `O(n^2)` | Loop through favouriteArray and add them into topRestaurantFavourites.<br>Then check the newly formed topRestaurantFavourites for existed Favourites.
 
 <div style="page-break-after: always;"></div>
 
 ## RestaurantStore
 ### Overview
-* I have used `ArrayList` to store restaurants ...
+* I have used `AVL Tree` to store restaurants because its natrually sorted.
 * I used `restaurantQuicksort` to sort `restaurantArray`
 
 ### Space Complexity

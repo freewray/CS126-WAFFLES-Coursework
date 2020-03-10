@@ -1,6 +1,7 @@
 package uk.ac.warwick.cs126.util;
 
 import uk.ac.warwick.cs126.interfaces.IKeywordChecker;
+import uk.ac.warwick.cs126.structures.HashMap;
 
 public class KeywordChecker implements IKeywordChecker {
     private static final String[] keywords = {
@@ -87,14 +88,17 @@ public class KeywordChecker implements IKeywordChecker {
             "yuck",
             "yummy"
     };
-
+    private HashMap<String, String> keywordMap = new HashMap<>();
     public KeywordChecker() {
         // Initialise things here
+        for (String keyword : keywords) {
+            keywordMap.add(keyword, keyword);
+        }
     }
 
     public boolean isAKeyword(String word) {
         for (String keyword : keywords){
-            if (keyword.equalsIgnoreCase(word.trim()))
+            if (keywordMap.find(word) != null)
                 return true;
         }
         return false;

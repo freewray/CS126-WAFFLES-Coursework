@@ -547,11 +547,11 @@ public class ReviewStore implements IReviewStore {
             res[i] = resList.get(i);
         }
         this.reviewArrayQuickSortByDateReviewed(res);
-        for (Review r : res) {
-            System.out.println(
-                    String.format("Date: %19s", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed()))
-                            + ", review: " + r.getReview());
-        }
+//        for (Review r : res) {
+//            System.out.println(
+//                    String.format("Date: %19s", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed()))
+//                            + ", review: " + r.getReview());
+//        }
         return res;
     }
 }

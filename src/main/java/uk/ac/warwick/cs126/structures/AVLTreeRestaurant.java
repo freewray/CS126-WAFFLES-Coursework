@@ -13,6 +13,8 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
+     * id comparison
+     * 
      * @param r1 's id to be compared with
      * @param r2 's id to be compared with
      * @return negative if r1's id is smaller
@@ -22,6 +24,17 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
         return r1.getID().compareTo(r2.getID());
     }
 
+    /**
+     * name comparison 
+     * 
+     * tool for sorting the tree alphabetically by restaurant Name.
+     * If they have the same restaurant Name, 
+     * then it is sorted in ascending order of ID
+     * @param r1 's name to be compared with
+     * @param r2 's name to be compared with
+     * @return negative if r1's name is smaller
+     * positive if r1's name is bigger
+     */
     private int nameCompare(Restaurant r1, Restaurant r2) {
         int nameCompare = r1.getName().compareToIgnoreCase(r2.getName());
         if (nameCompare == 0)
@@ -31,10 +44,16 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
+     * date comparison
+     * 
      * sorted by Date Established, from oldest to most recent. If they have the same
      * Date Established, then it is sorted alphabetically by the restaurant Name. If
      * they have the same restaurant Name, then it is sorted in ascending order of
      * their ID.
+     * @param r1 's date to be compared with
+     * @param r2 's date to be compared with
+     * @return negative if r1's date is erlier
+     * positive if r1's date is later
      */
     private int dateCompare(Restaurant r1, Restaurant r2) {
         int dateCompare = r1.getDateEstablished().compareTo(r2.getDateEstablished());
@@ -45,9 +64,15 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
+     * warwick star comparison
+     * 
      * sorted in descending order of Warwick Stars. If they have the same Warwick
      * Stars, then it is sorted alphabetically by the restaurant Name. If they have
      * the same restaurant Name, then it is sorted in ascending order of their ID.
+     * @param r1 's warwickStar to be compared with
+     * @param r2 's warwickStar to be compared with
+     * @return negative if r1's warwickStar is lesser
+     * positive if r1's warwickStar is more
      */
     private int warwickStarCompare(Restaurant r1, Restaurant r2) {
         if (r1.getWarwickStars() == r2.getWarwickStars())
@@ -57,9 +82,15 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
+     * rating comparison
+     * 
      * sorted in descending order of Rating. If they have the same Rating, then it
      * is sorted alphabetically by the restaurant Name. If they have the same
      * restaurant Name, then it is sorted in ascending order of their ID.
+     * @param r1 's rating to be compared with
+     * @param r2 's rating to be compared with
+     * @return negative if r1's rating is lesser
+     * positive if r1's rating is more
      */
     private int ratingCompare(Restaurant r1, Restaurant r2) {
         if (r1.getCustomerRating() == r2.getCustomerRating())
@@ -104,10 +135,12 @@ public class AVLTreeRestaurant extends AVLTree<Restaurant, Long> {
     }
 
     /**
+     * compare only by id 
+     * 
      * @param id identifier to be compared (id or keyword)
      * @param r  restaurant to be compared with
      * @return nagative number if o1s'id is smaller
-     * positive number if o1s'id is bigger
+     *         positive number if o1s'id is bigger
      */
     public int idOnlyCompare(Long id, Restaurant r) {
         return id.compareTo(r.getID());

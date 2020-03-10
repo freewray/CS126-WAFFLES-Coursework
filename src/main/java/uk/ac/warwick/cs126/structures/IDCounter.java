@@ -14,26 +14,52 @@ public class IDCounter implements Comparable<IDCounter> {
         this.latestReviewDate = latestReviewDate;
     }
 
+    
+    /** 
+     * @return Long identifier
+     */
     public Long getIdentifier() {
         return identifier;
     }
 
+    
+    /** 
+     * @return int count
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * add count once
+     */
     public void addCount() {
         this.count = count + 1;
     }
 
+    
+    /** 
+     * @return the latest review date
+     */
     public Date getLatestReviewDate() {
         return latestReviewDate;
     }
 
+    
+    /** 
+     * @param latestReviewDate to set to (later one)
+     */
     public void setLatestReviewDate(Date latestReviewDate) {
         this.latestReviewDate = latestReviewDate;
     }
 
+    
+    /** 
+     * default method to compare to
+     * @param c IDCounter to compare to
+     * @return nagative number if this'id is smaller
+     *          positive number if this'id is bigger
+     */
     @Override
     public int compareTo(IDCounter c) {
         int countCompare = c.getCount() - this.getCount();

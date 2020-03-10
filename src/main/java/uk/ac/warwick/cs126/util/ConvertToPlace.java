@@ -15,6 +15,15 @@ public class ConvertToPlace implements IConvertToPlace {
         placesArray = this.getPlacesArray();
     }
 
+    
+    /** 
+     * Searches through all the places to find a match with the given 
+     * latitude and longitude .
+     * @param latitude
+     * @param longitude
+     * @return If found, returns the Place that matches.
+     *         If no matching Place found, return the default Place
+     */
     public Place convert(float latitude, float longitude) {
         for (Place place : placesArray){
             if (place.getLatitude() == latitude && place.getLongitude() == longitude)
@@ -23,6 +32,10 @@ public class ConvertToPlace implements IConvertToPlace {
         return new Place("", "", 0.0f, 0.0f);
     }
 
+    
+    /** 
+     * @return Place[] get Places from placeData.tsv
+     */
     public Place[] getPlacesArray() {
         Place[] placeArray = new Place[0];
 

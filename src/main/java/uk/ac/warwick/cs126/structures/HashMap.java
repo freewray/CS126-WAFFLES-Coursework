@@ -17,7 +17,12 @@ public class HashMap<K extends Comparable<K>, V> {
         initTable();
     }
 
-    // INCOMPLETE.
+    
+    
+    /** 
+     * @param key to find value
+     * @return V value match to the key
+     */
     public V find(K key) {
         // returns the number of comparisons required to find element using Linear
         // Search.
@@ -35,16 +40,29 @@ public class HashMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    /**
+     * intialize the table
+     */
     protected void initTable() {
         for (int i = 0; i < table.length; i++) {
             table[i] = new KeyValuePairLinkedList<>();
         }
     }
 
+    
+    /** 
+     * @param key hash the key
+     * @return int the hashed key
+     */
     protected int hash(K key) {
         return Math.abs(key.hashCode());
     }
 
+    
+    /** 
+     * @param key to be added to the hash table
+     * @param value to be added to the hash table
+     */
     public void add(K key, V value) {
         int hash_code = hash(key);
         int location = hash_code % table.length;
@@ -52,15 +70,21 @@ public class HashMap<K extends Comparable<K>, V> {
         table[location].add(key, value);
     }
 
+    
+    /** 
+     * @param key to get the value from
+     * @return V
+     */
     public V get(K key) {
         int hash_code = hash(key);
         int location = hash_code % table.length;
-
-        // ListElement<KeyValuePair> ptr = table[location].head;
-
         return table[location].get(key).getValue();
     }
 
+    
+    /** 
+     * @return convert hashmap element to string form
+     */
     public String toString() {
         StringBuilder res = new StringBuilder("{");
         for (int i = 0; i < table.length; i++) {

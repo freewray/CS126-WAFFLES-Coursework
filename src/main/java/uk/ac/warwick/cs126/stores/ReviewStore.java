@@ -10,6 +10,7 @@ import uk.ac.warwick.cs126.util.StringFormatter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -18,12 +19,14 @@ public class ReviewStore implements IReviewStore {
     private final MyArrayList<Review> reviewArray;
     private final DataChecker dataChecker;
     private final AVLTreeID blackListedReviewID;
+    private final DecimalFormat df;
 
     public ReviewStore() {
         // Initialise variables here
         reviewArray = new MyArrayList<>();
         dataChecker = new DataChecker();
         blackListedReviewID = new AVLTreeID();
+        df = new DecimalFormat("#.#");
     }
 
     /**
@@ -314,7 +317,7 @@ public class ReviewStore implements IReviewStore {
         }
         if (cnt == 0)
             return 0.0f;
-        return ((float) sum) / cnt;
+        return Float.parseFloat(df.format(((float) sum) / cnt));
     }
 
     /**
@@ -336,7 +339,7 @@ public class ReviewStore implements IReviewStore {
         }
         if (cnt == 0)
             return 0.0f;
-        return ((float) sum) / cnt;
+        return Float.parseFloat(df.format(((float) sum) / cnt));
     }
 
     /**
@@ -444,7 +447,6 @@ public class ReviewStore implements IReviewStore {
         for (int i = 0; i < ratings.size(); i++) {
             tree2.insert(ratings.get(i));
         }
-        System.out.println(ratings.size() + "+++++++");
         ratings.clear();
         ratings = tree2.toArrayList();
         for (int i = 0; i < res.length && i < ratings.size(); i++) {

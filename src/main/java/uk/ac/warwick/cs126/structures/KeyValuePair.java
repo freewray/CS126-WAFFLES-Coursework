@@ -10,14 +10,28 @@ public class KeyValuePair<K extends Comparable<K>, V> implements Comparable<KeyV
         value = v;
     }
 
+    
+    /** 
+     * @return K the key of the pair
+     */
     public K getKey() {
         return key;
     }
 
+    
+    /** 
+     * @return V the value of the pair
+     */
     public V getValue() {
         return value;
     }
 
+    
+    /** 
+     * @param o the other key value pair object to compare to
+     * @return nagative number if this'id is smaller
+     *         positive number if this'id is bigger
+     */
     public int compareTo(KeyValuePair<K, V> o) {
         return o.getKey().compareTo(this.getKey());
     }

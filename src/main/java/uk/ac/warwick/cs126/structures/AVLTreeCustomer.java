@@ -61,9 +61,10 @@ public class AVLTreeCustomer extends AVLTree<Customer, Long> {
 
     
     /** 
-     * @param c1
-     * @param c2
-     * @return int
+     * @param c1 customer 1 to compare to
+     * @param c2 customer 2 to compare to
+     * @return nagative number if c1 id is smaller
+     *         positive number if c1 id is smaller
      */
     public int idOnlyCompare(Customer c1, Customer c2) {
         return idCompare(c1, c2);
@@ -71,9 +72,10 @@ public class AVLTreeCustomer extends AVLTree<Customer, Long> {
 
     
     /** 
-     * @param id
-     * @param c
-     * @return int
+     * @param id to compare to
+     * @param c customer to compare to
+     * @return nagative number if id is smaller
+     *         positive number if c's id is smaller
      */
     public int idOnlyCompare(Long id, Customer c) {
         return id.compareTo(c.getID());

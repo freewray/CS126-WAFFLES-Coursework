@@ -9,30 +9,6 @@ public class Rating implements Comparable<Rating> {
     private int sumRating;
     private Date latestReviewDate;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void addCnt() {
-        this.cnt = cnt + 1;
-    }
-
-    public void addSumRating(int rating) {
-        this.sumRating += rating;
-    }
-
-    public int getSumRating(){
-        return this.sumRating;
-    }
-
-    public Date getLatestReviewDate() {
-        return latestReviewDate;
-    }
-
-    public void setLatestReviewDate(Date latestReviewDate) {
-        this.latestReviewDate = latestReviewDate;
-    }
-
     public Rating(Long id, Date latestReviewDate, int rating){
         this.id = id;
         this.latestReviewDate = latestReviewDate;
@@ -40,10 +16,68 @@ public class Rating implements Comparable<Rating> {
         this.cnt = 1;
     }
 
+    
+    /** 
+     * @return Long 
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * add count the the overall rating
+     */
+    public void addCnt() {
+        this.cnt = cnt + 1;
+    }
+
+    
+    /** 
+     * @param rating to be added on to the sumRating
+     */
+    public void addSumRating(int rating) {
+        this.sumRating += rating;
+    }
+
+    
+    /** 
+     * @return current sumRating
+     */
+    public int getSumRating(){
+        return this.sumRating;
+    }
+
+    
+    /** 
+     * @return the LatestReviewDate
+     */
+    public Date getLatestReviewDate() {
+        return latestReviewDate;
+    }
+
+    
+    /** 
+     * update the current latest review date with a later date
+     * @param latestReviewDate
+     */
+    public void setLatestReviewDate(Date latestReviewDate) {
+        this.latestReviewDate = latestReviewDate;
+    }
+
+    
+    /** 
+     * @return average rating  = sum / cnt
+     */
     public float getAverageRating(){
         return ((float)sumRating)/cnt;
     }
 
+    
+    /** 
+     * @param r restaurant to compare to
+     * @return int negative if this restaurant is smaller
+     *             positive if this restaurant is bigger
+     */
     @Override
     public int compareTo(Rating r) {
         float ratingCompare = r.getAverageRating() - this.getAverageRating();

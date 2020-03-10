@@ -10,10 +10,19 @@ public class KeyValuePairLinkedList<K extends Comparable<K>, V> {
         size = 0;
     }
 
+    
+    /** 
+     * @param key
+     * @param value
+     */
     public void add(K key, V value) {
         this.add(new KeyValuePair<>(key, value));
     }
 
+    
+    /** 
+     * @param kvp
+     */
     public void add(KeyValuePair<K, V> kvp) {
         ListElement<KeyValuePair<K, V>> new_element =
                 new ListElement<>(kvp);
@@ -22,14 +31,27 @@ public class KeyValuePairLinkedList<K extends Comparable<K>, V> {
         size++;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int size() {
         return size;
     }
 
+    
+    /** 
+     * @return ListElement<KeyValuePair<K, V>>
+     */
     public ListElement<KeyValuePair<K, V>> getHead() {
         return head;
     }
 
+    
+    /** 
+     * @param key
+     * @return KeyValuePair<K, V>
+     */
     public KeyValuePair<K, V> get(K key) {
         ListElement<KeyValuePair<K, V>> temp = head;
 

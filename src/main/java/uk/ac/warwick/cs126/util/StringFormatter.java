@@ -216,8 +216,11 @@ public class StringFormatter {
             {"Ⅿ", "M"}, {"ⅰ", "i"}, {"ⅱ", "ii"}, {"ⅲ", "iii"}, {"ⅳ", "iv"}, {"ⅴ", "v"}, {"ⅵ", "vi"},
             {"ⅶ", "vii"}, {"ⅷ", "viii"}, {"ⅸ", "ix"}, {"ⅹ", "x"}, {"ⅺ", "xi"}, {"ⅻ", "xii"}, {"ⅼ", "l"},
             {"ⅽ", "c"}, {"ⅾ", "d"}, {"ⅿ", "m"},};
+    
+            /**
+     * Hashmap to store accents and normalized characters
+     */
     private static final HashMap<Integer, String> accentAndConvertedAccentMap;
-    // private static MyArrayList<String> accented;
 
     static {
         // Initialise things here
@@ -227,11 +230,19 @@ public class StringFormatter {
             int key = 0;
             for (char ch : charArr)
                 key += ch;
-//            System.out.println("add: key = " + key + ", value = " + strings[1]);
             accentAndConvertedAccentMap.add(key, strings[1]);
         }
     }
 
+    
+    /** 
+     * a faster way of converting accents in string
+     * Uses HashMap <K,V> 
+     * where key is the unicode number of the accented characters
+     * and value is the nomalized str without any accents
+     * @param str to be converted
+     * @return String str but with accents removed
+     */
     public static String convertAccentsFaster(String str) {
         String replacedString = str;
         for (int i = 0; i < replacedString.length(); i++) {
@@ -247,6 +258,12 @@ public class StringFormatter {
         return replacedString;
     }
 
+    
+    /** 
+     * Loops through the array and replaces any accents in the str
+     * @param str to be converted
+     * @return the String str but with accents removed.
+     */
     public static String convertAccents(String str) {
         if (str == null || str.equals("")) {
             return "";

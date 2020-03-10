@@ -13,6 +13,12 @@ public class DataChecker implements IDataChecker {
         // Initialise things here
     }
 
+    
+    /** 
+     * Returns the true ID extracted from the repeated ID, if it exists.
+     * @param repeatedID string array
+     * @return a valid Long ID
+     */
     public Long extractTrueID(String[] repeatedID) {
         MyArrayList<Long> ids = new MyArrayList<>();
         for (String id : repeatedID){
@@ -22,10 +28,16 @@ public class DataChecker implements IDataChecker {
             else
                 ids.add(longID);
         }
-
         return null;
     }
 
+    
+    /** 
+     * An id is valid if it contains 16 valid single-digit numbers and no valid single-digit
+     * number appears more that 3 times.
+     * @param inputID
+     * @return boolean inputID id is valid, false otherwise
+     */
     public boolean isValid(Long inputID) {
         String stringID = String.valueOf(inputID);
         // 1. must be 16 digits
@@ -45,6 +57,12 @@ public class DataChecker implements IDataChecker {
         return true;
     }
 
+    
+    /** 
+     * Returns if customer is valid.
+     * @param customer
+     * @return boolean true customer is valid, false otherwise
+     */
     public boolean isValid(Customer customer) {
         if (customer == null) return false;
         if (customer.getID() == null || !isValid(customer.getID())) return false;
@@ -53,6 +71,12 @@ public class DataChecker implements IDataChecker {
         return customer.getDateJoined() != null;
     }
 
+    
+    /** 
+     * A valid Restaurant is not null, nor should any of its fields be null
+     * @param restaurant
+     * @return boolean true restaurant is valid, false otherwise
+     */
     public boolean isValid(Restaurant restaurant) {
         if (restaurant == null) return false;
         if (restaurant.getRepeatedID() == null) return false;
@@ -77,6 +101,12 @@ public class DataChecker implements IDataChecker {
         return true;
     }
 
+    
+    /** 
+     * A valid Favourite is not null, nor should any of its fields be null.
+     * @param favourite
+     * @return boolean true id is valid, false otherwise
+     */
     public boolean isValid(Favourite favourite) {
         if (favourite == null) return false;
         if (favourite.getID() == null || !isValid(favourite.getID())) return false;
@@ -85,6 +115,12 @@ public class DataChecker implements IDataChecker {
         return favourite.getDateFavourited() != null;
     }
 
+    
+    /** 
+     * A valid Review is not null, nor should any of its fields be null.
+     * @param review
+     * @return boolean true review is valid, false otherwise
+     */
     public boolean isValid(Review review) {
         if (review == null) return false;
         if (!isValid(review.getID()) || !isValid(review.getCustomerID()) || !isValid(review.getRestaurantID()))

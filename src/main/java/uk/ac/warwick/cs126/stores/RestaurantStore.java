@@ -330,29 +330,28 @@ public class RestaurantStore implements IRestaurantStore {
      * @return A array of Restaurant objects, sorted using the criteria defined for the {@link #getRestaurantsByName() getRestaurantsByName} method.
      */
     public Restaurant[] getRestaurantsContaining(String searchTerm) {
+        ConvertToPlace convertToPlace = new ConvertToPlace();
         // 1. trim leading and tralling white spaces
         // 2. convert accents
         String searchTermConvertedFaster = StringFormatter.convertAccentsFaster(searchTerm);
         // 3. change multiple whitespaces with one
         searchTermConvertedFaster = searchTermConvertedFaster.trim();
+        System.out.println(searchTermConvertedFaster);
         if (searchTermConvertedFaster.length() == 0) {
             return new Restaurant[0];
         }
         MyArrayList<Restaurant> restaurants = restaurantTree.toArrayList();
         MyArrayList<Restaurant> resList = new MyArrayList<>();
         for (int i = 0; i < restaurants.size(); i++) {
-            ConvertToPlace convertToPlace = new ConvertToPlace();
             Place place = convertToPlace.convert(restaurants.get(i).getLatitude(),
                     restaurants.get(i).getLongitude());
             if (restaurants.get(i).getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())
-                    || restaurants.get(i).getCuisine().toString()
+                    || restaurants.get(i).getCuisine().toString().toLowerCase()
                             .contains(searchTermConvertedFaster.toLowerCase())
                     || place.getName().toLowerCase().contains(searchTermConvertedFaster.toLowerCase())) {
-
                 resList.add(restaurants.get(i));
             }
         }
-
         // sort results in avl tree
         AVLTreeRestaurant tree = new AVLTreeRestaurant("name");
         for (int i = 0; i < resList.size(); i++) {

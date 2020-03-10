@@ -385,15 +385,7 @@ public class ReviewStore implements IReviewStore {
         Long[] topCustomers = new Long[20];
         AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < reviewArray.size(); i++) {
-            Long id = reviewArray.get(i).getCustomerID();
-            if (tree.searchByID(id) != null) {
-                tree.searchByID(id).addCount();
-                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
-                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-                }
-            } else {
-                tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
-            }
+            tree.insertByID(new IDCounter(reviewArray.get(i).getCustomerID(), reviewArray.get(i).getDateReviewed()));
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
         AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
@@ -419,15 +411,7 @@ public class ReviewStore implements IReviewStore {
         Long[] topRestaurants = new Long[20];
         AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < reviewArray.size(); i++) {
-            Long id = reviewArray.get(i).getRestaurantID();
-            if (tree.searchByID(id) != null) {
-                tree.searchByID(id).addCount();
-                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed())) {
-                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-                }
-            } else {
-                tree.insertByID(new IDCounter(id, reviewArray.get(i).getDateReviewed()));
-            }
+            tree.insertByID(new IDCounter(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed()));
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
         AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
@@ -453,15 +437,7 @@ public class ReviewStore implements IReviewStore {
         Long[] res = new Long[20];
         AVLTreeRating tree = new AVLTreeRating();
         for (int i = 0; i < reviewArray.size(); i++) {
-            Long id = reviewArray.get(i).getRestaurantID();
-            if (tree.searchByID(id) != null) {
-                tree.searchByID(id).addCnt();
-                tree.searchByID(id).addSumRating(reviewArray.get(i).getRating());
-                if (tree.searchByID(id).getLatestReviewDate().before(reviewArray.get(i).getDateReviewed()))
-                    tree.searchByID(id).setLatestReviewDate(reviewArray.get(i).getDateReviewed());
-            } else {
-                tree.insertByID(new Rating(id, reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating()));
-            }
+            tree.insertByID(new Rating(reviewArray.get(i).getRestaurantID(), reviewArray.get(i).getDateReviewed(), reviewArray.get(i).getRating()));
         }
         MyArrayList<Rating> ratings = tree.toArrayList();
         AVLTreeRating tree2 = new AVLTreeRating();
@@ -547,11 +523,6 @@ public class ReviewStore implements IReviewStore {
             res[i] = resList.get(i);
         }
         this.reviewArrayQuickSortByDateReviewed(res);
-//        for (Review r : res) {
-//            System.out.println(
-//                    String.format("Date: %19s", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(r.getDateReviewed()))
-//                            + ", review: " + r.getReview());
-//        }
         return res;
     }
 }

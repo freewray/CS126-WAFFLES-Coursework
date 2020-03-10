@@ -17,7 +17,7 @@ public class TestRunner {
 //        new TestTheCustomerStore();
         new TestTheFavouriteStore();
 //        new TestTheRestaurantStore();
-//        new TestTheReviewStore();
+        new TestTheReviewStore();
         new TestTheUtils();
     }
 

@@ -12,10 +12,24 @@ public class AVLTreeCustomer extends AVLTree<Customer, Long> {
         super(sortBy);
     }
 
+    
+    /** ID Comparison between 2 customers
+     * @param c1 customer 1 id to compare to
+     * @param c2 
+     * @return int
+     */
     private int idCompare(Customer c1, Customer c2) {
         return c1.getID().compareTo(c2.getID());
     }
 
+    
+    /** 
+     * Name Comparision between 2 customers
+     * @param c1 customer 1 name to compare to
+     * @param c2 customer 2 name to compare to
+     * @return nagative number if o1 is customer 1 name bigger
+     *         positive number if o1 is customer 1 name smaller
+     */
     private int nameCompare(Customer c1, Customer c2) {
         int firstNameCompare = c1.getFirstName().compareToIgnoreCase(c2.getFirstName());
         int lastNameCompare = c1.getLastName().compareToIgnoreCase((c2.getLastName()));
@@ -27,6 +41,15 @@ public class AVLTreeCustomer extends AVLTree<Customer, Long> {
             return lastNameCompare;
     }
 
+    
+    /**
+     * default comparison decleared by the tree
+     *
+     * @param o1 object 1 to be compared with
+     * @param o2 object 2 to be compared with
+     * @return nagative number if o1 is smaller
+     *         positive number if o1 is bigger
+     */
     public int customCompare(Customer c1, Customer c2) {
         if (this.sortBy.equalsIgnoreCase("id"))
             return this.idCompare(c1, c2);
@@ -36,10 +59,22 @@ public class AVLTreeCustomer extends AVLTree<Customer, Long> {
             return 0;
     }
 
+    
+    /** 
+     * @param c1
+     * @param c2
+     * @return int
+     */
     public int idOnlyCompare(Customer c1, Customer c2) {
         return idCompare(c1, c2);
     }
 
+    
+    /** 
+     * @param id
+     * @param c
+     * @return int
+     */
     public int idOnlyCompare(Long id, Customer c) {
         return id.compareTo(c.getID());
     }

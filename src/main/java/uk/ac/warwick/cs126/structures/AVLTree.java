@@ -88,14 +88,11 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
      */
     protected AVLTreeNode<E> rightRightRotation(AVLTreeNode<E> k1) {
         AVLTreeNode<E> k2;
-
         k2 = k1.getRight();
         k1.setRight(k2.getLeft());
         k2.setLeft(k1);
-
         k1.setHeight(max(height(k1.getLeft()), height(k1.getRight())) + 1);
         k2.setHeight(max(height(k2.getRight()), k1.getHeight()) + 1);
-
         return k2;
     }
 
@@ -106,7 +103,6 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
      */
     protected AVLTreeNode<E> leftRightRotation(AVLTreeNode<E> k3) {
         k3.setLeft(rightRightRotation(k3.getLeft()));
-
         return leftLeftRotation(k3);
     }
 
@@ -117,7 +113,6 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
      */
     protected AVLTreeNode<E> rightLeftRotation(AVLTreeNode<E> k1) {
         k1.setRight(leftLeftRotation(k1.getRight()));
-
         return rightRightRotation(k1);
     }
 
@@ -129,7 +124,6 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         AVLTreeNode<E> tmp = node;
         while (tmp.getRight() != null)
             tmp = tmp.getRight();
-
         return tmp;
     }
 
@@ -141,7 +135,6 @@ public abstract class AVLTree<E, F extends Comparable<F>> {
         AVLTreeNode<E> tmp = node;
         while (tmp.getLeft() != null)
             tmp = tmp.getLeft();
-
         return tmp;
     }
 

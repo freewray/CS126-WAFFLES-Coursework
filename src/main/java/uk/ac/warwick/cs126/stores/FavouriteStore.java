@@ -372,16 +372,7 @@ public class FavouriteStore implements IFavouriteStore {
         Long[] topCustomer = new Long[20];
         AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
-            Long id = favouriteArray.get(i).getCustomerID();
-            if (tree.searchByID(id) != null) {
-                tree.searchByID(id).addCount();
-                if (tree.searchByID(id).getLatestReviewDate()
-                        .before(favouriteArray.get(i).getDateFavourited())) {
-                    tree.searchByID(id).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
-                }
-            } else {
-                tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
-            }
+            tree.insertByID(new IDCounter(favouriteArray.get(i).getCustomerID(), favouriteArray.get(i).getDateFavourited()));
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
         AVLTreeIDCounter tree2 = new AVLTreeIDCounter();
@@ -394,7 +385,6 @@ public class FavouriteStore implements IFavouriteStore {
             topCustomer[i] = tmp.get(i).getIdentifier();
             System.out.println("Top Customer: " + tmp.get(i).getIdentifier() + " - cnt: " + tmp.get(i).getCount());
         }
-
         return topCustomer;
     }
 
@@ -410,16 +400,7 @@ public class FavouriteStore implements IFavouriteStore {
         Long[] topRestaurants = new Long[20];
         AVLTreeIDCounter tree = new AVLTreeIDCounter();
         for (int i = 0; i < favouriteArray.size(); i++) {
-            Long id = favouriteArray.get(i).getRestaurantID();
-            if (tree.searchByID(id) != null) {
-                tree.searchByID(id).addCount();
-                if (tree.searchByID(id).getLatestReviewDate()
-                        .before(favouriteArray.get(i).getDateFavourited())) {
-                    tree.searchByID(id).setLatestReviewDate(favouriteArray.get(i).getDateFavourited());
-                }
-            } else {
-                tree.insertByID(new IDCounter(id, favouriteArray.get(i).getDateFavourited()));
-            }
+            tree.insertByID(new IDCounter(favouriteArray.get(i).getRestaurantID(), favouriteArray.get(i).getDateFavourited()));
         }
         MyArrayList<IDCounter> tmp = tree.toArrayList();
         AVLTreeIDCounter tree2 = new AVLTreeIDCounter();

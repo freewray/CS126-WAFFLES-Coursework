@@ -35,4 +35,52 @@ public class AVLTreeRating extends AVLTree<Rating, Long> {
     public int idOnlyCompare(Long id, Rating o) {
         return id.compareTo(o.getId());
     }
+
+
+    /**
+     * Insert the node into the tree with only its Identifier order
+     *
+     * @param tree to insert the node into
+     * @param key  to be insert into the tree
+     * @return AVLTreeNode<E> root node
+     */
+    private AVLTreeNode<Rating> insertByID(AVLTreeNode<Rating> tree, Rating key) {
+        if (tree == null) {
+            // if the tree is empty, create a new node as root
+            tree = new AVLTreeNode<>(key, null, null);
+        } else {
+            if (key.getId().compareTo(tree.getKey().getId()) < 0) { // insert the new node to left subtree
+                tree.setLeft(insertByID(tree.getLeft(), key));
+                // rebalance the tree after the insertion
+                if (height(tree.getLeft()) - height(tree.getRight()) == 2) {
+                    if (idOnlyCompare(key, tree.getLeft().getKey()) < 0)
+                        tree = leftLeftRotation(tree);
+                    else
+                        tree = leftRightRotation(tree);
+                }
+            } else if (key.getId().compareTo(tree.getKey().getId()) > 0) { // insert the new node to right subtree
+                tree.setRight(insertByID(tree.getRight(), key));
+                // rebalance the tree after the insertion
+                if (height(tree.getRight()) - height(tree.getLeft()) == 2) {
+                    if (idOnlyCompare(key, tree.getRight().getKey()) > 0)
+                        tree = rightRightRotation(tree);
+                    else
+                        tree = rightLeftRotation(tree);
+                }
+            } else { // key.compareTo(tree.getKey()) == 0
+                tree.getKey().addCnt();
+                tree.getKey().addSumRating(key.getSumRating());
+                if (tree.getKey().getLatestReviewDate().before(key.getLatestReviewDate()))
+                    tree.getKey().setLatestReviewDate(key.getLatestReviewDate());
+            }
+        }
+        // set the new height of the tree
+        tree.setHeight(max(height(tree.getLeft()), height(tree.getRight())) + 1);
+        return tree;
+    }
+
+    public void insertByID(Rating key) {
+        root = insertByID(root, key);
+    }
+
 }

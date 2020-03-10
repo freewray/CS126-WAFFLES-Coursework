@@ -21,6 +21,10 @@ public class Rating implements Comparable<Rating> {
         this.sumRating += rating;
     }
 
+    public int getSumRating(){
+        return this.sumRating;
+    }
+
     public Date getLatestReviewDate() {
         return latestReviewDate;
     }
